@@ -20,15 +20,13 @@ int main(int argc, char **argv)
     }
 
     // Kalman filter
-    CvKalman* kalman = cvCreateKalman(6, 3, 0);
+    CvKalman* kalman = cvCreateKalman(4, 2, 0);
 
     // Transition matrix
-    const float A[] = {1, 0, 0, 1, 0, 0,
-                       0, 1, 0, 0, 1, 0,
-                       0, 0, 1, 0, 0, 1,
-                       0, 0, 0, 1, 0, 0,
-                       0, 0, 0, 0, 1, 0,
-                       0, 0, 0, 0, 0, 1};
+    const float A[] = {1, 0, 1, 0,
+                       0, 1, 0, 1,
+                       0, 0, 1, 0,
+                       0, 0, 0, 1};
     memcpy(kalman->transition_matrix->data.fl, A, sizeof(A));
 
     // Other matrices
@@ -57,10 +55,6 @@ int main(int argc, char **argv)
         printf("ardrone.pitch = %3.2f [deg]\n", pitch * RAD_TO_DEG);
         printf("ardrone.yaw   = %3.2f [deg]\n", yaw   * RAD_TO_DEG);
 
-        // Altitude
-        double altitude = ardrone.getAltitude();
-        printf("ardrone.altitude = %3.2f [m]\n", altitude);
-
         // Velocity
         double vx, vy, vz;
         double velocity = ardrone.getVelocity(&vx, &vy, &vz);
@@ -78,15 +72,14 @@ int main(int argc, char **argv)
         last = ardGetTickCount();
 
         // Measurements
-        float m[] = {vx*dt*cos(yaw) - vy*dt*sin(yaw), vx*dt*sin(yaw) + vy*dt*cos(yaw), vz};
-        CvMat measurement = cvMat(3, 1, CV_32FC1, m);
+        float m[] = {vx*dt*cos(yaw) - vy*dt*sin(yaw), vx*dt*sin(yaw) + vy*dt*cos(yaw)};
+        CvMat measurement = cvMat(2, 1, CV_32FC1, m);
 
         // Prediction
-        const CvMat* prediction = cvKalmanPredict(kalman);
+        cvKalmanPredict(kalman);
         double x = kalman->state_pre->data.fl[0];
         double y = kalman->state_pre->data.fl[1];
-        double z = kalman->state_pre->data.fl[2];
-        cvDrawText(image, cvPoint(20, 20), "x = %3.2f, y = %3.2f, z = %3.2f", x, y, z);
+        cvDrawText(image, cvPoint(15, 20), "x = %3.2f, y = %3.2f", x, y);
         
         // Draw
         CvPoint pos = cvPoint(-y*10.0 + map->width/2, -x*10.0 + map->height/2);
@@ -94,7 +87,7 @@ int main(int argc, char **argv)
         cvShowImage("map", map);
 
         // Correction
-        const CvMat* correction = cvKalmanCorrect(kalman, &measurement);
+        cvKalmanCorrect(kalman, &measurement);
 
         // Take off / Landing
         if (KEY_PUSH(VK_SPACE)) {
@@ -116,22 +109,6 @@ int main(int argc, char **argv)
             if (KEY_DOWN('Q'))      z =  0.5;
             if (KEY_DOWN('A'))      z = -0.5;
             ardrone.move3D(x, y, z, r);
-        }
-
-        // Change camera
-        static int mode = 0;
-        if (KEY_PUSH('C')) {
-            // AR.Drone 2.0
-            if (ardrone.getVersion() == ARDRONE_VERSION_2) {
-                if (mode == 0) mode = 1;    // Vertical
-                else           mode = 0;    // Horizontal
-            }
-            // AR.Drone 1.0
-            else {
-                if (mode == 0) mode = 2;    // Horizontal + Vertiacal
-                else           mode = 0;
-            }
-            ardrone.setCamera(mode);
         }
 
         // Display the image

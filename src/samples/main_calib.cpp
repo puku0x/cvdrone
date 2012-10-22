@@ -71,7 +71,7 @@ int main(int argc, char **argv)
         }
 
         // Display the image
-        cvDrawText(image, cvPoint(20, 20), "NUM = %d", (int)images.size());
+        cvDrawText(image, cvPoint(15, 20), "NUM = %d", (int)images.size());
         cvShowImage("camera", image);
         cvWaitKey(1);
     }

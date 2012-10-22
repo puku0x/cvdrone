@@ -14,7 +14,7 @@ int ARDrone::getVersionInfo(void)
 
     // Set timeout [ms]
     DWORD ms = 500;
-	InternetSetOption(hInet, INTERNET_OPTION_CONNECT_TIMEOUT, &ms, sizeof(ms));
+    InternetSetOption(hInet, INTERNET_OPTION_CONNECT_TIMEOUT, &ms, sizeof(ms));
 
     // Connect to FTP server
     HINTERNET hConnection = InternetConnect(hInet, ip, ARDRONE_VERSION_PORT, "anonymous", "", INTERNET_SERVICE_FTP, INTERNET_FLAG_PASSIVE, 0);

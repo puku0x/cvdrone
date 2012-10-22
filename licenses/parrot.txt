@@ -1,1086 +1,230 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head>
-<title>ARDrone API - ARDRONE open API platform</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta name="description" content="Redmine" />
-<meta name="keywords" content="issue,bug,tracker" />
-<link href="/themes/classic/stylesheets/application.css?1260541146" media="all" rel="stylesheet" type="text/css" />
-<script src="/javascripts/prototype.js?1260541146" type="text/javascript"></script>
-<script src="/javascripts/effects.js?1260541146" type="text/javascript"></script>
-<script src="/javascripts/dragdrop.js?1260541146" type="text/javascript"></script>
-<script src="/javascripts/controls.js?1260541146" type="text/javascript"></script>
-<script src="/javascripts/application.js?1260541146" type="text/javascript"></script>
-<script src="/javascripts/jquery.min.js?1262252288" type="text/javascript"></script>
-<script src="/javascripts/custom.js?1263228313" type="text/javascript"></script>
-
-<link href="/stylesheets/jstoolbar.css?1260541146" media="screen" rel="stylesheet" type="text/css" />
-<!--[if IE]>
-    <style type="text/css">
-      * html body{ width: expression( document.documentElement.clientWidth < 900 ? '900px' : '100%' ); }
-      body {behavior: url(/stylesheets/csshover.htc?1260541146);}
-    </style>
-<![endif]-->
-
-<!-- page specific tags -->
-    <link href="/stylesheets/scm.css?1260541146" media="screen" rel="stylesheet" type="text/css" /></head>
-<body>
-<div id="wrapper">
-<div id="top-menu">
-    <div id="account">
-        <ul><li><a href="/my/account" class="my-account">„Éû„Ç§„Ç¢„Ç´„Ç¶„É≥„Éà</a></li>
-<li><a href="/logout" class="logout">„É≠„Ç∞„Ç¢„Ç¶„Éà</a></li></ul>    </div>
-    <div id="loggedas">„É≠„Ç∞„Ç§„É≥‰∏≠Ôºö <a href="/account/show/19295">puku0x</a></div>
-    <ul><li><a href="/" class="home">„Éõ„Éº„É†</a></li>
-<li><a href="/my/page" class="my-page">„Éû„Ç§„Éö„Éº„Ç∏</a></li>
-<li><a href="/projects" class="projects">„Éó„É≠„Ç∏„Çß„ÇØ„Éà</a></li>
-<li><a href="http://www.redmine.org/guide" class="help">„Éò„É´„Éó</a></li></ul></div>
-      
-<div id="header">
-    <div id="quick-search">
-        <form action="/search/index/ardrone-api" method="get">
-        <a href="/search/index/ardrone-api" accesskey="4">Ê§úÁ¥¢</a>:
-        <input accesskey="f" class="small" id="q" name="q" size="20" type="text" />
-        </form>
-        
-    </div>
-    
-    <h1>ARDrone API</h1>
-    
-    <div id="main-menu">
-        <ul><li><a href="/projects/show/ardrone-api" class="overview">Ê¶ÇË¶Å</a></li>
-<li><a href="/projects/activity/ardrone-api" class="activity">Ê¥ªÂãï</a></li>
-<li><a href="/projects/ardrone-api/issues" class="issues">„ÉÅ„Ç±„ÉÉ„Éà</a></li>
-<li><a href="/projects/ardrone-api/issues/new" accesskey="7" class="new-issue">Êñ∞„Åó„ÅÑ„ÉÅ„Ç±„ÉÉ„Éà</a></li>
-<li><a href="/projects/ardrone-api/news" class="news">„Éã„É•„Éº„Çπ</a></li>
-<li><a href="/projects/ardrone-api/documents" class="documents">ÊñáÊõ∏</a></li>
-<li><a href="/wiki/ardrone-api" class="wiki">Wiki</a></li>
-<li><a href="/projects/ardrone-api/boards" class="boards">„Éï„Ç©„Éº„É©„É†</a></li>
-<li><a href="/projects/list_files/ardrone-api" class="files">„Éï„Ç°„Ç§„É´</a></li>
-<li><a href="/repositories/show/ardrone-api" class="repository">„É™„Éù„Ç∏„Éà„É™</a></li>
-<li><a href="/embedded/ardrone-api" class="embedded">API doc</a></li></ul>
-    </div>
-</div>
+IMPORTANT: INSTRUCTION TO USE AND TO APPLY THE TERMS OF THE LICENSE TO ANY NEW PROGRAM
 
-<div class="nosidebar" id="main">
-    <div id="sidebar">        
-        
-        
-    </div>
-    
-    <div id="content">
-				
-        <h2>PARROT_License_JUNE_2011_v2_1.txt</h2>
+READ BEFORE DOWNLOADING, COPYING, INSTALLING OR USING
+   
 
-<div class="attachments">
-<p>
-   <span class="author">Martin Lefebure, 27-07-2011 00:52</span></p>
-<p><a href="/attachments/download/376/PARROT_License_JUNE_2011_v2_1.txt">„ÉÄ„Ç¶„É≥„É≠„Éº„Éâ</a>   <span class="size">(23.8 KB)</span></p>
+Copyright (C) 2007-2011, PARROT SA, all rights reserved.
 
-</div>
-&nbsp;
-<div class="autoscroll">
-<table class="filecontent CodeRay">
-<tbody>
 
+You may use, copy, modify the PARROT AR.Drone SDK and APIs or any portion of it, and thus form a work based on Parrot SDK and APIs, and copy and redistribute in source code and binary forms, with or without modification, provided that you comply with following conditions:
 
-<tr><th class="line-num" id="L1"><a href="#L1">1</a></th><td class="line-code"><pre>IMPORTANT: INSTRUCTION TO USE AND TO APPLY THE TERMS OF THE LICENSE TO ANY NEW PROGRAM
-</pre></td></tr>
+ï	Redistribution in source code, with or without modification, must retain Parrot copyright notice, the following disclaimer and the license to develop and use in a text file named ìParrot Licenseî.
 
+ï	Redistribution in binary form must reproduce Parrot copyright notice, the following disclaimer in the product documentation or legal notice.
 
-<tr><th class="line-num" id="L2"><a href="#L2">2</a></th><td class="line-code"><pre>
-</pre></td></tr>
+ï	The name of Parrot may not be used to endorse or promote products derived from the APIs without specific prior written permission.
 
 
-<tr><th class="line-num" id="L3"><a href="#L3">3</a></th><td class="line-code"><pre>READ BEFORE DOWNLOADING, COPYING, INSTALLING OR USING
-</pre></td></tr>
+DISCLAIMER
+The APIs is provided by PARROT and contributors "AS IS" and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall PARROT and contributors be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.  
 
 
-<tr><th class="line-num" id="L4"><a href="#L4">4</a></th><td class="line-code"><pre>† †
-</pre></td></tr>
+DEVELOPMENT LICENSE OF THE PARROT AR.DRONE SDK and APIs V2.0
+(Creation of games for the Parrot AR.DRONE)
 
 
-<tr><th class="line-num" id="L5"><a href="#L5">5</a></th><td class="line-code"><pre>
-</pre></td></tr>
 
 
-<tr><th class="line-num" id="L6"><a href="#L6">6</a></th><td class="line-code"><pre>Copyright (C) 2007-2011, PARROT SA, all rights reserved.
-</pre></td></tr>
+Article 1: Purpose 
+The purpose of the present Development License is to define the terms and conditions under which the Developer is authorized to use the source codes of the PARROT SDK and APIs to create under its own responsibility a Game for the AR.Drone and to market it for free or against payment.
 
+Article 2: Definitions
+The terms defined hereunder, used in singular or plural, shall have the following meaning:
 
-<tr><th class="line-num" id="L7"><a href="#L7">7</a></th><td class="line-code"><pre>
-</pre></td></tr>
+- ´PARROT SDK and APIs ª: means the AR.Drone software development kit and AR.Drone APIs and  associated documentation, allowing to pilot the PARROT AR.Drone, from a mobile phone, a console game, a computer or any other electronic device, and which source codes are provided for free to the Developer;
+- ´ Developer ª means a physical person, of age, having the capacity to accept the terms of the present License or a person, representing a company and having all powers to that effect to bind the company; 
+- ìPARROT AR.Droneî or ìPARROT AR.Droneî or ´ PARROT Droneª means the augmented reality drone developed by PARROT, without pilot, remote-controlled by a mobile phone, a console game, a computer or any other electronic device;
+- ´ Interoperability ª: means the ability of an application to exchange information with the Parrot AR.Drone or any itís accessories;
+- ì Game for AR.Droneî : means a software or a video game, created by the Developer from the PARROT SDK and APIs  or any modified version, and which functionalities shall exclusively be dedicated to the use of the PARROT AR.Drone  for entertaining, game, leisure or training purpose or any other purpose compatible with the terms of the present license;
+- ´ License ª means the present license of development and use of the APIís; 
+- ´ User Accountª means the information relating to the identification of a Developer, such as first name, surname, email address, login, password, company, title;
+- ´ User ª: means any physical person using the PARROT Drone or a Game for AR.Drone.
 
+ARTICLE 3 ñ Identification
+3.1 The downloading of the APIís is subject to the Identification of the Developer by filling in the online registration form and accept the terms of the License by clicking the acceptance box on https://projects.ardrone.org .  
+3.2 The Developer commits to provide accurate information and to update the information, if necessary. 
 
-<tr><th class="line-num" id="L8"><a href="#L8">8</a></th><td class="line-code"><pre>
-</pre></td></tr>
+3.3 The User Account is personal and confidential; it cannot be assigned to a third party.
 
+3.4 The Developer commits to inform PARROT immediately of any disclosure, non authorized use by a third party of the login and/or password of its User Account. In such case, PARROT shall be entitled to invalid the login and the password.  
 
-<tr><th class="line-num" id="L9"><a href="#L9">9</a></th><td class="line-code"><pre>You may use, copy, modify the PARROT AR.Drone SDK and APIs or any portion of it, and thus form a work based on Parrot SDK and APIs, and copy and redistribute in source code and binary forms, with or without modification, provided that you comply with following conditions:
-</pre></td></tr>
 
+ARTICLE 4 ñ  Conditions of Use
+Notwithstanding the limitation and restrictions mentioned in article 5, PARROT grants to the Developer, who accepts, a personal, non-assignable, non-exclusive, worldwide, free license of development of the PARROT SDK and APIs authorizing the Developer to: 
+ï	reproduce, without number limitation, the APIís on any device under its responsibility, and necessary to create the Game for AR.Drone;
+ï	translate, adapt, arrange, modify the APIís  in order to create a Game for AR.Drone in the software and hardware environment chosen by the Developer;
+ï	to market, for free or against fees, copies of the Game for AR.Drone created ;
+ï	to grant licenses of the Game for AR.Drone to the Users of the PARROT Drone.
 
-<tr><th class="line-num" id="L10"><a href="#L10">10</a></th><td class="line-code"><pre>
-</pre></td></tr>
 
+ARTICLE 5 ñ Restrictions to the license
+5.1 The License of development and use of the APIís is subject to the acceptance and to the respect by the Developer without any reserves of all restrictions and limitations listed hereafter:  
 
-<tr><th class="line-num" id="L11"><a href="#L11">11</a></th><td class="line-code"><pre>* Redistribution in source code, with or without modification, must retain Parrot copyright notice, the following disclaimer and the license to develop and use in a text file named ìParrot Licenseî.
-</pre></td></tr>
+Consequently, PARROT expressly forbids the Developer:
+(i) 	To access or use of the PARROT SDK and APIs from a technology or means others than those provided with the APIís;
+(ii) 	To market copies of the APIís, for free or against fees, and to distribute, sub-license, rent, sell, transfer, commercialize, publish or generally put the APIís to a third party disposal; 
+(iii) 	To do reverse engineering, decompile or attempt to extract the Source Codes of the PARROT Drone; under special legal conditions, necessary information for interoperability purpose might be requested from PARROT ;
+(iv) 	To destroy, or alter any warning and copyrights notices;
+(v) 	To use the PARROT SDK and APIs to develop an application other than a Game for AR.Drone. The Game for AR.Drone, shall have for sole purpose to be used by a User for entertaining, game, leisure or training. The creation of applications for the use of the PARROT Drone  for professional use or use such as but not limited to military, and, without limitation, security, watching, spying, defence, cartography, is strictly forbidden. 
+(vi) 	To use the PARROT SDK and APIs or to create a Game for AR.Drone breaching the terms of: 
+(1)  The License;
+(2)  Third party rights; 
+(3)  Applicable laws and regulations; 
+(4)  Any instruction provided by PARROT. 
 
+5.2 Therefore, and without limitation, the Developer commits when using the APIís or when creating a Game for AR.Drone:
+a) not to infringe any applicable laws and regulation which the Developer shall determine whatever the country where he intends to develop and/or market the Game for AR.Drone ; 
+b) not to reproduce, represent, put contents which infringe copyrights, patents, trademarks, design, model, know-how, commercial secret and any intellectual property rights belonging to PARROT or to third parties ;
+c) not to falsify or remove copyrights, trademarks notices of any other proprietary rights of PARROT figuring in the Application;
+d) not to display a Game for AR.Drone which falsely or implied would suggest an endorsement or any approbation from PARROT ;
+e) not to collect  or treat, or store, with the Game for AR.Drone, personal data from third, especially User of the Game for AR.Drone without having previously asked for their consent. Shall the Game for AR.Drone store personal data, it should be in compliance with the applicable law 
 
-<tr><th class="line-num" id="L12"><a href="#L12">12</a></th><td class="line-code"><pre>
-</pre></td></tr>
+5.3 PARROT is sole judge of the compliance of the Game for AR.Drone with the terms and conditions of the present License.
 
+5.4 PARROT reserves the right to correct or modify the PARROT SDK and APIs during the License duration. 
 
-<tr><th class="line-num" id="L13"><a href="#L13">13</a></th><td class="line-code"><pre>* Redistribution in binary form must reproduce Parrot copyright notice, the following disclaimer in the product documentation or legal notice.
-</pre></td></tr>
+ARTICLE 6 ñ Duration of the License
 
+The License of the PARROT SDK and APIs is granted for the duration of the intellectual property rights of the Game for AR.Drone. It enters into force upon acceptance by the Developers by clicking the acceptance box or using a modified release of the PARROT SDK and APIs.
 
-<tr><th class="line-num" id="L14"><a href="#L14">14</a></th><td class="line-code"><pre>
-</pre></td></tr>
 
+ARTICLE 7 ñ Termination of the License
 
-<tr><th class="line-num" id="L15"><a href="#L15">15</a></th><td class="line-code"><pre>* The name of Parrot may not be used to endorse or promote products derived from the APIs without specific prior written permission.
-</pre></td></tr>
+7.1 PARROT reserves the right to terminate the present License, without notice, in following cases:  
 
+i.	The Developer  has created a Game for AR.Drone in violation of the present License terms, any applicable law and regulation or PARROT has objective reasons to believe that the Game for AR.Drone is infringing the License or any applicable law and regulation ;
+ii.	The Developer has created a Game for AR.Drone in violation of PARROTís intellectual property rights  or PARROT has objective reasons to believe that the Game for AR.Drone is infringing itís rights ; 
+iii.	The Developer  has created a Game for AR.Drone in violation of a third partyís intellectual property rights  or PARROT has objective reasons to believe that the Game for AR.Drone is infringing a third partyís rights ; 
+iv.	The Developer has created a Game for AR.Drone containing bugs, viruses, worms, defects, Trojan horses, or any items of a destructive nature or PARROT has objective reasons to believe that the Game for AR.Drone contains of this item;
 
-<tr><th class="line-num" id="L16"><a href="#L16">16</a></th><td class="line-code"><pre>
-</pre></td></tr>
+7.2 Termination of the License shall be notified by email to any user breaching the terms of the License.
 
+7.3 In case of closing of a User Account or termination of the License, for whatever reason, articles which by their nature shall survive shall continue to be applicable, in particular articles 11.RIGHTS OF PARROT; 12.DISCLAIMER; 13.LIMITATION OF RESPONSIBILITY; 14.INDEMNITY; 17.GENERALS PROVISIONS. 
 
-<tr><th class="line-num" id="L17"><a href="#L17">17</a></th><td class="line-code"><pre>
-</pre></td></tr>
+ARTICLE 8 ñ Specific Development
 
+Upon request of a video game editor, PARROT may perform specific development of the PARROT SDK and APIs, in order to enable the creation of a Game for AR.Drone for commercial purpose by such editor. The development services provide by PARROT shall be subject to a separate agreement between PARROT and the editor. PARROT and the editor shall share the revenues gained from the sale of games created thanks to the specific development for an amount to be determined by agreement between the parties. 
 
-<tr><th class="line-num" id="L18"><a href="#L18">18</a></th><td class="line-code"><pre>DISCLAIMER
-</pre></td></tr>
 
+ARTICLE 9 ñ Upgrade of the APIís 
+9.1 Due to technological innovations and for quality and/ or security reasons, the Developer acknowledges and agrees that PARROT may at any time modify the APIís, namely by adjunction, removal, improvement of functionalities, or that PARROT may temporarily or definitely suspend the access to the APIís, at its sole discretion and without notice. PARROT warrants ñ as far as possible and with no result obligation, the ascendant compatibility of the APIís.  
 
-<tr><th class="line-num" id="L19"><a href="#L19">19</a></th><td class="line-code"><pre>The APIs is provided by PARROT and contributors &quot;AS IS&quot; and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall PARROT and contributors be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.† 
-</pre></td></tr>
+9.2 PARROT shall notify any modification by publication on https://projects.ardrone.org, or per email, or by any other appropriate mean in PARROT judgment. From the notification, the use of the APIís by the Developer to create new Game for AR.Drone shall be deemed as the acceptance by the Developer of the modified License of the PARROT SDK and APIs.
 
 
-<tr><th class="line-num" id="L20"><a href="#L20">20</a></th><td class="line-code"><pre>
-</pre></td></tr>
+ 
 
+ARTICLE 10 ñ License granted to Parrot by the Developper
+10.1 The Developer is owner of all copyrights and other intellectual property rights on the Game for AR.Drone that he creates. If the Developer is posting his Game for AR.Drone on https://projects.ardrone.org , he grants PARROT a perpetual, irrevocable, worldwide, free and non-exclusive license to reproduce, represent, adapt, arrange , modify, translate, publish, operate and display the Game for AR.Drone by any means of communication, numerical, analogical, electronic..to the public and namely by any network(internet, intranet), wireless or not, by mobile phone, email, by satellite, par optical fibre, par television and on any media.
 
-<tr><th class="line-num" id="L21"><a href="#L21">21</a></th><td class="line-code"><pre>
-</pre></td></tr>
+10.2 This license shall be granted in order to allow PARROT to display, promote, and distribute the PARROT SDK and APIs and/or the PARROT AR.Drone. 
 
+10.3 This license includes the right for PARROT to make the Game for AR.Drone available ñ totally or partially ñ to any Users of the AR.DRONE PARROT or to any person with who PARROT is in relationship, and to use the Game for AR.Drone for information or advertisement purpose.
 
-<tr><th class="line-num" id="L22"><a href="#L22">22</a></th><td class="line-code"><pre>DEVELOPMENT LICENSE OF THE PARROT AR.DRONE SDK and APIs V2.0
-</pre></td></tr>
+10.4 The Developer agrees that PARROT for technical or for improvement purpose, may (a) transmit or communicate the Game for AR.Drone on public network others than internet (wireless or not, namely mobile telephony) and various media (graphic, magnetic, optical, numerical, analogical); and (b) make any modification necessary to adapt and make the Game for AR.Drone compliant to technical specifications so to make it interoperable with networks or devices.  
 
+10.5 The Developer warrants PARROT that he has the rights to grant the license. 
 
-<tr><th class="line-num" id="L23"><a href="#L23">23</a></th><td class="line-code"><pre>(Creation of games for the Parrot AR.DRONE)
-</pre></td></tr>
 
+ARTICLE 11: Parrot Rights
+11.1 Intellectual and industrial property rights. 
+PARROT is and remains the owner of all rights and interests on the PARROT SDK and APIs and on the PARROT AR.Drone, including without limitation all rights of intellectual and industrial property (copyrights, database rights, patents, trademark, design and model, semi-conductor topography) and/or any rights on the know-how, schemes, plans, algorythme,  technologies, ideas, concepts.
 
-<tr><th class="line-num" id="L24"><a href="#L24">24</a></th><td class="line-code"><pre>
-</pre></td></tr>
+It is expressly specified that PARROT is owner of patents on the PARROT AR.Drone and that a right to use such patent is granted within the frame of the present License. No other rights on the patents are granted to the Developer who commits no to use the technologies issued from those patents for purpose not in the scope of the present License.  
 
+11.2 Trademarks and logos.
+11.2.1 PARROT is owner of the intellectual property rights on its commercial trade name, trademarks, logos, domain names and any others brand features. PARROT grants the Developer a non-exclusive, non assignable, non transferable, non sub-licensable, free license to use PARROT trademarks and logos for the sole purpose of mentioning that he uses the PARROT SDK and APIs.
 
-<tr><th class="line-num" id="L25"><a href="#L25">25</a></th><td class="line-code"><pre>
-</pre></td></tr>
+11.2.2 When using PARROTís trademarks and logos, the Developer undertakes: 
+i.	Not to display a trademark or a logo in any manner that implies a relationship or affiliation with, sponsorship, or endorsement by PARROT or that can be reasonably interpreted to suggest editorial content has been authored by, or represents the views or opinions of PARROT;
+ii.	Not to use PARROT brand features to disparage PARROT or its products; 
+iii.	Not to display a trademark or a logo on its website if it contains or displays adult content or promotes illegal activities, gambling, or the sale of tobacco or alcohol to persons under eighteen (18) years of age;
+iv.	Not to display the PARROT trademark and logo as the most prominent element in any part of the Game for AR.Drone created by the Developer or its packaging;
+v.	Not to display the PARROT logo as the most prominent logo in the Game for AR.Drone ;
+vi.	Not to display PARROT trademark or logo in a manner that is misleading, defamatory, infringing, libelous, disparaging, obscene or otherwise objectionable to PARROT;
+vii.	Not to display a PARROT trademark or logo on a site that violates any law or regulation ; 
+viii.	Not to remove, distort or alter any element of a PARROT brand feature (including squeezing, stretching, inverting, discoloring, etc.). 
 
+11.3 The Developer undertakes during the term of the License and after its expiration, not to register or attempt to register any trademark, logo, domain name similar to or confusing with PARROT trademark or logo, in any manner (phonetic, intellectual, visual). PARROT reserves the right to sue for counterfeiting and unfair competition, any Developer who would not respect this commitment and use the trademarks and/or domain name PARROT AR.DRONE OU AR.DRONE in breach of the License.
+ 
+11.4 The Developer undertakes to immediately remedy to any breach notified by PARROT per email or any other mean concerning any infringement to PARROT intellectual property rights.   
 
-<tr><th class="line-num" id="L26"><a href="#L26">26</a></th><td class="line-code"><pre>
-</pre></td></tr>
+11.5 The Developer, company or physical person, is owner, as applicable, on the intellectual property rights on his name, commercial name, trademarks, logos and any other brand features. He expressly grants PARROT a non exclusive, worldwide and free license to mention his name, commercial name, trademarks, logos, as applicable, to mention that he uses the PARROT SDK and APIs and/or that he has created a Game for AR.Drone. 
 
 
-<tr><th class="line-num" id="L27"><a href="#L27">27</a></th><td class="line-code"><pre>
-</pre></td></tr>
+ARTICLE 12: DISCLAIMER
+12.1 THE PARROT SDK AND APIs IS PROVIDED ´AS IS ª. IN PARTICULAR, PARROT, ITíS SUBSIDIARIES, LICENSORS AND THEIR SUPPLIERS, DO NOT REPRESENT OR WARRANT THE DEVELOPER THAT: 
+1. ITS USE OF THE APIís WILL MEET ITS REQUIREMENTS; 
+2. ITS USE OF THE APIís WILL BE UNINTERRUPTED, TIMELY, SECURE OR FREE FROM ERROR OR WILL OFFER CONSTANT PERFORMANCE;
+3. THAT DEFECTS OR ERRORS WILL BE CORRECTED OR THAT THE APIís WILL BE UPGRADE, PARROT HAVING NO OBLIGATION TO PROVIDE CURATIVE OR EVOLUTIVE SUPPORT;
+4. THE APIís IS COMPLIANT TO ANY SPECIFICATIONS;
+5.  ANY UPGRADE OF THE PARROT SDK AND APIs WILL BE COMPATIBLE WITH PREVIOUS RELEASE.
+ 
+12.2 PARROT, ITS SUBSIDIARIES, LICENSORS AND THEIR SUPPLIERS, DO NOT REPRESENT OR WARRANT THE DEVELOPER THAT ITS USER ACCOUNT WILL BE AVAILABLE WITHOUT INTERRUPTION. 
 
+12.3 NO ADVICE OR INFORMATION, WHETHER ORAL OR WRITTEN, OBTAINED BY THE DEVELOPER FROM PARROT, ITS SUBSIDIARERIES, OR THROUGH THE APIís, SHALL BE CONSTRUED A WARRANTY PROVIDED BY PARROT.
 
-<tr><th class="line-num" id="L28"><a href="#L28">28</a></th><td class="line-code"><pre>Article 1: Purpose†
-</pre></td></tr>
+12.4 PARROT, ITíS SUBSIDIARIES, ITS LICENSORS DO NOT WARRANT, ANY RESULT, EXPRESS OR IMPLIED, OF ANY NATURE (TECHNICAL, COMMERCIAL, FINANCIAL OR OTHER) FROM THE USE OF THE APPLICATION.
 
+12.5 PARROT DECLARES THAT TO THE BEST OF ITS KNOWLEDGE THE PARROT SDK AND APIs DOES NOT INFRINGE ANY THIRD PARTY INTELLECTUAL PROPERTY RIGHTS.
 
-<tr><th class="line-num" id="L29"><a href="#L29">29</a></th><td class="line-code"><pre>The purpose of the present Development License is to define the terms and conditions under which the Developer is authorized to use the source codes of the PARROT SDK and APIs to create under its own responsibility a Game for the AR.Drone and to market it for free or against payment.
-</pre></td></tr>
 
+ARTICLE 13: LIMITATION OF RESPONSABILITY
+13.1 THE PROVISION EXCLUSING OR LIMITING PARROTíS LIABILITY SHALL ONLY BE APPLICABLE IN COUNTRIES WHERE SUCH PROVISIONS ARE LEGAL. SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF CERTAIN WARRANTIES OR THE LIMITATION OR EXCLUSION OF LIABILITY FOR CERTAIN TYPES OF LOSS OR DAMAGES. ACCORDINGLY, PARROTíS LIABILITY WILL BE LIMITED TO THE MAXIMUM EXTENT PERMITTED BY LAW.
 
-<tr><th class="line-num" id="L30"><a href="#L30">30</a></th><td class="line-code"><pre>
-</pre></td></tr>
+13.2 THE DEVELOPER EXPRESSLY ACKNOWLEDGES AND AGREES THAT THE USE HE DOES OF ITS USER ACCOUNT, THE APIís, THE GAME FOR AR.DRONE THAT HE CREATES, ARE AT ITS SOLE RISK AND RESPONSABILITY. IN PARTICULAR, THE DEVELOPER SHALL BE SOLELY RESPONSIBLE FOR ANY DAMAGE TO ITS COMPUTER SYSTEM OR OTHER DEVICE, LOSS OF DATA, OR ANY OTHER DAMAGE OR INJURY THAT RESULTS FROM THE DOWNLOAD OR USE OF THE APIís.
 
+13.3 THE DEVELOPER EXPRESSLY ACKNOWLEDGES AND AGREES THAT HE SHALL BE SOLELY RESPONSIBLE FOR ALL COSTS, EXPENSES  INCURRING FOR THE USE OF ITEMS MENTIONED ABOVE AS WELL AS ANY DEVELOPMENT AND PRODUCTION COSTS ASSOCIATED TO THE GAME OF AR.DRONE THAT HE IS CREATING. 
 
-<tr><th class="line-num" id="L31"><a href="#L31">31</a></th><td class="line-code"><pre>Article 2: Definitions
-</pre></td></tr>
+13.4 PARROT, ITS SUPPLIERS, LICENSORS, AFFILIATES, ARE NOT RESPONSIBLE FOR ANY DIRECTS OR INDIRECTS, MATERIALS OR IMMATERIALS, CONSECUTIVES OR NON CONSECUTIVES DAMAGES, INCLUDING, BUT NOT BE LIMITED TO, ANY LOSS OF PROFIT (WHETHER INCURRED DIRECTLY OR INDIRECTLY), ANY LOSS OF GOODWILL OR BUSINESS REPUTATION, ANY LOSS OF DATA, COST OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR OTHER INTANGIBLE LOSS, THAT DEVELOPER OR A THIRD PARTY MAY INCURR FROM:
 
+1- THE USE BY THE DEVELOPER OF ITS USER ACCOUNT, THE PARROT SDK AND APIs, THE GAME FOR AR.DRONE THAT HE CREATES;
+2- THE MARKETING OF THE GAME FOR AR.DRONE FOR FREE OR AGAINST FEES;
+3- THE MODIFICATION OF THE APIís BY PARROT;
+4- THE CLOSING OF THE USER ACCOUNT, THE MODIFICATION OR THE EXPIRATION OR TERMINATION OF THE LICENSE;
+5-   ANY NON ACCURATE OR NON UPDATED INFORMATION PROVIDED BY PARROT, 
 
-<tr><th class="line-num" id="L32"><a href="#L32">32</a></th><td class="line-code"><pre>The terms defined hereunder, used in singular or plural, shall have the following meaning:
-</pre></td></tr>
 
 
-<tr><th class="line-num" id="L33"><a href="#L33">33</a></th><td class="line-code"><pre>
-</pre></td></tr>
+ARTICLE 14: INDEMNITY
+The Developer warrants and hereby agrees to indemnify, defend and hold PARROT harmless from and against any claim or liability arising out of: (a) the use of the APIís in breach of the License and/or any instruction provided by PARROT; (b) the Game for AR.Drone; (c) any use by Users of the Game for AR.Drone; (d) any claim that the Game for AR.Drone breaches laws or infringes third party rights;  consequently, assume all costs and damages to which PARROT could be condemned by a jurisdiction on such a basis. The Developer shall cooperate as fully as reasonably required in the defence of any claim and PARROT reserves the right, at its own expense, to assume the exclusive defence and control of any matter subject to indemnification by the Developer. And if necessary, to seek equitable relief, including but not limited to preliminary injunction and injunction, in addition to all other remedies.
 
+ARTICLE 15: Hyperlinks
+15.1. The https://project.ardrone.org ardrone.org website may include hyperlinks to other web sites or content or resources provided by third parties and companies. PARROT has no control or authority over any web sites, resources, third parties. The Developer acknowledges and agrees that PARROT is not responsible for the availability of any such external sites or resources, and does not endorse any advertising, products or other materials on or available from such web sites or resources.
 
-<tr><th class="line-num" id="L34"><a href="#L34">34</a></th><td class="line-code"><pre>- ´PARROT SDK and†APIs†ª: means the AR.Drone software development kit and AR.Drone APIs and  associated documentation, allowing to pilot the PARROT AR.Drone, from a mobile phone, a console game, a computer or any other electronic device, and which source codes are provided for free to the Developer;
-</pre></td></tr>
+15.2. The Developer acknowledges and agrees that PARROT is not liable for any loss or damage that may be incurred by the Developer as a result of the availability of those external sites or resources, or as a result of any reliance placed by you on the completeness, accuracy or existence of any advertising, products, or other materials on, or available from, such web sites or resources.
 
 
-<tr><th class="line-num" id="L35"><a href="#L35">35</a></th><td class="line-code"><pre>- ´†Developer†ª means a physical person, of age, having the capacity to accept the terms of the present License or a person, representing a company and having all powers to that effect to bind the company; 
-</pre></td></tr>
+ARTICLE 16: Language and interpretation
+16.1 The English version of the License shall prevail over any translation, which might only be provided for convenience purpose. Therefore any translation might be provided only for convenience purpose.
 
+16.2 If there is any contradiction between the English language version of the License and a translation of the License, the English language version will take precedence. 
 
-<tr><th class="line-num" id="L36"><a href="#L36">36</a></th><td class="line-code"><pre>- ìPARROT AR.Droneî or ìPARROT AR.Droneî or ´†PARROT†Droneª means the augmented reality drone developed by PARROT, without pilot, remote-controlled by a mobile phone, a console game, a computer or any other electronic device;
-</pre></td></tr>
+16.3 Titles are provided for convenience purpose only; the content of an article shall have precedence on the title. 
 
+ARTICLE 17: General provisions
+17.1 The License constitutes the entire legal agreement between Parrot and the Developer and completely replace and supersede any prior agreements between PARROT and the Developer.
+ 
+17.2 The waiver by PARROT to prevail itself from a provision of the License shall not be construed as a waiver to prevail  itself of any right obligation under the License in the future.  
 
-<tr><th class="line-num" id="L37"><a href="#L37">37</a></th><td class="line-code"><pre>- ´†Interoperability†ª: means the ability of an application to exchange information with the Parrot AR.Drone or any itís accessories;
-</pre></td></tr>
+17.3 If any court of law having jurisdiction rules that any provision of this License is invalid, then that provision will be removed from the License without affecting the rest of the License. The remaining provisions of the License will continue to be valid and enforceable.
 
+17.4 Any notice sent by PARROT to the Developer or exchange between the Parties will be validly delivered per email at the address provided by the Developer in its User Account and at legal@ardrone.org for PARROT. 
 
-<tr><th class="line-num" id="L38"><a href="#L38">38</a></th><td class="line-code"><pre>- ì Game for AR.Droneî†: means a software or a video game, created by the Developer†from the PARROT SDK and†APIs† or any modified version, and which functionalities shall exclusively be dedicated to the use of the PARROT AR.Drone  for entertaining, game, leisure or training purpose or any other purpose compatible with the terms of the present license;
-</pre></td></tr>
+ARTICLE 18: Applicable law and jurisdiction
+The License is governed by French Law, without regard to its conflict of Laws provisions. Any dispute arising out of its interpretation, execution or termination shall be submitted to the exclusive jurisdiction of the relevant court of Paris, even for urgency proceedings or plurality of defendants. Notwithstanding this, PARROT shall be allowed to apply for injunctive remedies (or an equivalent type of urgent legal relief) in any jurisdiction
 
 
-<tr><th class="line-num" id="L39"><a href="#L39">39</a></th><td class="line-code"><pre>- ´†License†ª means the present license of development and use of the APIís; 
-</pre></td></tr>
+ARTICLE 19 - Privacy
+19.1 All information about our privacy policy are provided on www.parrot.com . This policy explains how PARROT treats any personal data which are disclosed to her and protect your privacy. 
 
+19.2 The Developer agrees that PARROT may use its personal data in compliance with its privacy policy.   
 
-<tr><th class="line-num" id="L40"><a href="#L40">40</a></th><td class="line-code"><pre>- ´ User Accountª means the information relating to the identification of a Developer, such as first name, surname, email address, login, password, company, title;
-</pre></td></tr>
 
+ARTICLE 20 ñ Acceptance of the license 
+By clicking the acceptance box, downloading or  using the PARROT SDK and APIs or an adapted or modified release of the PARROT SDK and APIs, the Developer or any user accepts without reserve all terms and conditions of the License concluded between him and PARROT SA ñ registered under N∞ 394 149 496 and located 174 quai de Jemmapes FRANCE -  which he commits to respect.  
 
-<tr><th class="line-num" id="L41"><a href="#L41">41</a></th><td class="line-code"><pre>- ´†User†ª: means any physical person using the PARROT Drone or a Game for AR.Drone.
-</pre></td></tr>
 
 
-<tr><th class="line-num" id="L42"><a href="#L42">42</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L43"><a href="#L43">43</a></th><td class="line-code"><pre>ARTICLE 3 ñ Identification
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L44"><a href="#L44">44</a></th><td class="line-code"><pre>3.1 The downloading of the APIís is subject to the Identification of the Developer by filling in the online registration form and accept the terms of the License by clicking the acceptance box on https://projects.ardrone.org .  
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L45"><a href="#L45">45</a></th><td class="line-code"><pre>3.2 The Developer commits to provide accurate information and to update the information, if necessary. 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L46"><a href="#L46">46</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L47"><a href="#L47">47</a></th><td class="line-code"><pre>3.4 The User Account is personal and confidential; it cannot be assigned to a third party.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L48"><a href="#L48">48</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L49"><a href="#L49">49</a></th><td class="line-code"><pre>3.5 The Developer commits to inform PARROT immediately of any disclosure, non authorized use by a third party of the login and/or password of its User Account. In such case, PARROT shall be entitled to invalid the login and the password.  
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L50"><a href="#L50">50</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L51"><a href="#L51">51</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L52"><a href="#L52">52</a></th><td class="line-code"><pre>ARTICLE 4†ñ  Conditions of Use
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L53"><a href="#L53">53</a></th><td class="line-code"><pre>Notwithstanding the limitation and restrictions mentioned in article 5, PARROT grants to the Developer, who accepts, a personal, non-assignable, non-exclusive, worldwide, free license of development of the PARROT SDK and†APIs authorizing the Developer to: 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L54"><a href="#L54">54</a></th><td class="line-code"><pre>* reproduce, without number limitation, the APIís on any device under its responsibility, and necessary to create the Game for AR.Drone;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L55"><a href="#L55">55</a></th><td class="line-code"><pre>* translate, adapt, arrange, modify the APIís †in order to create a Game for AR.Drone in the software and hardware environment chosen by the Developer;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L56"><a href="#L56">56</a></th><td class="line-code"><pre>* to market, for free or against fees, copies of the Game for AR.Drone created ;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L57"><a href="#L57">57</a></th><td class="line-code"><pre>* to grant licenses of the Game for AR.Drone to the Users of the PARROT Drone.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L58"><a href="#L58">58</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L59"><a href="#L59">59</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L60"><a href="#L60">60</a></th><td class="line-code"><pre>ARTICLE 5 ñ Restrictions to the license
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L61"><a href="#L61">61</a></th><td class="line-code"><pre>5.1 The License of development and use of the APIís is subject to the acceptance and to the respect by the Developer†without any reserves of all restrictions and limitations listed hereafter:  
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L62"><a href="#L62">62</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L63"><a href="#L63">63</a></th><td class="line-code"><pre>Consequently, PARROT expressly forbids the Developer:
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L64"><a href="#L64">64</a></th><td class="line-code"><pre>i. To do reverse engineering, decompile or attempt to extract the Source Codes of the PARROT Drone; under special legal conditions, necessary information for interoperability purpose might be requested from PARROT ;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L65"><a href="#L65">65</a></th><td class="line-code"><pre>ii. To destroy, or alter any warning and copyrights notices;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L66"><a href="#L66">66</a></th><td class="line-code"><pre>iii. To use the PARROT SDK and†APIs to develop an application other than a Game for AR.Drone. The Game for AR.Drone shall have for sole purpose to be used by a User for entertaining, game, leisure or training. The creation of applications for the use of the PARROT AR.Drone  for professional use or use such as but not limited to military, and, without limitation, security, watching, spying, defence, cartography, is strictly forbidden. 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L67"><a href="#L67">67</a></th><td class="line-code"><pre>iv. To use the PARROT SDK and†APIs or to create a Game for AR.Drone breaching the terms of: 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L68"><a href="#L68">68</a></th><td class="line-code"><pre>(1)  The License;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L69"><a href="#L69">69</a></th><td class="line-code"><pre>(2)  Third party rights; 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L70"><a href="#L70">70</a></th><td class="line-code"><pre>(3)  Applicable laws and regulations; 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L71"><a href="#L71">71</a></th><td class="line-code"><pre>(4)  Any instruction provided by PARROT. 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L72"><a href="#L72">72</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L73"><a href="#L73">73</a></th><td class="line-code"><pre>5.2 Therefore, and without limitation, the Developer commits when using the APIís or when creating a Game for AR.Drone:
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L74"><a href="#L74">74</a></th><td class="line-code"><pre>a) not to infringe any applicable laws and regulation which the Developer shall determine whatever the country where he intends to develop and/or market the Game for AR.Drone†; 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L75"><a href="#L75">75</a></th><td class="line-code"><pre>b) not to reproduce, represent, put contents which infringe copyrights, patents, trademarks, design, model, know-how, commercial secret and any intellectual property rights belonging to PARROT or to third parties†;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L76"><a href="#L76">76</a></th><td class="line-code"><pre>c) not to falsify or remove copyrights, trademarks notices of any other proprietary rights of PARROT figuring in the Application;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L77"><a href="#L77">77</a></th><td class="line-code"><pre>d) not to display a Game for AR.Drone which falsely or implied would suggest an endorsement or any approbation from PARROT ;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L78"><a href="#L78">78</a></th><td class="line-code"><pre>e) not to collect  or treat, or store, with the Game for AR.Drone, personal data from third, especially User of the Game for AR.Drone without having previously asked for their consent. Shall the Game for AR.Drone store personal data, it should be in compliance with the applicable law 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L79"><a href="#L79">79</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L80"><a href="#L80">80</a></th><td class="line-code"><pre>5.3 PARROT is sole judge of the compliance of the Game for AR.Drone with the terms and conditions of the present License.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L81"><a href="#L81">81</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L82"><a href="#L82">82</a></th><td class="line-code"><pre>5.5 PARROT reserves the right to correct or modify the PARROT SDK and†APIs during the License duration. 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L83"><a href="#L83">83</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L84"><a href="#L84">84</a></th><td class="line-code"><pre>ARTICLE 6 ñ Duration of the License
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L85"><a href="#L85">85</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L86"><a href="#L86">86</a></th><td class="line-code"><pre>The License of the PARROT SDK and†APIs is granted for the duration of the intellectual property rights of the Game for AR.Drone. It enters into force upon acceptance by the Developers by clicking the acceptance box or using a modified release of the PARROT SDK and†APIs.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L87"><a href="#L87">87</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L88"><a href="#L88">88</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L89"><a href="#L89">89</a></th><td class="line-code"><pre>ARTICLE 7 ñ Termination of the License
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L90"><a href="#L90">90</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L91"><a href="#L91">91</a></th><td class="line-code"><pre>7.1.†Termination of the License†
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L92"><a href="#L92">92</a></th><td class="line-code"><pre>7.1.1 PARROT reserves the right to terminate the present License, without notice, in following cases:  
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L93"><a href="#L93">93</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L94"><a href="#L94">94</a></th><td class="line-code"><pre>i. The Developer† has created a Game for AR.Drone in violation of the present License terms, any applicable law and regulation or PARROT has objective reasons to believe that the Game for AR.Drone is infringing the License or any applicable law and regulation ;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L95"><a href="#L95">95</a></th><td class="line-code"><pre>ii. The Developer†has created a Game for AR.Drone in violation of PARROTís intellectual property rights  or PARROT has objective reasons to believe that the Game for AR.Drone is infringing itís rights†;†
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L96"><a href="#L96">96</a></th><td class="line-code"><pre>iii. The Developer† has created a Game for AR.Drone in violation of a third partyís intellectual property rights  or PARROT has objective reasons to believe that the Game for AR.Drone is infringing a third partyís rights†;†
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L97"><a href="#L97">97</a></th><td class="line-code"><pre>iv. The Developer†has created a Game for AR.Drone containing bugs, viruses, worms, defects, Trojan horses, or any items of a destructive nature or PARROT has objective reasons to believe that the Game for AR.Drone contains of this item;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L98"><a href="#L98">98</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L99"><a href="#L99">99</a></th><td class="line-code"><pre>7.1.2 Termination of the License shall be notified by email to any user breaching the terms of the License.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L100"><a href="#L100">100</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L101"><a href="#L101">101</a></th><td class="line-code"><pre>7.1.3 In case of closing of a User Account or termination of the License, for whatever reason, articles which by their nature shall survive shall continue to be applicable, in particular articles 11.RIGHTS OF PARROT; 12.EXCLUSION OF WARRANTIES; 13.LIMITATION OF RESPONSIBILITY; 14.INDEMNITY; 15.GENERALS TERMS. 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L102"><a href="#L102">102</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L103"><a href="#L103">103</a></th><td class="line-code"><pre>ARTICLE 8 ñ Specific Development
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L104"><a href="#L104">104</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L105"><a href="#L105">105</a></th><td class="line-code"><pre>Upon request of a video game editor, PARROT may perform specific development of the PARROT SDK and†APIs, in order to enable the creation of a Game for AR.Drone for commercial purpose by such editor. The development services provide by PARROT shall be subject to a separate agreement between PARROT and the editor. PARROT and the editor shall share the revenues gained from the sale of games created thanks to the specific development for an amount to be determined by agreement between the parties. 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L106"><a href="#L106">106</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L107"><a href="#L107">107</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L108"><a href="#L108">108</a></th><td class="line-code"><pre>ARTICLE 9 ñ Upgrade of the APIís†
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L109"><a href="#L109">109</a></th><td class="line-code"><pre>9.1 Due to technological innovations and for quality and/ or security reasons, the Developer acknowledges and agrees that PARROT may at any time modify the APIís, namely by adjunction, removal, improvement of functionalities, or that PARROT may temporarily or definitely suspend the access to the APIís, at its sole discretion and without notice. PARROT warrants ñ as far as possible and with no result obligation, the ascendant compatibility of the APIís.  
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L110"><a href="#L110">110</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L111"><a href="#L111">111</a></th><td class="line-code"><pre>9.2 PARROT shall notify any modification by publication on https://projects.ardrone.org, or per email, or by any other appropriate mean in PARROT judgment. From the notification, the use of the APIís by the Developer†to create new Game for AR.Drone shall be deemed as the acceptance by the Developer of the modified License of the PARROT SDK and†APIs.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L112"><a href="#L112">112</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L113"><a href="#L113">113</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L114"><a href="#L114">114</a></th><td class="line-code"><pre>ARTICLE 10 ñ License granted to Parrot by the Developper
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L115"><a href="#L115">115</a></th><td class="line-code"><pre>10.1 The Developer is owner of all copyrights and other intellectual property rights on the Game for AR.Drone that he creates. If the Developer is posting his Game for AR.Drone on https://projects.ardrone.org , he grants PARROT a perpetual, irrevocable, worldwide, free and non-exclusive license to reproduce, represent, adapt, arrange , modify, translate, publish, operate and display the Game for AR.Drone†by any means of communication, numerical, analogical, electronic..to the public and namely by any network(internet, intranet), wireless or not, by mobile phone, email, by satellite, par optical fibre, par television and on any media.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L116"><a href="#L116">116</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L117"><a href="#L117">117</a></th><td class="line-code"><pre>10.2 This license shall be granted in order to allow PARROT to display, promote, and distribute the PARROT SDK and†APIs and/or the PARROT AR.Drone. 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L118"><a href="#L118">118</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L119"><a href="#L119">119</a></th><td class="line-code"><pre>10.3 This license includes the right for PARROT to make the Game for AR.Drone†available ñ totally or partially ñ to any Users of the AR.DRONE PARROT or to any person with who PARROT is in relationship, and to use the Game for AR.Drone for information or advertisement purpose.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L120"><a href="#L120">120</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L121"><a href="#L121">121</a></th><td class="line-code"><pre>10.4 The Developer agrees that PARROT for technical or for improvement purpose, may (a) transmit or communicate the Game for AR.Drone on public network others than internet (wireless or not, namely mobile telephony) and various media (graphic, magnetic, optical, numerical, analogical); and (b) make any modification necessary to adapt and make the Game for AR.Drone compliant to technical specifications so to make it interoperable with networks or devices.  
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L122"><a href="#L122">122</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L123"><a href="#L123">123</a></th><td class="line-code"><pre>10.5 The Developer warrants PARROT that he has the rights to grant the license. 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L124"><a href="#L124">124</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L125"><a href="#L125">125</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L126"><a href="#L126">126</a></th><td class="line-code"><pre>ARTICLE 11: Parrot Rights
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L127"><a href="#L127">127</a></th><td class="line-code"><pre>11.1 Intellectual and industrial property rights. 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L128"><a href="#L128">128</a></th><td class="line-code"><pre>PARROT is and remains the owner of all rights and interests on the PARROT SDK and†APIs and on the PARROT AR.Drone, including without limitation all rights of intellectual and industrial property (copyrights, database rights, patents, trademark, design and model, semi-conductor topography) and/or any rights on the know-how, schemes, plans, algorythme,  technologies, ideas, concepts.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L129"><a href="#L129">129</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L130"><a href="#L130">130</a></th><td class="line-code"><pre>It is expressly specified that PARROT is owner of patents on the PARROT AR.Drone and that a right to use such patent is granted within the frame of the present License. No other rights on the patents are granted to the Developer who commits no to use the technologies issued from those patents for purpose not in the scope of the present License.  
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L131"><a href="#L131">131</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L132"><a href="#L132">132</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L133"><a href="#L133">133</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L134"><a href="#L134">134</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L135"><a href="#L135">135</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L136"><a href="#L136">136</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L137"><a href="#L137">137</a></th><td class="line-code"><pre>11.2 Trademarks and logos.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L138"><a href="#L138">138</a></th><td class="line-code"><pre>11.2.1 PARROT is owner of the intellectual property rights on its commercial trade name, trademarks, logos, domain names and any others brand features. PARROT grants the Developer†a non-exclusive, non assignable, non transferable, non sub-licensable, free license to use PARROT trademarks and logos for the sole purpose of mentioning that he uses the PARROT SDK and†APIs.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L139"><a href="#L139">139</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L140"><a href="#L140">140</a></th><td class="line-code"><pre>11.2.2 When using PARROTís trademarks and logos, the Developer undertakes: 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L141"><a href="#L141">141</a></th><td class="line-code"><pre>i. Not to display a trademark or a logo in any manner that implies a relationship or affiliation with, sponsorship, or endorsement by PARROT or that can be reasonably interpreted to suggest editorial content has been authored by, or represents the views or opinions of PARROT;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L142"><a href="#L142">142</a></th><td class="line-code"><pre>ii. Not to use PARROT brand features to disparage PARROT or its products; 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L143"><a href="#L143">143</a></th><td class="line-code"><pre>iii. Not to display a trademark or a logo on its website if it contains or displays adult content or promotes illegal activities, gambling, or the sale of tobacco or alcohol to persons under eighteen (18) years of age;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L144"><a href="#L144">144</a></th><td class="line-code"><pre>iv. Not to display the PARROT trademark and logo as the most prominent element in any part of the Game for AR.Drone created by the Developer or its packaging;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L145"><a href="#L145">145</a></th><td class="line-code"><pre>v. Not to display the PARROT logo as the most prominent logo in the Game for AR.Drone ;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L146"><a href="#L146">146</a></th><td class="line-code"><pre>vi. Not to display PARROT trademark or logo in a manner that is misleading, defamatory, infringing, libelous, disparaging, obscene or otherwise objectionable to PARROT;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L147"><a href="#L147">147</a></th><td class="line-code"><pre>vii. Not to display a PARROT trademark or logo on a site that violates any law or regulation†; 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L148"><a href="#L148">148</a></th><td class="line-code"><pre>viii. Not to remove, distort or alter any element of a PARROT brand feature (including squeezing, stretching, inverting, discoloring, etc.). 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L149"><a href="#L149">149</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L150"><a href="#L150">150</a></th><td class="line-code"><pre>11.3 The Developer undertakes during the term of the License and after its expiration, not to register or attempt to register any trademark, logo, domain name similar to or confusing with PARROT trademark or logo, in any manner (phonetic, intellectual, visual). PARROT reserves the right to sue for counterfeiting and unfair competition, any Developer who would not respect this commitment and use the trademarks and/or domain name PARROT AR.DRONE OU AR.DRONE in breach of the License.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L151"><a href="#L151">151</a></th><td class="line-code"><pre> 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L152"><a href="#L152">152</a></th><td class="line-code"><pre>11.4 The Developer undertakes to immediately remedy to any breach notified by PARROT per email or any other mean concerning any infringement to PARROT intellectual property rights.   
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L153"><a href="#L153">153</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L154"><a href="#L154">154</a></th><td class="line-code"><pre>11.5 The Developer, company or physical person, is owner, as applicable, on the intellectual property rights on his name, commercial name, trademarks, logos and any other brand features. He expressly grants PARROT a non exclusive, worldwide and free license to mention his name, commercial name, trademarks, logos, as applicable, to mention that he uses the PARROT SDK and†APIs and/or that he has created a Game for AR.Drone. 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L155"><a href="#L155">155</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L156"><a href="#L156">156</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L157"><a href="#L157">157</a></th><td class="line-code"><pre>ARTICLE 12: DISCLAIMER
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L158"><a href="#L158">158</a></th><td class="line-code"><pre>12.1 THE PARROT SDK AND†APIs IS PROVIDED ´AS IS†ª. IN PARTICULAR, PARROT, ITíS SUBSIDIARIES, LICENSORS AND THEIR SUPPLIERS, DO NOT REPRESENT OR WARRANT THE DEVELOPER THAT: 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L159"><a href="#L159">159</a></th><td class="line-code"><pre>1. ITS USE OF THE APIís WILL MEET ITS REQUIREMENTS; 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L160"><a href="#L160">160</a></th><td class="line-code"><pre>2. ITS USE OF THE APIís WILL BE UNINTERRUPTED, TIMELY, SECURE OR FREE FROM ERROR OR WILL OFFER CONSTANT PERFORMANCE;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L161"><a href="#L161">161</a></th><td class="line-code"><pre>3. THAT DEFECTS OR ERRORS WILL BE CORRECTED OR THAT THE APIís WILL BE UPGRADE, PARROT HAVING NO OBLIGATION TO PROVIDE CURATIVE OR EVOLUTIVE SUPPORT;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L162"><a href="#L162">162</a></th><td class="line-code"><pre>4. THE APIís IS COMPLIANT TO ANY SPECIFICATIONS;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L163"><a href="#L163">163</a></th><td class="line-code"><pre>    5.  ANY UPGRADE OF THE PARROT SDK AND†APIs WILL BE COMPATIBLE WITH PREVIOUS RELEASE.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L164"><a href="#L164">164</a></th><td class="line-code"><pre>     
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L165"><a href="#L165">165</a></th><td class="line-code"><pre>12.2 PARROT, ITS SUBSIDIARIES, LICENSORS AND THEIR SUPPLIERS, DO NOT REPRESENT OR WARRANT THE DEVELOPER THAT ITS USER ACCOUNT WILL BE AVAILABLE WITHOUT INTERRUPTION. 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L166"><a href="#L166">166</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L167"><a href="#L167">167</a></th><td class="line-code"><pre>12.3 NO ADVICE OR INFORMATION, WHETHER ORAL OR WRITTEN, OBTAINED BY THE DEVELOPER FROM PARROT, ITS SUBSIDIARERIES, OR THROUGH THE APIís, SHALL BE CONSTRUED A WARRANTY PROVIDED BY PARROT.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L168"><a href="#L168">168</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L169"><a href="#L169">169</a></th><td class="line-code"><pre>12.4 PARROT, ITíS SUBSIDIARIES, ITS LICENSORS DO NOT WARRANT, ANY RESULT, EXPRESS OR IMPLIED, OF ANY NATURE (TECHNICAL, COMMERCIAL, FINANCIAL OR OTHER) FROM THE USE OF THE APPLICATION.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L170"><a href="#L170">170</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L171"><a href="#L171">171</a></th><td class="line-code"><pre>12.5 PARROT DECLARES THAT TO THE BEST OF ITS KNOWLEDGE THE PARROT SDK AND†APIs DOES NOT INFRINGE ANY THIRD PARTY INTELLECTUAL PROPERTY RIGHTS.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L172"><a href="#L172">172</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L173"><a href="#L173">173</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L174"><a href="#L174">174</a></th><td class="line-code"><pre>ARTICLE 13: LIMITATION OF RESPONSABILITY
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L175"><a href="#L175">175</a></th><td class="line-code"><pre>13.1 THE PROVISION EXCLUSING OR LIMITING PARROTíS LIABILITY SHALL ONLY BE APPLICABLE IN COUNTRIES WHERE SUCH PROVISIONS ARE LEGAL. SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF CERTAIN WARRANTIES OR THE LIMITATION OR EXCLUSION OF LIABILITY FOR CERTAIN TYPES OF LOSS OR DAMAGES. ACCORDINGLY, PARROTíS LIABILITY WILL BE LIMITED TO THE MAXIMUM EXTENT PERMITTED BY LAW.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L176"><a href="#L176">176</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L177"><a href="#L177">177</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L178"><a href="#L178">178</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L179"><a href="#L179">179</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L180"><a href="#L180">180</a></th><td class="line-code"><pre>13.2 THE DEVELOPER EXPRESSLY ACKNOWLEDGES AND AGREES THAT THE USE HE DOES OF ITS USER ACCOUNT, THE APIís, THE GAME FOR AR.DRONE THAT HE CREATES, ARE AT ITS SOLE RISK AND RESPONSABILITY. IN PARTICULAR, THE DEVELOPER SHALL BE SOLELY RESPONSIBLE FOR ANY DAMAGE TO ITS COMPUTER SYSTEM OR OTHER DEVICE, LOSS OF DATA, OR ANY OTHER DAMAGE OR INJURY THAT RESULTS FROM THE DOWNLOAD OR USE OF THE APIís.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L181"><a href="#L181">181</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L182"><a href="#L182">182</a></th><td class="line-code"><pre>13.3 THE DEVELOPER EXPRESSLY ACKNOWLEDGES AND AGREES THAT HE SHALL BE SOLELY RESPONSIBLE FOR ALL COSTS, EXPENSES  INCURRING FOR THE USE OF ITEMS MENTIONED ABOVE AS WELL AS ANY DEVELOPMENT AND PRODUCTION COSTS ASSOCIATED TO THE GAME OF AR.DRONE THAT HE IS CREATING. 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L183"><a href="#L183">183</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L184"><a href="#L184">184</a></th><td class="line-code"><pre>13.4 PARROT, ITS SUPPLIERS, LICENSORS, AFFILIATES, ARE NOT RESPONSIBLE FOR ANY DIRECTS OR INDIRECTS, MATERIALS OR IMMATERIALS, CONSECUTIVES OR NON CONSECUTIVES DAMAGES, INCLUDING, BUT NOT BE LIMITED TO, ANY LOSS OF PROFIT (WHETHER INCURRED DIRECTLY OR INDIRECTLY), ANY LOSS OF GOODWILL OR BUSINESS REPUTATION, ANY LOSS OF DATA, COST OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR OTHER INTANGIBLE LOSS, THAT DEVELOPER OR A THIRD PARTY MAY INCURR FROM:
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L185"><a href="#L185">185</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L186"><a href="#L186">186</a></th><td class="line-code"><pre>1- THE USE BY THE DEVELOPER OF ITS USER ACCOUNT, THE PARROT SDK AND†APIs, THE GAME FOR AR.DRONE THAT HE CREATES;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L187"><a href="#L187">187</a></th><td class="line-code"><pre>2- THE MARKETING OF THE GAME FOR AR.DRONE FOR FREE OR AGAINST FEES;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L188"><a href="#L188">188</a></th><td class="line-code"><pre>3- THE MODIFICATION OF THE APIís BY PARROT;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L189"><a href="#L189">189</a></th><td class="line-code"><pre>4- THE CLOSING OF THE USER ACCOUNT, THE MODIFICATION OR THE EXPIRATION OR TERMINATION OF THE LICENSE;
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L190"><a href="#L190">190</a></th><td class="line-code"><pre>5-   ANY NON ACCURATE OR NON UPDATED INFORMATION PROVIDED BY PARROT, 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L191"><a href="#L191">191</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L192"><a href="#L192">192</a></th><td class="line-code"><pre>ARTICLE 15: Indemnification
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L193"><a href="#L193">193</a></th><td class="line-code"><pre>The Developer warrants and hereby agrees to indemnify, defend and hold PARROT harmless from and against any claim or liability arising out of: (a) the use of the APIís in breach of the License and/or any instruction provided by PARROT; (b) the Game for AR.Drone; (c) any use by Users of the Game for AR.Drone; (d) any claim that the Game for AR.Drone breaches laws or infringes third party rights;  consequently, assume all costs and damages to which PARROT could be condemned by a jurisdiction on such a basis. The Developer shall cooperate as fully as reasonably required in the defence of any claim and PARROT reserves the right, at its own expense, to assume the exclusive defence and control of any matter subject to indemnification by the Developer. And if necessary, to seek equitable relief, including but not limited to preliminary injunction and injunction, in addition to all other remedies.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L194"><a href="#L194">194</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L195"><a href="#L195">195</a></th><td class="line-code"><pre>ARTICLE 16: Hyperlinks
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L196"><a href="#L196">196</a></th><td class="line-code"><pre>16.1. The https://project.ardrone.org ardrone.org website may include hyperlinks to other web sites or content or resources provided by third parties and companies. PARROT has no control or authority over any web sites, resources, third parties. The Developer acknowledges and agrees that PARROT is not responsible for the availability of any such external sites or resources, and does not endorse any advertising, products or other materials on or available from such web sites or resources.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L197"><a href="#L197">197</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L198"><a href="#L198">198</a></th><td class="line-code"><pre>16.2. The Developer acknowledges and agrees that PARROT is not liable for any loss or damage that may be incurred by the Developer as a result of the availability of those external sites or resources, or as a result of any reliance placed by you on the completeness, accuracy or existence of any advertising, products, or other materials on, or available from, such web sites or resources.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L199"><a href="#L199">199</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L200"><a href="#L200">200</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L201"><a href="#L201">201</a></th><td class="line-code"><pre>ARTICLE 17: Language and interpretation
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L202"><a href="#L202">202</a></th><td class="line-code"><pre>17.1 The English version of the License shall prevail over any translation, which might only be provided for convenience purpose. Therefore any translation might be provided only for convenience purpose.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L203"><a href="#L203">203</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L204"><a href="#L204">204</a></th><td class="line-code"><pre>17.2 If there is any contradiction between the English language version of the License and a translation of the License, the English language version will take precedence. 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L205"><a href="#L205">205</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L206"><a href="#L206">206</a></th><td class="line-code"><pre>17.3 Titles are provided for convenience purpose only; the content of an article shall have precedence on the title. 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L207"><a href="#L207">207</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L208"><a href="#L208">208</a></th><td class="line-code"><pre>ARTICLE 18: General provisions
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L209"><a href="#L209">209</a></th><td class="line-code"><pre>18.1 The License constitutes the entire legal agreement between Parrot and the Developer and completely replace and supersede any prior agreements between PARROT and the Developer.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L210"><a href="#L210">210</a></th><td class="line-code"><pre> 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L211"><a href="#L211">211</a></th><td class="line-code"><pre>18.2 The waiver by PARROT to prevail itself from a provision of the License shall not be construed as a waiver to prevail  itself of any right obligation under the License in the future.  
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L212"><a href="#L212">212</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L213"><a href="#L213">213</a></th><td class="line-code"><pre>18.3 If any court of law having jurisdiction rules that any provision of this License is invalid, then that provision will be removed from the License without affecting the rest of the License. The remaining provisions of the License will continue to be valid and enforceable.
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L214"><a href="#L214">214</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L215"><a href="#L215">215</a></th><td class="line-code"><pre>18.4 Any notice sent by PARROT to the Developer or exchange between the Parties will be validly delivered per email at the address provided by the Developer in its User Account and at legal@ardrone.org for PARROT. 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L216"><a href="#L216">216</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L217"><a href="#L217">217</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L218"><a href="#L218">218</a></th><td class="line-code"><pre>ARTICLE 19: Applicable law and jurisdiction
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L219"><a href="#L219">219</a></th><td class="line-code"><pre>The License is governed by French Law, without regard to its conflict of Laws provisions. Any dispute arising out of its interpretation, execution or termination shall be submitted to the exclusive jurisdiction of the relevant court of Paris, even for urgency proceedings or plurality of defendants. Notwithstanding this, PARROT shall be allowed to apply for injunctive remedies (or an equivalent type of urgent legal relief) in any jurisdiction
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L220"><a href="#L220">220</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L221"><a href="#L221">221</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L222"><a href="#L222">222</a></th><td class="line-code"><pre>ARTICLE 20 - Privacy
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L223"><a href="#L223">223</a></th><td class="line-code"><pre>20.1 All information about our privacy policy are provided on www.parrot.com . This policy explains how PARROT treats any personal data which are disclosed to her and protect your privacy. 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L224"><a href="#L224">224</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L225"><a href="#L225">225</a></th><td class="line-code"><pre>20.2 The Developer†agrees that PARROT may use its personal data in compliance with its privacy policy.   
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L226"><a href="#L226">226</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L227"><a href="#L227">227</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L228"><a href="#L228">228</a></th><td class="line-code"><pre>ARTICLE 21†ñ Acceptance of the license 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L229"><a href="#L229">229</a></th><td class="line-code"><pre>By clicking the acceptance box, downloading or  using the PARROT SDK and†APIs or an adapted or modified release of the PARROT SDK and†APIs, the Developer or any user accepts without reserve all terms and conditions of the License concluded between him and PARROT SA ñ registered under N∞ 394†149†496 and located 174 quai de Jemmapes FRANCE -  which he commits to respect.  
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L230"><a href="#L230">230</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L231"><a href="#L231">231</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L232"><a href="#L232">232</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L233"><a href="#L233">233</a></th><td class="line-code"><pre>Last update: June 2011 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L234"><a href="#L234">234</a></th><td class="line-code"><pre>Document revision V2.1
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L235"><a href="#L235">235</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L236"><a href="#L236">236</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L237"><a href="#L237">237</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L238"><a href="#L238">238</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L239"><a href="#L239">239</a></th><td class="line-code"><pre>1
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L240"><a href="#L240">240</a></th><td class="line-code"><pre> 
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L241"><a href="#L241">241</a></th><td class="line-code"><pre>PARROT SA ñ Capital 1†961†863,21 Ä -  RCS B 394†149†496 ñ 174 QUAI DE JEMMAPES 75010 FRANCE
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L242"><a href="#L242">242</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-<tr><th class="line-num" id="L243"><a href="#L243">243</a></th><td class="line-code"><pre>
-</pre></td></tr>
-
-
-</tbody>
-</table>
-</div>
-
-
-
-        
-    </div>
-</div>
-
-<div id="ajax-indicator" style="display:none;"><span>„É≠„Éº„Éâ‰∏≠...</span></div>
-	
-<div id="footer">
-    Powered by <a href="http://www.redmine.org/">Redmine</a> &copy; 2006-2009 Jean-Philippe Lang
-</div>
-</div>
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-var pageTracker = _gat._getTracker("UA-115355-11");
-pageTracker._setDomainName(".ardrone.org");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-</body>
-</html>
+Last update: November 2010 
+Document revision V2.0 

@@ -15,10 +15,10 @@ ARDrone::ARDrone(const char *ardrone_addr)
     // Camera image
     img = NULL;
 
-	// Timers
-	timerWdg     = ardGetTickCount();
-	timerNavdata = ardGetTickCount();
-	timerVideo   = ardGetTickCount();
+    // Timers
+    timerWdg     = ardGetTickCount();
+    timerNavdata = ardGetTickCount();
+    timerVideo   = ardGetTickCount();
 
     // Navdata
     ZeroMemory(&navdata, sizeof(NAVDATA));
@@ -91,7 +91,7 @@ int ARDrone::open(const char *ardrone_addr)
     // Initialize Navdata
     if (!initNavdata()) return 0;
 
-	// Wait for state update
+    // Wait for state update
     Sleep(500);
 
     // Reset emergency
@@ -128,7 +128,7 @@ int ARDrone::update(void)
 // --------------------------------------------------------------------------
 void ARDrone::close(void)
 {
-    // Stop AR.Drone if it is flying
+    // Stop AR.Drone
     if (!onGround()) landing();
 
     // Finalize Navdata

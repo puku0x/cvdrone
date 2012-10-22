@@ -51,9 +51,9 @@ void ARDrone::emergency(void)
 // Move the AR.Drone in 2D plane.
 // Return value NONE
 // --------------------------------------------------------------------------
-void ARDrone::move(double vx, double vy, double yaw)
+void ARDrone::move(double vx, double vy, double vr)
 {
-    move3D(vx, vy, 0.0, yaw);
+    move3D(vx, vy, 0.0, vr);
 }
 
 // --------------------------------------------------------------------------

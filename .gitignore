@@ -1,0 +1,14 @@
+
+*.ncb
+*.suo
+
+*.user
+*.sdf
+
+*.ipch
+
+*.opensdf
+
+
+obj
+

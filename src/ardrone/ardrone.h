@@ -4,6 +4,7 @@
 // AR.Drone with OpenCV Test
 // Copyright(C) 2012 Puku
 // http://pukulab.blog.fc2.com/
+// https://github.com/puku0x/cvdrone
 
 // Coodinate system
 //   Front of the AR.Drone is X-axis, left is Y-axis, upper is Z-axis.
@@ -230,7 +231,7 @@ public:
     void landing(void);
 
     // Move 
-    void move(double vx, double vy, double yaw);
+    void move(double vx, double vy, double vr);
     void move3D(double vx, double vy, double vz, double vr);
 
     // Others

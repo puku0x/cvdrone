@@ -22,12 +22,12 @@ int main(int argc, char **argv)
     // Image of AR.Drone's camera
     IplImage *image = ardrone.getImage();
 
-	// Create a video writer
-	char filename[256];
-	SYSTEMTIME st;
-	GetLocalTime(&st);
-	sprintf(filename, "cam%d%02d%02d%02d%02d%02d.avi", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
-	CvVideoWriter *video = cvCreateVideoWriter(filename, CV_FOURCC('D','I','B',' '), 30, cvGetSize(image));
+    // Create a video writer
+    char filename[256];
+    SYSTEMTIME st;
+    GetLocalTime(&st);
+    sprintf(filename, "cam%d%02d%02d%02d%02d%02d.avi", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+    CvVideoWriter *video = cvCreateVideoWriter(filename, CV_FOURCC('D','I','B',' '), 30, cvGetSize(image));
 
     // Main loop
     while (!GetAsyncKeyState(VK_ESCAPE)) {
@@ -45,8 +45,8 @@ int main(int argc, char **argv)
         cvWaitKey(33);
     }
 
-	// Save video
-	cvReleaseVideoWriter(&video);
+    // Save video
+    cvReleaseVideoWriter(&video);
 
     // See you
     ardrone.close();

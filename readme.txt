@@ -1,10 +1,12 @@
 -----------------------------------------------------------------
  CV Drone (= OpenCV + AR.Drone)
  Copyright (C) 2012 Puku
+ http://pukulab.blog.fc2.com/
+ https://github.com/puku0x/cvdrone
 -----------------------------------------------------------------
 
 INTRODUCTION
-  This program is free software.
+  This program a is free software.
 
   You can redistribute it and/or modify it under the terms of the GNU General
   Public License as published by the Free Software Foundation; either version
@@ -16,13 +18,24 @@ INTRODUCTION
   more details.
 
   You should have received a copy of the GNU General Public License along with
-  this program. If not, please see http://www.gnu.org/licenses.
+  this program. If not, please see http://www.gnu.org/licenses .
+
+HOW TO INSTALL
+  Please unzip "cvdrone.zip" in any directory.
+
+HOW TO UNINSTALL
+  Please delete the cvdrone folder.
+
+BEFORE YOU BUILD
+  You should install Visual Studio before you build CV Drone.
+  CV Drone supports VS2005/VS2008/VS2010/VS2012.
+  To download VS, please see http://www.microsoft.com/visualstudio/eng/downloads .
 
 HOW TO USE
   1. Go to \build\vs20xx
   2. Open test.sln
-  3. Push F7 to build.
-  4. Push F5 or Ctrl+F5 to run.
+  3. Press F7 to build.
+  4. Press F5 or Ctrl+F5 to run.
 
 FOR AR.DRONE 1.0 USERS
   Please update your AR.Drone's firmware to 1.10.14.

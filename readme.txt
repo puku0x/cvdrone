@@ -6,7 +6,7 @@
 -----------------------------------------------------------------
 
 INTRODUCTION
-  This program a is free software.
+  This program is free software.
 
   You can redistribute it and/or modify it under the terms of the GNU General
   Public License as published by the Free Software Foundation; either version
@@ -28,14 +28,14 @@ HOW TO UNINSTALL
 
 BEFORE YOU BUILD
   You should install Visual Studio before you build CV Drone.
-  CV Drone supports VS2005/VS2008/VS2010/VS2012.
+  CV Drone supports VC++2005/2008/2010/2012.
   To download VS, please see http://www.microsoft.com/visualstudio/eng/downloads .
 
 HOW TO USE
-  1. Go to \build\vs20xx
-  2. Open test.sln
-  3. Press F7 to build.
-  4. Press F5 or Ctrl+F5 to run.
+  1. Open \build\vs20xx\test.sln
+  2. Press F7 to build.
+  3. Press F5 (or Ctrl+F5) to run.
+  4. You can play around OpenCV immidiately. Sample codes are in src\samples.
 
 FOR AR.DRONE 1.0 USERS
   Please update your AR.Drone's firmware to 1.10.14.
@@ -46,3 +46,13 @@ FOR AR.DRONE 2.0 USERS
 FOR VS2010 USERS
   You can't build vs2010 after you installed VS2012.
   To build vs2010, you should uninstall ".Net Framework 4.5" and install "4.0".
+
+LIBRARY DEPENDENCIES
+  CV Drone uses following libraries.
+  - Open CV 2.4.2
+    http://sourceforge.net/projects/opencvlibrary/
+  - FFmpeg 0.11.1 (git-cb3591e)
+    http://www.ffmpeg.org/
+    http://ffmpeg.zeranoe.com/builds/
+  - stdint.h for Visual C++
+    http://www.kijineko.co.jp/node/63

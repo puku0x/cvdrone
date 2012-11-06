@@ -15,10 +15,8 @@ ARDrone::ARDrone(const char *ardrone_addr)
     // Camera image
     img = NULL;
 
-    // Timers
+    // Timer
     timerWdg     = ardGetTickCount();
-    timerNavdata = ardGetTickCount();
-    timerVideo   = ardGetTickCount();
 
     // Navdata
     ZeroMemory(&navdata, sizeof(NAVDATA));

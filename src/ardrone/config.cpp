@@ -7,11 +7,11 @@
 // --------------------------------------------------------------------------
 int ARDrone::initConfig(void)
 {
-    //// Open the socket.
-    //if (!sockConfig.open(ip, ARDRONE_CONFIG_PORT)) {
-    //    printf("ERROR: TCPSocket::open(port=%d) failed. (%s, %d)\n", ARDRONE_CONFIG_PORT, __FILE__, __LINE__);
-    //    return 0;
-    //}
+    // Open the socket.
+    if (!sockConfig.open(ip, ARDRONE_CONFIG_PORT)) {
+        printf("ERROR: TCPSocket::open(port=%d) failed. (%s, %d)\n", ARDRONE_CONFIG_PORT, __FILE__, __LINE__);
+        return 0;
+    }
 
     // AR.Drone 2.0
     if (version.major == ARDRONE_VERSION_2) {
@@ -47,6 +47,7 @@ int ARDrone::initConfig(void)
         // Output video with 360p
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x81);
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x82);
         Sleep(100);
 
         // Output video with 720p
@@ -97,30 +98,31 @@ int ARDrone::initConfig(void)
         sockCommand.sendf("AT*FTRIM=%d,\r", seq++);
         Sleep(100);
     }
-
+    
     return 1;
 }
 
 // --------------------------------------------------------------------------
 // ARDrone::getConfig()
 // Get the AR.Drone's configurations.
+// Not work yet.
 // Return value SUCCESS: 1  FAILED: 0
 // --------------------------------------------------------------------------
 int ARDrone::getConfig(void)
 {
-    //// Send ACK
-    //sockCommand.sendf("AT*CTRL=%d,4\r", seq++);
+    // Send ACK
+    sockCommand.sendf("AT*CTRL=%d,4,0\r", seq++);
 
-    //// Receive the data
-    //char buf[1024];
-    //int size = sockConfig.receive((void*)&buf, sizeof(buf));
-    //printf("size = %d\n", size);
+    // Receive the data
+    char buf[1024];
+    int size = sockConfig.receive((void*)&buf, sizeof(buf));
+    printf("size = %d\n", size);
 
-    //// Received something
-    //if (size > 0) {
-    //    printf("received = %s\n", buf);
-    //}
-    //return 1;
+    // Received something
+    if (size > 0) {
+        printf("received = %s\n", buf);
+    }
+    return 1;
 }
 
 // --------------------------------------------------------------------------
@@ -130,6 +132,6 @@ int ARDrone::getConfig(void)
 // --------------------------------------------------------------------------
 void ARDrone::finalizeConfig(void)
 {
-    //// Close the socket
-    //sockConfig.close();
+    // Close the socket
+    sockConfig.close();
 }

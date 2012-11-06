@@ -148,11 +148,11 @@ int ARDrone::getVideo(void)
 
         // Received something
         if (size > 0) {
-            // Decode it
+            // Decode video
             int index;
             uint8_t remainingbits;
             WaitForSingleObject(mutexVideo, INFINITE);
-            decodeVideo(buf, &index, &remainingbits, buffer_BGR24);
+            decodeVideo(buf, &index, &remainingbits, buffer_BGR24, &pCodecCtx->width, &pCodecCtx->height);
             ReleaseMutex(mutexVideo);
         }
     }
@@ -174,14 +174,29 @@ IplImage* ARDrone::getImage(void)
     if (version.major == ARDRONE_VERSION_2) {
         // Copy the frame to the IplImage
         WaitForSingleObject(mutexVideo, INFINITE);
-        memcpy(img->imageData, pFrame_BGR24->data[0], (pCodecCtx->width) * (pCodecCtx->height) * sizeof(uint8_t) * 3);
+        memcpy(img->imageData, pFrame_BGR24->data[0], pCodecCtx->width * pCodecCtx->height * sizeof(uint8_t) * 3);
         ReleaseMutex(mutexVideo);
     }
     // AR.Drone 1.0
     else {
-        // Copy the buffer to the IplImage
+        // Enable mutex lock
         WaitForSingleObject(mutexVideo, INFINITE);
-        memcpy(img->imageData, buffer_BGR24, (pCodecCtx->width) * (pCodecCtx->height) * sizeof(uint8_t) * 3);
+
+        // If the sizes of buffer and IplImage are the same
+        if (pCodecCtx->width == img->width && pCodecCtx->height == img->height) {
+            // Copy the buffer to the IplImage
+            memcpy(img->imageData, buffer_BGR24, pCodecCtx->width * pCodecCtx->height * sizeof(uint8_t) * 3);
+        }
+        // If the sizes are different
+        else {
+            // Resize the image to 320x240
+            IplImage *small_img = cvCreateImage(cvSize(pCodecCtx->width, pCodecCtx->height), IPL_DEPTH_8U, 3);
+            memcpy(small_img->imageData, buffer_BGR24, pCodecCtx->width * pCodecCtx->height * sizeof(uint8_t) * 3);
+            cvResize(small_img, img);
+            cvReleaseImage(&small_img);
+        }
+
+        // Disable mutex lock
         ReleaseMutex(mutexVideo);
     }
 

@@ -56,7 +56,13 @@
   #define CV_XADD(addr,delta) _InterlockedExchangeAdd(const_cast<void*>(reinterpret_cast<volatile void*>(addr)), delta)
 #elif defined __GNUC__
 
-  #if __GNUC__*10 + __GNUC_MINOR__ >= 42
+  #if defined __clang__ && __clang_major__ >= 3
+    #ifdef __ATOMIC_SEQ_CST
+        #define CV_XADD(addr, delta) __c11_atomic_fetch_add((_Atomic(int)*)(addr), (delta), __ATOMIC_SEQ_CST)
+    #else
+        #define CV_XADD(addr, delta) __atomic_fetch_add((_Atomic(int)*)(addr), (delta), 5)
+    #endif
+  #elif __GNUC__*10 + __GNUC_MINOR__ >= 42
 
     #if !defined WIN32 && (defined __i486__ || defined __i586__ || \
         defined __i686__ || defined __MMX__ || defined __SSE__  || defined __ppc__)
@@ -75,16 +81,9 @@
     #endif
   #endif
 
-#elif defined WIN32 || defined _WIN32
-  #define WIN32_MEAN_AND_LEAN
-  #ifndef _WIN32_WINNT           // This is needed for the declaration of TryEnterCriticalSection in winbase.h with Visual Studio 2005 (and older?)
-    #define _WIN32_WINNT 0x0400  // http://msdn.microsoft.com/en-us/library/ms686857(VS.85).aspx
-  #endif
-  #include <windows.h>
-  #undef min
-  #undef max
-  #undef abs
-  #define CV_XADD(addr,delta) InterlockedExchangeAdd((long volatile*)(addr), (delta))
+#elif defined WIN32 || defined _WIN32 || defined WINCE
+  namespace cv { CV_EXPORTS int _interlockedExchangeAdd(int* addr, int delta); }
+  #define CV_XADD cv::_interlockedExchangeAdd
 
 #else
   static inline int CV_XADD(int* addr, int delta)
@@ -92,6 +91,11 @@
 #endif
 
 #include <limits>
+
+#ifdef _MSC_VER
+# pragma warning(push)
+# pragma warning(disable:4127) //conditional expression is constant
+#endif
 
 namespace cv
 {
@@ -866,7 +870,7 @@ template<typename _Tp, int m, int n> struct CV_EXPORTS Matx_FastSolveOp
 template<typename _Tp> struct CV_EXPORTS Matx_FastSolveOp<_Tp, 2, 1>
 {
     bool operator()(const Matx<_Tp, 2, 2>& a, const Matx<_Tp, 2, 1>& b,
-                    Matx<_Tp, 2, 1>& x, int method) const
+                    Matx<_Tp, 2, 1>& x, int) const
     {
         _Tp d = determinant(a);
         if( d == 0 )
@@ -1077,9 +1081,9 @@ double norm(const Matx<_Tp, m, n>& M)
 template<typename _Tp, int m, int n> static inline
 double norm(const Matx<_Tp, m, n>& M, int normType)
 {
-    return normType == NORM_INF ? (double)normInf<_Tp, DataType<_Tp>::work_type>(M.val, m*n) :
-        normType == NORM_L1 ? (double)normL1<_Tp, DataType<_Tp>::work_type>(M.val, m*n) :
-        std::sqrt((double)normL2Sqr<_Tp, DataType<_Tp>::work_type>(M.val, m*n));
+    return normType == NORM_INF ? (double)normInf<_Tp, typename DataType<_Tp>::work_type>(M.val, m*n) :
+        normType == NORM_L1 ? (double)normL1<_Tp, typename DataType<_Tp>::work_type>(M.val, m*n) :
+        std::sqrt((double)normL2Sqr<_Tp, typename DataType<_Tp>::work_type>(M.val, m*n));
 }
 
 
@@ -1244,7 +1248,7 @@ template<> inline Vec<double, 4> Vec<double, 4>::conj() const
     return conjugate(*this);
 }
 
-template<typename _Tp, int cn> inline Vec<_Tp, cn> Vec<_Tp, cn>::cross(const Vec<_Tp, cn>& v) const
+template<typename _Tp, int cn> inline Vec<_Tp, cn> Vec<_Tp, cn>::cross(const Vec<_Tp, cn>&) const
 {
     CV_Error(CV_StsError, "for arbitrary-size vector there is no cross-product defined");
     return Vec<_Tp, cn>();
@@ -2462,17 +2466,10 @@ dot(const Vector<_Tp>& v1, const Vector<_Tp>& v2)
     assert(v1.size() == v2.size());
 
     _Tw s = 0;
-    if( n > 0 )
-    {
-        const _Tp *ptr1 = &v1[0], *ptr2 = &v2[0];
-     #if CV_ENABLE_UNROLLED
-        for(; i <= n - 4; i += 4 )
-            s += (_Tw)ptr1[i]*ptr2[i] + (_Tw)ptr1[i+1]*ptr2[i+1] +
-                (_Tw)ptr1[i+2]*ptr2[i+2] + (_Tw)ptr1[i+3]*ptr2[i+3];
-    #endif
-        for( ; i < n; i++ )
-            s += (_Tw)ptr1[i]*ptr2[i];
-    }
+    const _Tp *ptr1 = &v1[0], *ptr2 = &v2[0];
+    for( ; i < n; i++ )
+        s += (_Tw)ptr1[i]*ptr2[i];
+
     return s;
 }
 
@@ -2500,7 +2497,7 @@ inline RNG::operator double()
     unsigned t = next();
     return (((uint64)t << 32) | next())*5.4210108624275221700372640043497e-20;
 }
-inline int RNG::uniform(int a, int b) { return a == b ? a : next()%(b - a) + a; }
+inline int RNG::uniform(int a, int b) { return a == b ? a : (int)(next()%(b - a) + a); }
 inline float RNG::uniform(float a, float b) { return ((float)*this)*(b - a) + a; }
 inline double RNG::uniform(double a, double b) { return ((double)*this)*(b - a) + a; }
 
@@ -2647,7 +2644,7 @@ template<typename _Tp> template<typename _Tp2> Ptr<_Tp>::Ptr(const Ptr<_Tp2>& p)
 {
     if (p.empty())
         return;
-    
+
     _Tp* p_casted = dynamic_cast<_Tp*>(p.obj);
     if (!p_casted)
         return;
@@ -2937,8 +2934,8 @@ inline bool FileNode::isNamed() const { return !node ? false : (node->tag & NAME
 inline size_t FileNode::size() const
 {
     int t = type();
-    return t == MAP ? ((CvSet*)node->data.map)->active_count :
-        t == SEQ ? node->data.seq->total : (size_t)!isNone();
+    return t == MAP ? (size_t)((CvSet*)node->data.map)->active_count :
+        t == SEQ ? (size_t)node->data.seq->total : (size_t)!isNone();
 }
 
 inline CvFileNode* FileNode::operator *() { return (CvFileNode*)node; }
@@ -3786,23 +3783,6 @@ struct CV_EXPORTS Formatted
     vector<int> params;
 };
 
-
-/** Writes a point to an output stream in Matlab notation
- */
-template<typename _Tp> inline std::ostream& operator<<(std::ostream& out, const Point_<_Tp>& p)
-{
-    out << "[" << p.x << ", " << p.y << "]";
-    return out;
-}
-
-/** Writes a point to an output stream in Matlab notation
- */
-template<typename _Tp> inline std::ostream& operator<<(std::ostream& out, const Point3_<_Tp>& p)
-{
-    out << "[" << p.x << ", " << p.y << ", " << p.z << "]";
-    return out;
-}
-
 static inline Formatted format(const Mat& mtx, const char* fmt,
                                const vector<int>& params=vector<int>())
 {
@@ -3864,6 +3844,60 @@ template<typename _Tp> static inline std::ostream& operator << (std::ostream& ou
 }
 
 
+/** Writes a Matx to an output stream.
+ */
+template<typename _Tp, int m, int n> inline std::ostream& operator<<(std::ostream& out, const Matx<_Tp, m, n>& matx)
+{
+    out << cv::Mat(matx);
+    return out;
+}
+
+/** Writes a point to an output stream in Matlab notation
+ */
+template<typename _Tp> inline std::ostream& operator<<(std::ostream& out, const Point_<_Tp>& p)
+{
+    out << "[" << p.x << ", " << p.y << "]";
+    return out;
+}
+
+/** Writes a point to an output stream in Matlab notation
+ */
+template<typename _Tp> inline std::ostream& operator<<(std::ostream& out, const Point3_<_Tp>& p)
+{
+    out << "[" << p.x << ", " << p.y << ", " << p.z << "]";
+    return out;
+}
+
+/** Writes a Vec to an output stream. Format example : [10, 20, 30]
+ */
+template<typename _Tp, int n> inline std::ostream& operator<<(std::ostream& out, const Vec<_Tp, n>& vec)
+{
+    out << "[";
+    for (int i = 0; i < n - 1; ++i) {
+        out << vec[i] << ", ";
+    }
+    out << vec[n-1] << "]";
+
+    return out;
+}
+
+/** Writes a Size_ to an output stream. Format example : [640 x 480]
+ */
+template<typename _Tp> inline std::ostream& operator<<(std::ostream& out, const Size_<_Tp>& size)
+{
+    out << "[" << size.width << " x " << size.height << "]";
+    return out;
+}
+
+/** Writes a Rect_ to an output stream. Format example : [640 x 480 from (10, 20)]
+ */
+template<typename _Tp> inline std::ostream& operator<<(std::ostream& out, const Rect_<_Tp>& rect)
+{
+    out << "[" << rect.width << " x " << rect.height << " from (" << rect.x << ", " << rect.y << ")]";
+    return out;
+}
+
+
 template<typename _Tp> inline Ptr<_Tp> Algorithm::create(const string& name)
 {
     return _create(name).ptr<_Tp>();
@@ -3881,6 +3915,22 @@ inline void Algorithm::set(const char* _name, const Ptr<_Tp>& value)
 
 template<typename _Tp>
 inline void Algorithm::set(const string& _name, const Ptr<_Tp>& value)
+{
+    this->set<_Tp>(_name.c_str(), value);
+}
+
+template<typename _Tp>
+inline void Algorithm::setAlgorithm(const char* _name, const Ptr<_Tp>& value)
+{
+    Ptr<Algorithm> algo_ptr = value. template ptr<cv::Algorithm>();
+    if (algo_ptr.empty()) {
+        CV_Error( CV_StsUnsupportedFormat, "unknown/unsupported Ptr type of the second parameter of the method Algorithm::set");
+    }
+    info()->set(this, _name, ParamType<Algorithm>::type, &algo_ptr);
+}
+
+template<typename _Tp>
+inline void Algorithm::setAlgorithm(const string& _name, const Ptr<_Tp>& value)
 {
     this->set<_Tp>(_name.c_str(), value);
 }
@@ -3918,6 +3968,10 @@ template<typename _Tp> inline void AlgorithmInfo::addParam(Algorithm& algo, cons
 }
 
 }
+
+#ifdef _MSC_VER
+# pragma warning(pop)
+#endif
 
 #endif // __cplusplus
 #endif

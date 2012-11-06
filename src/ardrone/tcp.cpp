@@ -37,11 +37,11 @@ int TCPSocket::open(const char *addr, int port)
     server_addr.sin_port = htons((u_short)port);
     server_addr.sin_addr.S_un.S_addr = inet_addr(addr);
 
-    // Set the port and address of client
-    memset(&client_addr, 0, sizeof(sockaddr_in));
-    client_addr.sin_family = AF_INET;
-    client_addr.sin_port = htons((u_short)port);
-    client_addr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
+    //// Set the port and address of client
+    //memset(&client_addr, 0, sizeof(sockaddr_in));
+    //client_addr.sin_family = AF_INET;
+    //client_addr.sin_port = htons((u_short)port);
+    //client_addr.sin_addr.S_un.S_addr = inet_addr("192.168.1.2");
 
     // Connect the socket
     if (connect(sock, (sockaddr*)&server_addr, sizeof(sockaddr_in)) == SOCKET_ERROR) {

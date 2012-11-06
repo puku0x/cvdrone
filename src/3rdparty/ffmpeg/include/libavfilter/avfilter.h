@@ -25,6 +25,7 @@
 #include <stddef.h>
 
 #include "libavutil/avutil.h"
+#include "libavutil/dict.h"
 #include "libavutil/log.h"
 #include "libavutil/samplefmt.h"
 #include "libavutil/pixfmt.h"
@@ -180,6 +181,8 @@ typedef struct AVFilterBufferRef {
     int perms;                  ///< permissions, see the AV_PERM_* flags
 
     enum AVMediaType type;      ///< media type of buffer data
+
+    AVDictionary *metadata;     ///< dictionary containing metadata key=value tags
 } AVFilterBufferRef;
 
 /**
@@ -753,7 +756,7 @@ int avfilter_config_links(AVFilterContext *filter);
  */
 AVFilterBufferRef *
 avfilter_get_video_buffer_ref_from_arrays(uint8_t * const data[4], const int linesize[4], int perms,
-                                          int w, int h, enum PixelFormat format);
+                                          int w, int h, enum AVPixelFormat format);
 
 /**
  * Create an audio buffer reference wrapped around an already

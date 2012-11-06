@@ -1,11 +1,11 @@
-prefix=/home/kyle/software/ffmpeg/builds/win32/shared/ffmpeg-20120919-git-cb3591e-win32-shared
+prefix=/home/kyle/software/ffmpeg/builds/win32/shared/ffmpeg-20121029-git-11d695d-win32-shared
 exec_prefix=${prefix}
 libdir=${prefix}/lib
 includedir=${prefix}/include
 
 Name: libavutil
 Description: FFmpeg utility library
-Version: 51.73.101
+Version: 52.1.100
 Requires: 
 Requires.private: 
 Conflicts:

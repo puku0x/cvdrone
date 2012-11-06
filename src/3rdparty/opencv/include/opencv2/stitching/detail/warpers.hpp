@@ -65,11 +65,13 @@ public:
     virtual Point warp(const Mat &src, const Mat &K, const Mat &R, int interp_mode, int border_mode,
                        Mat &dst) = 0;
 
-    // TODO add other backward functions for consistency or move this into a separated interface
     virtual void warpBackward(const Mat &src, const Mat &K, const Mat &R, int interp_mode, int border_mode,
                               Size dst_size, Mat &dst) = 0;
 
     virtual Rect warpRoi(Size src_size, const Mat &K, const Mat &R) = 0;
+
+    float getScale() const { return 1.f; }
+    void setScale(float) {}
 };
 
 
@@ -103,6 +105,9 @@ public:
                       Size dst_size, Mat &dst);
 
     Rect warpRoi(Size src_size, const Mat &K, const Mat &R);
+
+    float getScale() const { return projector_.scale; }
+    void setScale(float val) { projector_.scale = val; }
 
 protected:
 
@@ -215,7 +220,7 @@ public:
 
 struct CV_EXPORTS CompressedRectilinearProjector : ProjectorBase
 {
-	float a, b;
+    float a, b;
 
     void mapForward(float x, float y, float &u, float &v);
     void mapBackward(float u, float v, float &x, float &y);
@@ -225,18 +230,18 @@ struct CV_EXPORTS CompressedRectilinearProjector : ProjectorBase
 class CV_EXPORTS CompressedRectilinearWarper : public RotationWarperBase<CompressedRectilinearProjector>
 {
 public:
-   CompressedRectilinearWarper(float scale, float A = 1, float B = 1)
-   {
-	   projector_.a = A;
-	   projector_.b = B;
-	   projector_.scale = scale;
-   }
+    CompressedRectilinearWarper(float scale, float A = 1, float B = 1)
+    {
+        projector_.a = A;
+        projector_.b = B;
+        projector_.scale = scale;
+    }
 };
 
 
 struct CV_EXPORTS CompressedRectilinearPortraitProjector : ProjectorBase
 {
-	float a, b;
+    float a, b;
 
     void mapForward(float x, float y, float &u, float &v);
     void mapBackward(float u, float v, float &x, float &y);
@@ -248,16 +253,16 @@ class CV_EXPORTS CompressedRectilinearPortraitWarper : public RotationWarperBase
 public:
    CompressedRectilinearPortraitWarper(float scale, float A = 1, float B = 1)
    {
-	   projector_.a = A;
-	   projector_.b = B;
-	   projector_.scale = scale;
+       projector_.a = A;
+       projector_.b = B;
+       projector_.scale = scale;
    }
 };
 
 
 struct CV_EXPORTS PaniniProjector : ProjectorBase
 {
-	float a, b;
+    float a, b;
 
     void mapForward(float x, float y, float &u, float &v);
     void mapBackward(float u, float v, float &x, float &y);
@@ -269,16 +274,16 @@ class CV_EXPORTS PaniniWarper : public RotationWarperBase<PaniniProjector>
 public:
    PaniniWarper(float scale, float A = 1, float B = 1)
    {
-	   projector_.a = A;
-	   projector_.b = B;
-	   projector_.scale = scale;
+       projector_.a = A;
+       projector_.b = B;
+       projector_.scale = scale;
    }
 };
 
 
 struct CV_EXPORTS PaniniPortraitProjector : ProjectorBase
 {
-	float a, b;
+    float a, b;
 
     void mapForward(float x, float y, float &u, float &v);
     void mapBackward(float u, float v, float &x, float &y);
@@ -290,9 +295,9 @@ class CV_EXPORTS PaniniPortraitWarper : public RotationWarperBase<PaniniPortrait
 public:
    PaniniPortraitWarper(float scale, float A = 1, float B = 1)
    {
-	   projector_.a = A;
-	   projector_.b = B;
-	   projector_.scale = scale;
+       projector_.a = A;
+       projector_.b = B;
+       projector_.scale = scale;
    }
 
 };

@@ -2,7 +2,7 @@
 
 // --------------------------------------------------------------------------
 // ARDrone::initCommand()
-// Initialize AT Command.
+// Initialize AT command.
 // Return value SUCCESS: 1  FAILED: 0
 // --------------------------------------------------------------------------
 int ARDrone::initCommand(void)
@@ -23,7 +23,8 @@ int ARDrone::initCommand(void)
 // --------------------------------------------------------------------------
 void ARDrone::takeoff(void)
 {
-    sockCommand.sendf("AT*REF=%d,290718208\r", seq++);
+    if (navdata.ardrone_state & ARDRONE_EMERGENCY_MASK) sockCommand.sendf("AT*REF=%d,290717952\r", seq++);
+    else                                                sockCommand.sendf("AT*REF=%d,290718208\r", seq++);
 }
 
 // --------------------------------------------------------------------------
@@ -70,19 +71,6 @@ void ARDrone::move3D(double vx, double vy, double vz, double vr)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::setLED(LED animation ID, Frequency[Hz], Duration[s])
-// Run specified LED animation.
-// Return value NONE
-// --------------------------------------------------------------------------
-void ARDrone::setLED(int id, float freq, int duration)
-{
-    sockCommand.sendf("AT*LED=%d,%d,%d,%d\r", seq++, id, *(int*)(&freq), duration);
-    //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-    //sockCommand.sendf("AT*CONFIG=%d,\"leds:leds_anim\",\"%d,%d,%d\"\r", seq++, id, *(int*)(&freq), duration);
-    //Sleep(100);
-}
-
-// --------------------------------------------------------------------------
 // ARDrone::setCamera(Channel)
 // Change the camera channel.
 // ARDrone1.0 supports 0 or 2.
@@ -101,6 +89,63 @@ void ARDrone::setCamera(int mode)
     else {
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"%d\"\r", seq++, mode);
     }
+}
+
+//// --------------------------------------------------------------------------
+//// ARDrone::startRecord()
+//// Start recording video.
+//// This function is only for AR.Drone 2.0
+//// You should set a USB key with > 100MB to your drone
+//// Return value NONE
+//// --------------------------------------------------------------------------
+//void ARDrone::startRecord(void)
+//{
+//    if (version.major == ARDRONE_VERSION_2) {
+//        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+//        sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"TRUE\"\r", seq++);
+//        Sleep(100);
+//    }
+//}
+//
+//// --------------------------------------------------------------------------
+//// ARDrone::stopRecord()
+//// Stop recording video.
+//// This function is only for AR.Drone 2.0
+//// Return value NONE
+//// --------------------------------------------------------------------------
+//void ARDrone::stopRecord(void)
+//{
+//    if (version.major == ARDRONE_VERSION_2) {
+//        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+//        sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"FALSE\"\r", seq++);
+//        Sleep(100);
+//    }
+//}
+
+// --------------------------------------------------------------------------
+// ARDrone::setAnimation(Flight animation ID, Duration[s])
+// Run specified flight animation.
+// Return value NONE
+// --------------------------------------------------------------------------
+void ARDrone::setAnimation(int id, int duration)
+{
+    sockCommand.sendf("AT*ANIM=%d,%d,%d\r", seq++, id, duration);
+    //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+    //sockCommand.sendf("AT*CONFIG=%d,\"leds:flight_anim\",\"%d,%d\"\r", seq++, id, duration);
+    //Sleep(100);
+}
+
+// --------------------------------------------------------------------------
+// ARDrone::setLED(LED animation ID, Frequency[Hz], Duration[s])
+// Run specified LED animation.
+// Return value NONE
+// --------------------------------------------------------------------------
+void ARDrone::setLED(int id, float freq, int duration)
+{
+    sockCommand.sendf("AT*LED=%d,%d,%d,%d\r", seq++, id, *(int*)(&freq), duration);
+    //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+    //sockCommand.sendf("AT*CONFIG=%d,\"leds:leds_anim\",\"%d,%d,%d\"\r", seq++, id, *(int*)(&freq), duration);
+    //Sleep(100);
 }
 
 // --------------------------------------------------------------------------

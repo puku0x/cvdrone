@@ -33,21 +33,20 @@ typedef struct _videostream_header_t {
 } videostream_header_t;
 
 // array to re-order zig-zag list to normal matrix
-const int inverseZZ[64] = 
-{  0,  1,  8, 16,  9,  2,  3, 10, 
-17, 24, 32, 25, 18, 11,  4,  5, 
-12, 19, 26, 33, 40, 48, 41, 34, 
-27, 20, 13,  6,  7, 14, 21, 28, 
-35, 42, 49, 56, 57, 50, 43, 36, 
-29, 22, 15, 23, 30, 37, 44, 51, 
-58, 59, 52, 45, 38, 31, 39, 46, 
-53, 60, 61, 54, 47, 55, 62, 63 };
+const int inverseZZ[64] = {  0,  1,  8, 16,  9,  2,  3, 10,
+                            17, 24, 32, 25, 18, 11,  4,  5, 
+                            12, 19, 26, 33, 40, 48, 41, 34, 
+                            27, 20, 13,  6,  7, 14, 21, 28, 
+                            35, 42, 49, 56, 57, 50, 43, 36, 
+                            29, 22, 15, 23, 30, 37, 44, 51, 
+                            58, 59, 52, 45, 38, 31, 39, 46, 
+                            53, 60, 61, 54, 47, 55, 62, 63 };
 
 // YUV -> RGB conversion
 const int16_t   offset = 80;
 
 // decode video
-void decodeVideo (uint32_t* bufferedVideoStream, int* index, uint8_t* remainingbits, uint8_t *imageData);
+void decodeVideo(uint32_t *bufferedVideoStream, int *index, uint8_t *remainingbits, uint8_t *imageData, int *width, int *height);
 
 // read header of UDP video stream 
 videostream_header_t readHeader(uint32_t* bufferedVideoStream, int* index, uint8_t* remainingbits);
@@ -56,7 +55,7 @@ videostream_header_t readHeader(uint32_t* bufferedVideoStream, int* index, uint8
 uint32_t readBitsfromBuffer(uint32_t* bufferedVideoStream, int* index, uint8_t* remainingbits, int readbits);
 
 // read macroblock components
-void decodeMacroBlocks(uint32_t* bufferedVideoStream, int* index, uint8_t* remainingbits, uint8_t *imageData, uint8_t gobsc, uint8_t gobquant, uint8_t mb);
+void decodeMacroBlocks(uint32_t* bufferedVideoStream, int* index, uint8_t* remainingbits, uint8_t *imageData, int width, int height, uint8_t gobsc, uint8_t gobquant, uint8_t mb);
 
 // decode blocks s.t. Y0, Y1, Y2, Y3 Cb, Cr
 void decodeBlock(uint32_t* bufferedVideoStream, int* index, uint8_t* remainingbits, uint8_t ACflag, uint8_t* pixel, uint8_t gobquant);
@@ -71,7 +70,7 @@ uint8_t decodeHuff(uint32_t* bufferedVideoStream, int* index, uint8_t* remaining
 void invertDCT(uint8_t* dst, int16_t* src);
 
 // convert decoded YUV image to RGB
-void convertYUV2RGB(uint8_t *imageData, uint8_t gobsc, uint8_t mb, uint8_t *pixel0, uint8_t *pixel1, uint8_t *pixel2, uint8_t *pixel3, uint8_t *pixel4, uint8_t *pixel5);
+void convertYUV2RGB(uint8_t *imageData, int width, int height, uint8_t gobsc, uint8_t mb, uint8_t *pixel0, uint8_t *pixel1, uint8_t *pixel2, uint8_t *pixel3, uint8_t *pixel4, uint8_t *pixel5);
 
 // set given value into the range of 8 bit unsigned integar
 uint8_t window(int val);
@@ -86,11 +85,10 @@ videostream_header_t readHeader(uint32_t* bufferedVideoStream, int* index, uint8
     // Picture Quantizer  (5)
     // Picture Frame      (32)
 
-    *index    = 0;
+    *index  = 0;
     *remainingbits = 32;
 
     videostream_header_t videostream_header;
-
     videostream_header.psc        = readBitsfromBuffer(bufferedVideoStream, index, remainingbits, 22);
     videostream_header.pformat    = readBitsfromBuffer(bufferedVideoStream, index, remainingbits,  2);  
     videostream_header.resolution = readBitsfromBuffer(bufferedVideoStream, index, remainingbits,  3);  
@@ -136,55 +134,51 @@ uint32_t readBitsfromBuffer(uint32_t* bufferedVideoStream, int* index, uint8_t* 
     return outputval;
 }
 
-void decodeVideo (uint32_t* bufferedVideoStream, int* index, uint8_t* remainingbits, uint8_t *imageData)
+void decodeVideo(uint32_t *bufferedVideoStream, int *index, uint8_t* remainingbits, uint8_t *imageData, int *width, int *height)
 {
-    // display row stream for debugging
-    //displayStream(bufferedVideoStream,0, 10);
-
-    videostream_header_t  videostream_header;
-    uint8_t   i, gobsc, gobquant, mbc, mb;
+    videostream_header_t videostream_header;
+    uint8_t i, gobsc, gobquant, mbc, mb;
 
     // decode GOB#0~14
-    for (i=0;i<15;i++) {
-
-        // printf("%s: decode GOB#%d\n",argv[0], i);
-        if (i==0) {
+    for (i = 0; i < 15; i++) {
+        if (i == 0) {
             // read header
             videostream_header = readHeader(bufferedVideoStream, index, remainingbits);
             gobsc    = videostream_header.psc & 24;
             gobquant = videostream_header.pquant;
-            //displayVideoHeader(videostream_header);
-        } else {
+
+            switch (videostream_header.pformat) {
+                case 0x01:
+                    *width = 88 << (videostream_header.resolution - 1);
+                    *height = 72 << (videostream_header.resolution - 1);
+                    break;
+                case 0x02:
+                    *width = 160 << (videostream_header.resolution - 1);
+                    *height = 120 << (videostream_header.resolution - 1);
+                break;
+            }
+        }
+        else {
             // skip zero fill
-            while (readBitsfromBuffer(bufferedVideoStream, index, remainingbits,1) == 0) {}
+            while (readBitsfromBuffer(bufferedVideoStream, index, remainingbits, 1) == 0) {}
             // read GOB header
-            gobsc    = (uint8_t)readBitsfromBuffer(bufferedVideoStream, index, remainingbits,5);
+            gobsc    = (uint8_t)readBitsfromBuffer(bufferedVideoStream, index, remainingbits, 5);
             gobquant = (uint8_t)(32-readBitsfromBuffer(bufferedVideoStream, index, remainingbits, 5));
         }
 
         // decode macroblocks
-        for (mb=0;mb<20;mb++) {
-            //printf("decode macroblock %d\n", mb);
+        for (mb = 0; mb < 20; mb++) {
             //read Coded Macroblock Bit
-            mbc   = readBitsfromBuffer(bufferedVideoStream, index, remainingbits, 1);
+            mbc = readBitsfromBuffer(bufferedVideoStream, index, remainingbits, 1);
             // if MBC is zero then, decode remaining field
-            //if (mbc!=1)
-            if (mbc == 0) decodeMacroBlocks(bufferedVideoStream, index, remainingbits, imageData, gobsc, gobquant, mb);
+            if (mbc == 0) decodeMacroBlocks(bufferedVideoStream, index, remainingbits, imageData, *width, *height, gobsc, gobquant, mb);
         }
     }
 }
 
-void decodeMacroBlocks(uint32_t* bufferedVideoStream, int* index, uint8_t* remainingbits, uint8_t *imageData, uint8_t gobsc, uint8_t gobquant, uint8_t mb)
+void decodeMacroBlocks(uint32_t *bufferedVideoStream, int *index, uint8_t *remainingbits, uint8_t *imageData, int width, int height, uint8_t gobsc, uint8_t gobquant, uint8_t mb)
 {
-
     uint8_t mbdes = readBitsfromBuffer(bufferedVideoStream, index, remainingbits, 8);
-    //displayIntInBin((int)mbdes, 8);
-    //printf("\n");
-
-    if ((mbdes&(1<<6))!=0) {
-        printf("WARNING: Macroblock Differential Quantization is on.\n");
-        uint8_t mbdiff=readBitsfromBuffer(bufferedVideoStream, index, remainingbits, 2);
-    }
 
     uint8_t AcCoefficientY0 = (mbdes&(1<<0))!=0;
     uint8_t AcCoefficientY1 = (mbdes&(1<<1))!=0;
@@ -193,19 +187,17 @@ void decodeMacroBlocks(uint32_t* bufferedVideoStream, int* index, uint8_t* remai
     uint8_t AcCoefficientCb = (mbdes&(1<<4))!=0;
     uint8_t AcCoefficientCr = (mbdes&(1<<5))!=0;
 
+    if ((mbdes&(1<<6)) != 0) {
+        printf("WARNING: Macroblock Differential Quantization is on.\n");
+        uint8_t mbdiff = readBitsfromBuffer(bufferedVideoStream, index, remainingbits, 2);
+    }
+
     uint8_t pixel0[64] = {0};
     uint8_t pixel1[64] = {0};
     uint8_t pixel2[64] = {0};
     uint8_t pixel3[64] = {0};
     uint8_t pixel4[64] = {0};
     uint8_t pixel5[64] = {0};
-
-    //printf("decode AC value of block Y0:%d\n",AcCoefficientY0);
-    //printf("decode AC value of block Y1:%d\n",AcCoefficientY1);
-    //printf("decode AC value of block Y2:%d\n",AcCoefficientY2);
-    //printf("decode AC value of block Y3:%d\n",AcCoefficientY3);
-    //printf("decode AC value of block Cb:%d\n",AcCoefficientCb);
-    //printf("decode AC value of block Cr:%d\n",AcCoefficientCr);
 
     decodeBlock(bufferedVideoStream, index, remainingbits, AcCoefficientY0, pixel0, gobquant);
     decodeBlock(bufferedVideoStream, index, remainingbits, AcCoefficientY1, pixel1, gobquant);
@@ -214,8 +206,8 @@ void decodeMacroBlocks(uint32_t* bufferedVideoStream, int* index, uint8_t* remai
     decodeBlock(bufferedVideoStream, index, remainingbits, AcCoefficientCb, pixel4, gobquant);
     decodeBlock(bufferedVideoStream, index, remainingbits, AcCoefficientCr, pixel5, gobquant);
 
-    convertYUV2RGB(imageData, gobsc, mb, pixel0, pixel1, pixel2, pixel3, pixel4, pixel5);
-}  
+    convertYUV2RGB(imageData, width, height, gobsc, mb, pixel0, pixel1, pixel2, pixel3, pixel4, pixel5);
+}
 
 void decodeBlock(uint32_t* bufferedVideoStream, int* index, uint8_t* remainingbits, uint8_t ACflag, uint8_t* pixel, uint8_t gobquant)
 {
@@ -224,20 +216,15 @@ void decodeBlock(uint32_t* bufferedVideoStream, int* index, uint8_t* remainingbi
     // first we decode binary bits back to quantized and zig-zag-ordered list
     int16_t   zzlist[64]   = {0};
     uint8_t   zzlist_index = 1;
+
     // decode DC value (first 10 bits as 16 digit SIGNED int)
     zzlist[0] = (int16_t)readBitsfromBuffer(bufferedVideoStream, index, remainingbits, 10);
 
-    // printf("decode DC (first 10 bits) \n\t");
-    // displayIntInBin((int)zzlist[0], 16);
-    // printf("=> %d",zzlist[0]);
-    // printf("\n");
-
     // if the AC coefficient flag is on, then decode AC values
-    if (ACflag==1) {
-
+    if (ACflag == 1) {
         // decode Videostream until EOB is found
         uint8_t EOB = 0;
-        while (EOB==0 && zzlist_index<=64) {                    
+        while (EOB == 0 && zzlist_index <= 64) {                    
             // decode zero values (Run Length Encoding)
             decodeRLE(bufferedVideoStream, index, remainingbits, &zzlist_index);
             // decode non-zero values (Huffman Encoding)
@@ -245,74 +232,52 @@ void decodeBlock(uint32_t* bufferedVideoStream, int* index, uint8_t* remainingbi
         }
 
         if (zzlist_index > 64) {
-            printf("decode error:zig-zag list index %d\n",zzlist_index);
+            printf("decode error:zig-zag list index %d\n", zzlist_index);
             return;
         }
-
-        // // for debug
-        // printf("decode AC\n");
-        // printf("%d : ",zzlist_index);
-        // for (j=0;j<zzlist_index;j++)
-        //   printf("%d ",zzlist[j]);
-        // printf("\n");
     }
 
     // reorder zir-zag list & multiple quantization coefficient
-    int16_t    list[64] = {0};
-    for (j=0;j<zzlist_index;j++)
-        list[inverseZZ[j]] = zzlist[j]*(1+gobquant*(1+ (inverseZZ[j]>>3) + (inverseZZ[j]&7)));
-    // *note* 
-    // inverseZZ[j]>>3 is i-th row(the quontient), and inverseZZ[j]&7 is j-th column(the remnants)
+    int16_t list[64] = {0};
+    for (j = 0; j < zzlist_index; j++) list[inverseZZ[j]] = zzlist[j]*(1+gobquant*(1+ (inverseZZ[j]>>3) + (inverseZZ[j]&7)));
 
-    // invert Dexcrete Cosine Transform
+    // Inverse Discrete Cosine Transform
     invertDCT(pixel, list);
-
-    // for debug
-    // printf("Reorder ZigZag list and multiply it with quantization coefficient\n");
-    // for (j=0;j<64;j+=8)
-    //   printf("%4d %4d %4d %4d %4d %4d %4d %4d\n",list[j],list[j+1],list[j+2],list[j+3],list[j+4],list[j+5],list[j+6],list[j+7]);
-    // printf("\n");
-
-    // printf("Invert Descrete Cosine Transform\n");
-    // for (j=0;j<64;j+=8)
-    //   printf("%4d %4d %4d %4d %4d %4d %4d %4d\n",pixel[j],pixel[j+1],pixel[j+2],pixel[j+3],pixel[j+4],pixel[j+5],pixel[j+6],pixel[j+7]);
-    // printf("\n"); 
 }
 
-void decodeRLE(uint32_t* bufferedVideoStream, int* index, uint8_t* remainingbits, uint8_t* zzlist_index)
+void decodeRLE(uint32_t *bufferedVideoStream, int *index, uint8_t *remainingbits, uint8_t *zzlist_index)
 {
     uint8_t zerocount = 0;
 
     while (1) {
-        if (zerocount>16) {
+        if (zerocount > 16) {
             printf("error:decodHuff\n");
             return;
         }
 
-        if (readBitsfromBuffer(bufferedVideoStream,index,remainingbits,1)==0) { 
-            // if the bit is zero, then increase zero counter
-            zerocount  += 1;
-        }else{ 
-            // if the bit is one, then decode RLE
+        // if the bit is zero, then increase zero counter
+        if (readBitsfromBuffer(bufferedVideoStream, index, remainingbits, 1) == 0) { 
+            zerocount += 1;
+        }
+        // if the bit is one, then decode RLE
+        else{
             // decode the number of sequential zeros in zig-zag list
-            if (zerocount==0) { // there is no zero 
+
+            // there is no zero 
+            if (zerocount == 0) {
                 // printf("\tRLE:1 => None\n");
-            }else if(zerocount==1) { // there is only one zero
+            }
+            // there is only one zero
+            else if(zerocount == 1) {
                 *zzlist_index += 1;
                 // printf("\tRLE:01 => 0\n");
-            }else { // there is more than one zero
-                uint32_t  add = readBitsfromBuffer(bufferedVideoStream,index,remainingbits,zerocount-1);
-                *zzlist_index += (1<<(zerocount-1)) + add;
-
-                // // for debug
-                // printf("\tRLE:");
-                // displayIntInBin((int)(add|(1<<(zerocount-1))), 2*zerocount);
-                // printf(" => ");
-                // uint8_t k;
-                // for (k=0;k<((1<<(zerocount-1)) + add);k++)
-                //   printf("0 ");
-                // printf("\n");
             }
+            // there is more than one zero
+            else {
+                uint32_t add = readBitsfromBuffer(bufferedVideoStream, index, remainingbits, zerocount-1);
+                *zzlist_index += (1<<(zerocount-1)) + add;
+            }
+
             break;
         }
     }
@@ -329,14 +294,14 @@ uint8_t decodeHuff(uint32_t* bufferedVideoStream, int* index, uint8_t* remaining
             return 0;
         }
 
-        if (readBitsfromBuffer(bufferedVideoStream,index,remainingbits,1)==0) { 
+        if (readBitsfromBuffer(bufferedVideoStream, index, remainingbits, 1) == 0) { 
             // if the bit is zero, then increase zero counter
             zerocount  += 1;
         }else{ 
             // if the bit is one, then decode Huffman Encoding
             // decode the number of sequential zeros in zig-zag list
             if (zerocount==0) { // the value is +/-1
-                uint8_t sign = readBitsfromBuffer(bufferedVideoStream,index,remainingbits,1);
+                uint8_t sign = readBitsfromBuffer(bufferedVideoStream, index, remainingbits, 1);
                 *(zzlist+*zzlist_index) = (-2*sign+1);
                 *zzlist_index +=1;
                 // printf("\tHuff:1%1d=> %d\n",sign, (-2*sign+1));
@@ -344,20 +309,11 @@ uint8_t decodeHuff(uint32_t* bufferedVideoStream, int* index, uint8_t* remaining
                 EOB = 1;
                 // printf("\tHuff:01 => EOB\n");
             }else { // other values
-                uint32_t add = readBitsfromBuffer(bufferedVideoStream,index,remainingbits,zerocount-1);
-                uint8_t sign = readBitsfromBuffer(bufferedVideoStream,index,remainingbits,1);
+                uint32_t add = readBitsfromBuffer(bufferedVideoStream, index, remainingbits, zerocount-1);
+                uint8_t sign = readBitsfromBuffer(bufferedVideoStream, index, remainingbits, 1);
 
                 *(zzlist+*zzlist_index) = (-2*sign+1)*((1<<(zerocount-1)) + add);
                 *zzlist_index +=1;
-
-                // // for debugg
-                // uint8_t k;
-                // printf("\tHuff:");
-                // for (k=0;k<zerocount;k++)
-                //   printf("0");
-                // printf("1");
-                // displayIntInBin((int)add, zerocount-1);
-                // printf("%1d => %d\n",sign&1,(-2*sign+1)*((1<<(zerocount-1)) + add));
             }
             return EOB;
         }
@@ -496,17 +452,17 @@ void invertDCT(uint8_t* dst, int16_t* src)
     }
 }
 
-void convertYUV2RGB(uint8_t *imageData, uint8_t gobsc, uint8_t mb, uint8_t *pixel0, uint8_t *pixel1, uint8_t *pixel2, uint8_t *pixel3, uint8_t *pixel4, uint8_t *pixel5)
+void convertYUV2RGB(uint8_t *imageData, int width, int height, uint8_t gobsc, uint8_t mb, uint8_t *pixel0, uint8_t *pixel1, uint8_t *pixel2, uint8_t *pixel3, uint8_t *pixel4, uint8_t *pixel5)
 {
     int nChannels     = 3;
-    int widthStep     = nChannels * sizeof(uint8_t) * 320;
+    int widthStep     = nChannels * sizeof(uint8_t) * width;
     uint8_t* img_data = imageData;
 
     int8_t u;
     int8_t v;
     int8_t chroma;
 
-    uint8_t   j, k;
+    uint8_t j, k;
     for (j=0;j<4;j++) {
         for (k=0;k<4;k++) {
             u = pixel4[j*8+k]-offset;
@@ -616,11 +572,7 @@ void convertYUV2RGB(uint8_t *imageData, uint8_t gobsc, uint8_t mb, uint8_t *pixe
 
 uint8_t window(int val)
 {
-    //uint8_t retval;
-    if (val<0)
-        return 0;
-    else if (val>0xFF)
-        return 0xFF;
-    else
-        return (uint8_t)val;
+    if (val < 0)         return 0;
+    else if (val > 0xFF) return 0xFF;
+    else                 return (uint8_t)val;
 }

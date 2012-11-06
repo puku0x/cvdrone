@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opencv_calib3d242.lib opencv_contrib242.lib opencv_core242.lib opencv_features2d242.lib opencv_flann242.lib opencv_highgui242.lib opencv_imgproc242.lib opencv_legacy242.lib opencv_ml242.lib opencv_nonfree242.lib opencv_objdetect242.lib opencv_photo242.lib opencv_stitching242.lib opencv_video242.lib opencv_videostab242.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib postproc.lib swresample.lib swscale.lib"
+				AdditionalDependencies="opencv_calib3d243.lib opencv_contrib243.lib opencv_core243.lib opencv_features2d243.lib opencv_flann243.lib opencv_gpu243.lib opencv_haartraining_engine.lib opencv_highgui243.lib opencv_imgproc243.lib opencv_legacy243.lib opencv_ml243.lib opencv_nonfree243.lib opencv_objdetect243.lib opencv_photo243.lib opencv_stitching243.lib opencv_ts243.lib opencv_video243.lib opencv_videostab243.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib postproc.lib swresample.lib swscale.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\src\3rdparty\opencv\lib\vs2005;..\..\src\3rdparty\ffmpeg\lib"
 				GenerateDebugInformation="true"
@@ -142,7 +142,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opencv_calib3d242.lib opencv_contrib242.lib opencv_core242.lib opencv_features2d242.lib opencv_flann242.lib opencv_highgui242.lib opencv_imgproc242.lib opencv_legacy242.lib opencv_ml242.lib opencv_nonfree242.lib opencv_objdetect242.lib opencv_photo242.lib opencv_stitching242.lib opencv_video242.lib opencv_videostab242.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib postproc.lib swresample.lib swscale.lib"
+				AdditionalDependencies="opencv_calib3d243.lib opencv_contrib243.lib opencv_core243.lib opencv_features2d243.lib opencv_flann243.lib opencv_gpu243.lib opencv_haartraining_engine.lib opencv_highgui243.lib opencv_imgproc243.lib opencv_legacy243.lib opencv_ml243.lib opencv_nonfree243.lib opencv_objdetect243.lib opencv_photo243.lib opencv_stitching243.lib opencv_ts243.lib opencv_video243.lib opencv_videostab243.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib postproc.lib swresample.lib swscale.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\src\3rdparty\opencv\lib\vs2005;..\..\src\3rdparty\ffmpeg\lib"
 				IgnoreAllDefaultLibraries="false"

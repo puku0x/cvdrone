@@ -162,7 +162,7 @@ private:
             int best_index = -1;
             DistanceType best_val = 0;
             for (int j=0; j<n; ++j) {
-            	DistanceType dist = distance(dataset[centers[0]],dataset[dsindices[j]],dataset.cols);
+                DistanceType dist = distance(dataset[centers[0]],dataset[dsindices[j]],dataset.cols);
                 for (int i=1; i<index; ++i) {
                     DistanceType tmp_dist = distance(dataset[centers[i]],dataset[dsindices[j]],dataset.cols);
                     if (tmp_dist<dist) {
@@ -619,13 +619,13 @@ private:
             if (checks>=maxChecks) {
                 if (result.full()) return;
             }
-            checks += node->size;
             for (int i=0; i<node->size; ++i) {
                 int index = node->indices[i];
                 if (!checked[index]) {
                     DistanceType dist = distance(dataset[index], vec, veclen_);
                     result.addPoint(dist, index);
                     checked[index] = true;
+                    ++checks;
                 }
             }
         }

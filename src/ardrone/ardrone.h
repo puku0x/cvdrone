@@ -107,6 +107,27 @@ typedef enum ARDRONE_STATE_MASK {
     ARDRONE_EMERGENCY_MASK      = 1 << 31  // Emergency landing         : (0) No emergency, (1) Emergency
 };
 
+// Fligh animation IDs
+typedef enum ARDRONE_ANIMATION_ID {
+    ARDRONE_ANIM_PHI_M30_DEG = 0,
+    ARDRONE_ANIM_PHI_30_DEG,
+    ARDRONE_ANIM_THETA_M30_DEG,
+    ARDRONE_ANIM_THETA_30_DEG,
+    ARDRONE_ANIM_THETA_20DEG_YAW_200DEG,
+    ARDRONE_ANIM_THETA_20DEG_YAW_M200DEG,
+    ARDRONE_ANIM_TURNAROUND,
+    ARDRONE_ANIM_TURNAROUND_GODOWN,
+    ARDRONE_ANIM_YAW_SHAKE,
+    ARDRONE_ANIM_YAW_DANCE,
+    ARDRONE_ANIM_PHI_DANCE,
+    ARDRONE_ANIM_THETA_DANCE,
+    ARDRONE_ANIM_VZ_DANCE,
+    ARDRONE_ANIM_WAVE,
+    ARDRONE_ANIM_PHI_THETA_MIXED,
+    ARDRONE_ANIM_DOUBLE_PHI_THETA_MIXED,
+    ARDRONE_NB_ANIM_MAYDAY
+};
+
 // LED animation IDs
 enum ARDRONE_LED_ANIMATION_ID {
     BLINK_GREEN_RED = 0,
@@ -226,9 +247,10 @@ public:
     // Get battery percentage [%]
     int getBatteryPercentage(void);
 
-    // Take off / Landing
+    // Take off / Landing / Emergency
     void takeoff(void);
     void landing(void);
+    void emergency(void);
 
     // Move 
     void move(double vx, double vy, double vr);
@@ -237,10 +259,12 @@ public:
     // Others
     int  onGround(void);                            // Check on ground
     void setCamera(int mode);                       // Change camera channel
+    void setAnimation(int id, int duration);        // Flight animation
     void setLED(int id, float freq, int duration);  // LED animation
-    void emergency(void);                           // Emergency stop
     void resetEmergency(void);                      // Reset emergency
     void resetWatchDog(void);                       // Reset hovering
+    //void startRecord(void);                       // Video recording for AR.Drone 2.0
+    //void stopRecord(void);                        // You should set a USB key with > 100MB to your drone
 
 protected:
     // IP address
@@ -252,10 +276,8 @@ protected:
     // Camera image
     IplImage *img;
 
-    // Timers
+    // Timer
     double timerWdg;
-    double timerNavdata;
-    double timerVideo;
 
     // Sockets
     UDPSocket sockNavdata;

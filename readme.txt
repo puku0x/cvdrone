@@ -56,3 +56,11 @@ LIBRARY DEPENDENCIES
     http://ffmpeg.zeranoe.com/builds/
   - stdint.h for Visual C++
     http://www.kijineko.co.jp/node/63
+
+  License files for each library can be found in the 'licenses' folder.
+
+  The codes of decoding UVLC and H.264 videos are based on following sites.
+    http://ardrone-ailab-u-tokyo.blogspot.com/2012/07/212-ardrone-20-video-decording-ffmpeg.html
+    http://ardrone-ailab-u-tokyo.blogspot.com/2012/07/133-receive-and-decode-video-stream.html
+
+Thank you.

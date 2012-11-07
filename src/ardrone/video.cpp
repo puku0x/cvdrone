@@ -1,9 +1,9 @@
 #include "ardrone.h"
 #include "uvlc.h"
 
-// Following site is useful to understand AR.Drone+FFmpeg.
-// AR.Drone Development - 2.1.2 AR.Drone 2.0 Video Decording: FFMPEG + SDL2.0 -
-// http://ardrone-ailab-u-tokyo.blogspot.jp/2012/07/212-ardrone-20-video-decording-ffmpeg.html
+// The codes of decoding H.264 video is based on following site.
+//   AR.Drone Development - 2.1.2 AR.Drone 2.0 Video Decording: FFMPEG + SDL2.0 -
+//   http://ardrone-ailab-u-tokyo.blogspot.jp/2012/07/212-ardrone-20-video-decording-ffmpeg.html
 
 // --------------------------------------------------------------------------
 // ARDrone::initVideo()

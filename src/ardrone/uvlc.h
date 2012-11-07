@@ -1,3 +1,7 @@
+// The codes of decoding UVLC video is based on following site.
+//   AR.Drone Development - 1.3.3 Receive and Decode Video Stream Part.3: Decode binary stream
+//   http://ardrone-ailab-u-tokyo.blogspot.com/2012/07/133-receive-and-decode-video-stream.html
+
 //#region Copyright Notice
 //Copyright © 2007-2011, PARROT SA, all rights reserved. 
 

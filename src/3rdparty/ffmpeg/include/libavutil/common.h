@@ -27,26 +27,16 @@
 #define AVUTIL_COMMON_H
 
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
-#  include <inttypes.h>
+    #include <inttypes.h>
 #elif defined(_MSC_VER) || defined(__BORLANDC__)
-#  if !defined(AVUTIL_COMMON_UINT32_DEFINED)
-typedef unsigned int uint32_t;
-typedef unsigned __int64 uint64_t;
-#    define UINT64_C(v) (v ## ui64)
-#    define AVUTIL_COMMON_UINT32_DEFINED
-#    if !defined(inline)
-#      define inline __inline
-#    endif
-#  endif
+    #if !defined(AVUTIL_COMMON_UINT32_DEFINED)
+        typedef unsigned int uint32_t;
+        typedef unsigned __int64 uint64_t;
+        #define UINT64_C(v) (v ## ui64)
+        #define AVUTIL_COMMON_UINT32_DEFINED
+    #endif
 #else
-#  include <inttypes.h>
-#  if !defined(inline)
-#    if defined(__GNUC__)
-#      define inline __inline__
-#    else
-#      define inline
-#    endif
-#  endif
+    #include <inttypes.h>
 #endif
 
 #include <ctype.h>

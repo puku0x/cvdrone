@@ -7,11 +7,11 @@
 // --------------------------------------------------------------------------
 int ARDrone::initConfig(void)
 {
-    // Open the socket.
-    if (!sockConfig.open(ip, ARDRONE_CONFIG_PORT)) {
-        printf("ERROR: TCPSocket::open(port=%d) failed. (%s, %d)\n", ARDRONE_CONFIG_PORT, __FILE__, __LINE__);
-        return 0;
-    }
+    //// Open the socket.
+    //if (!sockConfig.open(ip, ARDRONE_CONFIG_PORT)) {
+    //    printf("ERROR: TCPSocket::open(port=%d) failed. (%s, %d)\n", ARDRONE_CONFIG_PORT, __FILE__, __LINE__);
+    //    return 0;
+    //}
 
     // AR.Drone 2.0
     if (version.major == ARDRONE_VERSION_2) {
@@ -110,18 +110,19 @@ int ARDrone::initConfig(void)
 // --------------------------------------------------------------------------
 int ARDrone::getConfig(void)
 {
-    // Send ACK
-    sockCommand.sendf("AT*CTRL=%d,4,0\r", seq++);
+    //// Send ACK
+    //sockCommand.sendf("AT*CTRL=%d,4,0\r", seq++);
 
-    // Receive the data
-    char buf[1024];
-    int size = sockConfig.receive((void*)&buf, sizeof(buf));
-    printf("size = %d\n", size);
+    //// Receive the data
+    //char buf[1024];
+    //int size = sockConfig.receive((void*)&buf, sizeof(buf));
+    //printf("size = %d\n", size);
 
-    // Received something
-    if (size > 0) {
-        printf("received = %s\n", buf);
-    }
+    //// Received something
+    //if (size > 0) {
+    //    printf("received = %s\n", buf);
+    //}
+
     return 1;
 }
 
@@ -132,6 +133,6 @@ int ARDrone::getConfig(void)
 // --------------------------------------------------------------------------
 void ARDrone::finalizeConfig(void)
 {
-    // Close the socket
-    sockConfig.close();
+    //// Close the socket
+    //sockConfig.close();
 }

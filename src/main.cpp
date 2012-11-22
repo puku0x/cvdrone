@@ -74,19 +74,7 @@ int main(int argc, char **argv)
 
         // Change camera
         static int mode = 0;
-        if (KEY_PUSH('C')) {
-            // AR.Drone 2.0
-            if (ardrone.getVersion() == ARDRONE_VERSION_2) {
-                if (mode == 0) mode = 1;    // Vertical
-                else           mode = 0;    // Horizontal
-            }
-            // AR.Drone 1.0
-            else {
-                if (mode == 0) mode = 2;    // Horizontal + Vertiacal
-                else           mode = 0;
-            }
-            ardrone.setCamera(mode);
-        }
+        if (KEY_PUSH('C')) ardrone.setCamera(++mode%4);
 
         // Display the image
         cvShowImage("camera", image);

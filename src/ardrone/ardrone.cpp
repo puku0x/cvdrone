@@ -27,12 +27,12 @@ ARDrone::ARDrone(const char *ardrone_addr)
     mutexNavdata  = INVALID_HANDLE_VALUE;
 
     // Video
-    pFormatCtx        = NULL;
-    pCodecCtx         = NULL;
-    pFrame            = NULL;
-    pFrame_BGR24      = NULL;
-    buffer_BGR24      = NULL;
-    pConvertCtx_BGR24 = NULL;
+    pFormatCtx  = NULL;
+    pCodecCtx   = NULL;
+    pFrame      = NULL;
+    pFrameBGR   = NULL;
+    bufferBGR   = NULL;
+    pConvertCtx = NULL;
 
     // Thread for video
     flagVideo   = 0;
@@ -66,7 +66,6 @@ int ARDrone::open(const char *ardrone_addr)
 
     // Initialize FFmpeg
     av_register_all();
-    avcodec_register_all();
     avformat_network_init();
     av_log_set_level(AV_LOG_QUIET);
 

@@ -107,7 +107,7 @@ typedef enum ARDRONE_STATE_MASK {
     ARDRONE_EMERGENCY_MASK      = 1 << 31  // Emergency landing         : (0) No emergency, (1) Emergency
 };
 
-// Fligh animation IDs
+// Flight animation IDs
 typedef enum ARDRONE_ANIMATION_ID {
     ARDRONE_ANIM_PHI_M30_DEG = 0,
     ARDRONE_ANIM_PHI_30_DEG,
@@ -258,7 +258,7 @@ public:
 
     // Others
     int  onGround(void);                            // Check on ground
-    void setCamera(int mode);                       // Change camera channel
+    void setCamera(int channel);                    // Change camera channel
     void setAnimation(int id, int duration);        // Flight animation
     void setLED(int id, float freq, int duration);  // LED animation
     void resetEmergency(void);                      // Reset emergency
@@ -303,9 +303,9 @@ protected:
     // Video
     AVFormatContext *pFormatCtx;
     AVCodecContext  *pCodecCtx;
-    AVFrame         *pFrame, *pFrame_BGR24;
-    uint8_t         *buffer_BGR24;
-    SwsContext      *pConvertCtx_BGR24;
+    AVFrame         *pFrame, *pFrameBGR;
+    uint8_t         *bufferBGR;
+    SwsContext      *pConvertCtx;
 
     // Thread for video
     int    flagVideo;

@@ -73,21 +73,21 @@ void ARDrone::move3D(double vx, double vy, double vz, double vr)
 // --------------------------------------------------------------------------
 // ARDrone::setCamera(Channel)
 // Change the camera channel.
-// ARDrone1.0 supports 0 or 2.
-// ARDrone2.0 supports 0 or 1.
+// ARDrone1.0 supports 0, 1, 2, 3.
+// ARDrone2.0 supports 0, 1.
 // Return value NONE
 // --------------------------------------------------------------------------
-void ARDrone::setCamera(int mode)
+void ARDrone::setCamera(int channel)
 {
     // ARDrone 2.0
     if (version.major == ARDRONE_VERSION_2) {
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"%d\"\r", seq++, mode);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"%d\"\r", seq++, channel);
         Sleep(100);
     }
     // ARDrone 1.0
     else {
-        sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"%d\"\r", seq++, mode);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"%d\"\r", seq++, channel);
     }
 }
 

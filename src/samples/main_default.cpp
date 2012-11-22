@@ -24,7 +24,7 @@ int main(int argc, char **argv)
         // Update your AR.Drone
         if (!ardrone.update()) break;
 
-        // Getting an image
+        // Get an image
         IplImage *image = ardrone.getImage();
 
         // Orientation
@@ -56,6 +56,9 @@ int main(int argc, char **argv)
             else                    ardrone.landing();
         }
 
+        // Emergency stop
+        if (KEY_PUSH(VK_RETURN)) ardrone.emergency();
+
         // AR.Drone is flying
         if (!ardrone.onGround()) {
             // Move
@@ -68,6 +71,10 @@ int main(int argc, char **argv)
             if (KEY_DOWN('A'))      z = -0.5;
             ardrone.move3D(x, y, z, r);
         }
+
+        // Change camera
+        static int mode = 0;
+        if (KEY_PUSH('C')) ardrone.setCamera(++mode%4);
 
         // Display the image
         cvShowImage("camera", image);

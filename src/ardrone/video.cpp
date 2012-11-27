@@ -18,7 +18,7 @@ int ARDrone::initVideo(void)
     if (version.major == ARDRONE_VERSION_2) {
         // Open the IP address and port
         char filename[256];
-        sprintf(filename, "http://%s:%d", ip, ARDRONE_VIDEO_PORT);
+        sprintf(filename, "tcp://%s:%d", ip, ARDRONE_VIDEO_PORT);
         if (avformat_open_input(&pFormatCtx, filename, NULL, NULL) < 0) {
             printf("ERROR: avformat_open_input() failed. (%s, %d)\n", __FILE__, __LINE__);
             return 0;

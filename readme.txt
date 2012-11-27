@@ -41,7 +41,7 @@ FOR AR.DRONE 1.0 USERS
   Please update your AR.Drone's firmware to 1.10.14.
 
 FOR AR.DRONE 2.0 USERS
-  Please update your AR.Drone's firmware to 2.1.20.
+  Please update your AR.Drone's firmware to 2.2.9.
 
 FOR VS2010 USERS
   You can't build vs2010 after you installed VS2012.

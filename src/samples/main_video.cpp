@@ -5,8 +5,8 @@
 
 // --------------------------------------------------------------------------
 // main(Number of arguments, Value of arguments)
-// This is the main function.
-// Return value Success:0 Error:-1
+// Description  : This is the main function.
+// Return value : SUCCESS:0  ERROR:-1
 // --------------------------------------------------------------------------
 int main(int argc, char **argv)
 {
@@ -22,19 +22,21 @@ int main(int argc, char **argv)
     // Image of AR.Drone's camera
     IplImage *image = ardrone.getImage();
 
-    // Create a video writer
+    // Filename
     char filename[256];
     SYSTEMTIME st;
     GetLocalTime(&st);
     sprintf(filename, "cam%d%02d%02d%02d%02d%02d.avi", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+
+    // Create a video writer
     CvVideoWriter *video = cvCreateVideoWriter(filename, CV_FOURCC('D','I','B',' '), 30, cvGetSize(image));
 
     // Main loop
     while (!GetAsyncKeyState(VK_ESCAPE)) {
-        // Update your AR.Drone
+        // Update
         if (!ardrone.update()) break;
 
-        // Getting an image
+        // Get an image
         image = ardrone.getImage();
 
         // Write a frame

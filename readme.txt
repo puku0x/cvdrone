@@ -1,7 +1,6 @@
 -----------------------------------------------------------------
  CV Drone (= OpenCV + AR.Drone)
- Copyright (C) 2012 Puku
- http://pukulab.blog.fc2.com/
+ Copyright (C) 2012 puku0x
  https://github.com/puku0x/cvdrone
 -----------------------------------------------------------------
 
@@ -21,7 +20,7 @@ INTRODUCTION
   this program. If not, please see http://www.gnu.org/licenses .
 
 HOW TO INSTALL
-  Please unzip "cvdrone.zip" in any directory.
+  Please unzip "cvdrone-master.zip" in any directory.
 
 HOW TO UNINSTALL
   Please delete the cvdrone folder.
@@ -35,7 +34,7 @@ HOW TO USE
   1. Open \build\vs20xx\test.sln
   2. Press F7 to build.
   3. Press F5 (or Ctrl+F5) to run.
-  4. You can play around OpenCV immidiately. Sample codes are in src\samples.
+  4. You can play around wiht OpenCV. See, sample codes in "src\samples".
 
 FOR AR.DRONE 1.0 USERS
   Please update your AR.Drone's firmware to 1.10.14.
@@ -44,12 +43,12 @@ FOR AR.DRONE 2.0 USERS
   Please update your AR.Drone's firmware to 2.2.9.
 
 FOR VS2010 USERS
-  You can't build vs2010 after you installed VS2012.
-  To build vs2010, you should uninstall ".Net Framework 4.5" and install "4.0".
+  You can't build CV Drone by VS2010 after you installed VS2012.
+  To build VS2010, you should uninstall ".Net Framework 4.5" and re-install "4.0".
 
 LIBRARY DEPENDENCIES
   CV Drone uses following libraries.
-  - Open CV 2.4.3
+  - OpenCV 2.4.3
     http://opencv.org/
   - FFmpeg 1.0 (git-11d695d)
     http://www.ffmpeg.org/

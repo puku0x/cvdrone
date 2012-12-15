@@ -1,9 +1,8 @@
 #ifndef __HEADER_ARDRONE_LIB__
 #define __HEADER_ARDRONE_LIB__
 
-// AR.Drone with OpenCV Test
-// Copyright(C) 2012 Puku
-// http://pukulab.blog.fc2.com/
+// CV Drone (= OpenCV + AR.Drone)
+// Copyright(C) 2012 puku0x
 // https://github.com/puku0x/cvdrone
 
 // Coodinate system
@@ -45,9 +44,35 @@ extern "C" {
   #include <libavformat/avformat.h>
   #include <libswscale/swscale.h>
 }
+#pragma comment(lib, "avcodec.lib")
+#pragma comment(lib, "avdevice.lib")
+#pragma comment(lib, "avfilter.lib")
+#pragma comment(lib, "avformat.lib")
+#pragma comment(lib, "avutil.lib")
+#pragma comment(lib, "postproc.lib")
+#pragma comment(lib, "swresample.lib")
+#pragma comment(lib, "swscale.lib")
 
 // OpenCV
 #include <opencv2/opencv.hpp>
+#pragma comment(lib, "opencv_calib3d243.lib")
+#pragma comment(lib, "opencv_contrib243.lib")
+#pragma comment(lib, "opencv_core243.lib")
+#pragma comment(lib, "opencv_features2d243.lib")
+#pragma comment(lib, "opencv_flann243.lib")
+#pragma comment(lib, "opencv_gpu243.lib")
+#pragma comment(lib, "opencv_haartraining_engine.lib")
+#pragma comment(lib, "opencv_highgui243.lib")
+#pragma comment(lib, "opencv_imgproc243.lib")
+#pragma comment(lib, "opencv_legacy243.lib")
+#pragma comment(lib, "opencv_ml243.lib")
+#pragma comment(lib, "opencv_nonfree243.lib")
+#pragma comment(lib, "opencv_objdetect243.lib")
+#pragma comment(lib, "opencv_photo243.lib")
+#pragma comment(lib, "opencv_stitching243.lib")
+#pragma comment(lib, "opencv_ts243.lib")
+#pragma comment(lib, "opencv_video243.lib")
+#pragma comment(lib, "opencv_videostab243.lib")
 
 // Macro definitions
 #define ARDRONE_VERSION_1           (1)             // AR.Drone 1.0
@@ -168,21 +193,6 @@ private:
     sockaddr_in server_addr, client_addr;   // Server/Client IP adrress
 };
 
-// TCP Class
-class TCPSocket {
-public:
-    TCPSocket();                            // Constructor
-    ~TCPSocket();                           // Destructor
-    int  open(const char *addr, int port);  // Initialize
-    int  send2(void *data, int size);       // Send data
-    int  sendf(char *str, ...);             // Send with format
-    int  receive(void *data, int size);     // Receive data
-    void close(void);                       // Finalize
-private:
-    SOCKET sock;                            // Sockets
-    sockaddr_in server_addr, client_addr;   // Server/Client IP adrress
-};
-
 // Navdata
 #pragma pack(push, 1)
 struct NAVDATA {
@@ -219,8 +229,8 @@ struct VERSION_INFO {
 class ARDrone {
 public:
     // Constructor / Destructor
-    ARDrone(const char *ardrone_addr = NULL);    // Constructor
-    virtual ~ARDrone();                          // Destructor
+    ARDrone(const char *ardrone_addr = NULL);
+    virtual ~ARDrone();
 
     // Initialize
     int open(const char *ardrone_addr = ARDRONE_DEFAULT_ADDR);
@@ -252,26 +262,26 @@ public:
     void landing(void);
     void emergency(void);
 
-    // Move 
+    // Move with velocity [m/s]
     void move(double vx, double vy, double vr);
     void move3D(double vx, double vy, double vz, double vr);
 
+    // Change camera channel
+    void setCamera(int channel);
+
     // Others
     int  onGround(void);                            // Check on ground
-    void setCamera(int channel);                    // Change camera channel
     void setAnimation(int id, int duration);        // Flight animation
     void setLED(int id, float freq, int duration);  // LED animation
     void resetEmergency(void);                      // Reset emergency
     void resetWatchDog(void);                       // Reset hovering
-    //void startRecord(void);                       // Video recording for AR.Drone 2.0
-    //void stopRecord(void);                        // You should set a USB key with > 100MB to your drone
 
 protected:
     // IP address
     char ip[16];
 
     // Sequence number
-    int seq;
+    long int seq;
 
     // Camera image
     IplImage *img;
@@ -283,12 +293,11 @@ protected:
     UDPSocket sockNavdata;
     UDPSocket sockVideo;
     UDPSocket sockCommand;
-    TCPSocket sockConfig;
 
     // Version information
     VERSION_INFO version;
 
-    // Navdata
+    // Navigation data
     NAVDATA navdata;
 
     // Thread for Navdata
@@ -316,19 +325,19 @@ protected:
         return reinterpret_cast<ARDrone*>(args)->loopVideo();
     }
 
-    // Initialize
+    // Initialize (internal)
     int initNavdata(void);
     int initVideo(void);
     int initCommand(void);
     int initConfig(void);
 
-    // Get the data
+    // Get informations (internal)
     int getVersionInfo(void);
     int getNavdata(void);
     int getVideo(void);
     int getConfig(void);
 
-    // Finalize
+    // Finalize (internal)
     void finalizeNavdata(void);
     void finalizeVideo(void);
     void finalizeCommand(void);
@@ -336,9 +345,9 @@ protected:
 };
 
 // --------------------------------------------------------------------------
-// double ardGetTickCount(void)
-// High-resolution timer.
-// Return value Tick counts [ms]
+// ardGetTickCount(void)
+// Description  : High-resolution timer.
+// Return value : Tick counts [ms]
 // --------------------------------------------------------------------------
 inline double ardGetTickCount(void)
 {
@@ -396,8 +405,8 @@ inline double ardGetTickCount(void)
 
 // --------------------------------------------------------------------------
 // ardError(Message)
-// Shows error window.
-// Return value NONE
+// Description  : Show an error window.
+// Return value : NONE
 // --------------------------------------------------------------------------
 inline void ardError(const char *message, ...)
 {
@@ -415,8 +424,8 @@ inline void ardError(const char *message, ...)
 
 // --------------------------------------------------------------------------
 // ardAsk(Message)
-// Shows question window.
-// Return value NO: 0 YES:1
+// Description  : Show a question window.
+// Return value : NO: 0 YES:1
 // --------------------------------------------------------------------------
 inline int ardAsk(const char *message, ...)
 {
@@ -433,9 +442,9 @@ inline int ardAsk(const char *message, ...)
 }
 
 // --------------------------------------------------------------------------
-// cvDrawText(Destination image, Point to draw, Message)
-// Draw the specified text.
-// Return value NONE
+// cvDrawText(Image, Drowin point, Messages)
+// Description  : Draw the specified text.
+// Return value : NONE
 // --------------------------------------------------------------------------
 inline void cvDrawText(IplImage *image, CvPoint point, const char *fmt, ...)
 {

@@ -1,9 +1,11 @@
+// Copyright(C) 2012 puku0x
+
 #include "ardrone.h"
 
 // --------------------------------------------------------------------------
 // ARDrone::initCommand()
-// Initialize AT command.
-// Return value SUCCESS: 1  FAILED: 0
+// Description  : Initialize AT command.
+// Return value : SUCCESS: 1  FAILED: 0
 // --------------------------------------------------------------------------
 int ARDrone::initCommand(void)
 {
@@ -18,19 +20,19 @@ int ARDrone::initCommand(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::takeoff()
-// Take off the AR.Drone.
-// Return value NONE
+// Description  : Take off the AR.Drone.
+// Return value : NONE
 // --------------------------------------------------------------------------
 void ARDrone::takeoff(void)
 {
-    if (navdata.ardrone_state & ARDRONE_EMERGENCY_MASK) sockCommand.sendf("AT*REF=%d,290717952\r", seq++);
-    else                                                sockCommand.sendf("AT*REF=%d,290718208\r", seq++);
+    resetEmergency();
+    sockCommand.sendf("AT*REF=%d,290718208\r", seq++);
 }
 
 // --------------------------------------------------------------------------
 // ARDrone::landing()
-// Land the AR.Drone.
-// Return value NONE
+// Description  : Land the AR.Drone.
+// Return value : NONE
 // --------------------------------------------------------------------------
 void ARDrone::landing(void)
 {
@@ -39,8 +41,8 @@ void ARDrone::landing(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::emergency()
-// Emergency stop.
-// Return value NONE
+// Description  : Emergency stop.
+// Return value : NONE
 // --------------------------------------------------------------------------
 void ARDrone::emergency(void)
 {
@@ -49,8 +51,8 @@ void ARDrone::emergency(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::move(X velocity[m/s], Y velocity[m/s], Rotational speed[rad/s])
-// Move the AR.Drone in 2D plane.
-// Return value NONE
+// Description  : Move the AR.Drone in 2D plane.
+// Return value : NONE
 // --------------------------------------------------------------------------
 void ARDrone::move(double vx, double vy, double vr)
 {
@@ -59,8 +61,8 @@ void ARDrone::move(double vx, double vy, double vr)
 
 // --------------------------------------------------------------------------
 // ARDrone::move3D(X velocity[m/s], Y velocity[m/s], Z velocity[m/s], Rotational speed[rad/s])
-// Move the AR.Drone in 3D space.
-// Return value NONE
+// Description  : Move the AR.Drone in 3D space.
+// Return value : NONE
 // --------------------------------------------------------------------------
 void ARDrone::move3D(double vx, double vy, double vz, double vr)
 {
@@ -71,61 +73,30 @@ void ARDrone::move3D(double vx, double vy, double vz, double vr)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::setCamera(Channel)
-// Change the camera channel.
-// ARDrone1.0 supports 0, 1, 2, 3.
-// ARDrone2.0 supports 0, 1.
-// Return value NONE
+// ARDrone::setCamera(Camera channel)
+// Description  : Change the camera channel.
+//                AR.Drone1.0 supports 0, 1, 2, 3.
+//                AR.Drone2.0 supports 0, 1.
+// Return value : NONE
 // --------------------------------------------------------------------------
 void ARDrone::setCamera(int channel)
 {
     // ARDrone 2.0
     if (version.major == ARDRONE_VERSION_2) {
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"%d\"\r", seq++, channel);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"%d\"\r", seq++, channel % 2);
         Sleep(100);
     }
     // ARDrone 1.0
     else {
-        sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"%d\"\r", seq++, channel);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"%d\"\r", seq++, channel % 4);
     }
 }
 
-//// --------------------------------------------------------------------------
-//// ARDrone::startRecord()
-//// Start recording video.
-//// This function is only for AR.Drone 2.0
-//// You should set a USB key with > 100MB to your drone
-//// Return value NONE
-//// --------------------------------------------------------------------------
-//void ARDrone::startRecord(void)
-//{
-//    if (version.major == ARDRONE_VERSION_2) {
-//        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-//        sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"TRUE\"\r", seq++);
-//        Sleep(100);
-//    }
-//}
-//
-//// --------------------------------------------------------------------------
-//// ARDrone::stopRecord()
-//// Stop recording video.
-//// This function is only for AR.Drone 2.0
-//// Return value NONE
-//// --------------------------------------------------------------------------
-//void ARDrone::stopRecord(void)
-//{
-//    if (version.major == ARDRONE_VERSION_2) {
-//        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-//        sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"FALSE\"\r", seq++);
-//        Sleep(100);
-//    }
-//}
-
 // --------------------------------------------------------------------------
 // ARDrone::setAnimation(Flight animation ID, Duration[s])
-// Run specified flight animation.
-// Return value NONE
+// Description  : Run specified flight animation.
+// Return value : NONE
 // --------------------------------------------------------------------------
 void ARDrone::setAnimation(int id, int duration)
 {
@@ -137,8 +108,8 @@ void ARDrone::setAnimation(int id, int duration)
 
 // --------------------------------------------------------------------------
 // ARDrone::setLED(LED animation ID, Frequency[Hz], Duration[s])
-// Run specified LED animation.
-// Return value NONE
+// Description  : Run specified LED animation.
+// Return value : NONE
 // --------------------------------------------------------------------------
 void ARDrone::setLED(int id, float freq, int duration)
 {
@@ -150,28 +121,30 @@ void ARDrone::setLED(int id, float freq, int duration)
 
 // --------------------------------------------------------------------------
 // ARDrone::resetWatchDog()
-// Stop hovering.
-// Return value NONE
+// Description  : Stop hovering.
+// Return value : NONE
 // --------------------------------------------------------------------------
 void ARDrone::resetWatchDog(void)
 {
+    // If AR.Drone is in Watch-Dog, reset it
     if (navdata.ardrone_state & ARDRONE_COM_WATCHDOG_MASK) sockCommand.sendf("AT*COMWDG=%d\r", seq++);
 }
 
 // --------------------------------------------------------------------------
 // ARDrone::resetEmergency()
-// Disable the emergency lock.
-// Return value NONE
+// Description  : Disable the emergency lock.
+// Return value : NONE
 // --------------------------------------------------------------------------
 void ARDrone::resetEmergency(void)
 {
+    // If AR.Drone is in emergency, reset it
     if (navdata.ardrone_state & ARDRONE_EMERGENCY_MASK) sockCommand.sendf("AT*REF=%d,290717952\r", seq++);
 }
 
 // --------------------------------------------------------------------------
 // ARDrone::finalizeCommand()
-// Finalize AT command
-// Return value NONE
+// Description  : Finalize AT command
+// Return value : NONE
 // --------------------------------------------------------------------------
 void ARDrone::finalizeCommand(void)
 {

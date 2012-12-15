@@ -1,8 +1,10 @@
+// Copyright(C) 2012 puku0x
+
 #include "ardrone.h"
 
 // --------------------------------------------------------------------------
 // ARDrone::ARDrone(IP address of your AR.Drone)
-// Constructor of ARDrone class. This will be called when you create it.
+// Description : Constructor of ARDrone class.
 // --------------------------------------------------------------------------
 ARDrone::ARDrone(const char *ardrone_addr)
 {
@@ -16,7 +18,7 @@ ARDrone::ARDrone(const char *ardrone_addr)
     img = NULL;
 
     // Timer
-    timerWdg     = ardGetTickCount();
+    timerWdg = ardGetTickCount();
 
     // Navdata
     ZeroMemory(&navdata, sizeof(NAVDATA));
@@ -45,7 +47,7 @@ ARDrone::ARDrone(const char *ardrone_addr)
 
 // --------------------------------------------------------------------------
 // ARDrone::~ARDrone()
-// Destructor of ARDrone class. This will be called when you destroy it.
+// Description : Destructor of ARDrone class.
 // --------------------------------------------------------------------------
 ARDrone::~ARDrone()
 {
@@ -55,8 +57,8 @@ ARDrone::~ARDrone()
 
 // --------------------------------------------------------------------------
 // ARDrone::open(IP address of AR.Drone)
-// Initialize
-// Return value SUCCESS: 1  FAILED: 0
+// Description  : Initialize the AR.Drone.
+// Return value : SUCCESS: 1  FAILED: 0
 // --------------------------------------------------------------------------
 int ARDrone::open(const char *ardrone_addr)
 {
@@ -82,13 +84,13 @@ int ARDrone::open(const char *ardrone_addr)
     // Initialize AT Command
     if (!initCommand()) return 0;
 
-    // Initialize Configuretion
+    // Initialize Config
     if (!initConfig()) return 0;
 
     // Initialize Navdata
     if (!initNavdata()) return 0;
 
-    // Wait for state update
+    // Wait for updating state
     Sleep(500);
 
     // Reset emergency
@@ -100,8 +102,8 @@ int ARDrone::open(const char *ardrone_addr)
 
 // --------------------------------------------------------------------------
 // ARDrone::update()
-// Update the informations.
-// Return value SUCCESS: 1  FAILED: 0
+// Description  : Update the informations.
+// Return value : SUCCESS: 1  FAILED: 0
 // --------------------------------------------------------------------------
 int ARDrone::update(void)
 {
@@ -120,8 +122,8 @@ int ARDrone::update(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::close()
-// Finalize
-// Return value NONE
+// Description  : Finalize
+// Return value : NONE
 // --------------------------------------------------------------------------
 void ARDrone::close(void)
 {

@@ -1,8 +1,10 @@
+// Copyright(C) 2012 puku0x
+
 #include "ardrone.h"
 
 // --------------------------------------------------------------------------
 // UDPSocket::UDPSocket()
-// Constructor of UDPSocket class. This will be called when you create it.
+// Description : Constructor of UDPSocket class.
 // --------------------------------------------------------------------------
 UDPSocket::UDPSocket()
 {
@@ -11,7 +13,7 @@ UDPSocket::UDPSocket()
 
 // --------------------------------------------------------------------------
 // UDPSocket::~UDPSocket()
-// Destructor of UDPSocket class. This will be called when you destroy it.
+// Description : Destructor of UDPSocket class.
 // --------------------------------------------------------------------------
 UDPSocket::~UDPSocket()
 {
@@ -19,8 +21,8 @@ UDPSocket::~UDPSocket()
 
 // --------------------------------------------------------------------------
 // UDPSocket::open(IP address, Port number)
-// Initialize specified  socket.
-// Return value SUCCESS: 1  FAILED: 0
+// Description  : Initialize specified  socket.
+// Return value : SUCCESS: 1  FAILED: 0
 // --------------------------------------------------------------------------
 int UDPSocket::open(const char *addr, int port)
 {
@@ -40,7 +42,7 @@ int UDPSocket::open(const char *addr, int port)
     // Set the port and address of client
     memset(&client_addr, 0, sizeof(sockaddr_in));
     client_addr.sin_family = AF_INET;
-    client_addr.sin_port = htons((u_short)port);
+    client_addr.sin_port = htons(0);
     client_addr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
 
     // Bind the socket.
@@ -68,8 +70,8 @@ int UDPSocket::open(const char *addr, int port)
 
 // --------------------------------------------------------------------------
 // UDPSocket:::send2(Sending data, Size of data)
-// Sending the specified data.
-// Return value SUCCESS: Number of sent bytes  FAILED: 0
+// Description  : Send the specified data.
+// Return value : SUCCESS: Number of sent bytes  FAILED: 0
 // --------------------------------------------------------------------------
 int UDPSocket::send2(void *data, int size)
 {
@@ -84,9 +86,9 @@ int UDPSocket::send2(void *data, int size)
 }
 
 // --------------------------------------------------------------------------
-// UDPSocket:::sendf(Your messages)
-// Sending the data with printf()-like format.
-// Return value SUCCESS: Number of sent bytes  FAILED: 0
+// UDPSocket::sendf(Messages)
+// Description  : Send the data with format.
+// Return value : SUCCESS: Number of sent bytes  FAILED: 0
 // --------------------------------------------------------------------------
 int UDPSocket::sendf(char *str, ...)
 {
@@ -106,9 +108,9 @@ int UDPSocket::sendf(char *str, ...)
 }
 
 // --------------------------------------------------------------------------
-// UDPSocket:::receive(Receiving data, Size of data)
-// Receive the data.
-// Return value SUCCESS: Number of received bytes  FAILED: 0
+// UDPSocket::receive(Receiving data, Size of data)
+// Description  : Receive the data.
+// Return value : SUCCESS: Number of received bytes  FAILED: 0
 // --------------------------------------------------------------------------
 int UDPSocket::receive(void *data, int size)
 {
@@ -129,8 +131,8 @@ int UDPSocket::receive(void *data, int size)
 
 // --------------------------------------------------------------------------
 // UDPSocket::close()
-// Finalize the socket.
-// Return value NONE
+// Description  : Finalize the socket.
+// Return value : NONE
 // --------------------------------------------------------------------------
 void UDPSocket::close(void)
 {

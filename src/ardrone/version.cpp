@@ -1,9 +1,11 @@
+// Copyright(C) 2012 puku0x
+
 #include "ardrone.h"
 
 // --------------------------------------------------------------------------
 // ARDrone::getVersionInfo()
-// Obtaining version information.
-// Return value SUCCESS: 1  FAILED: 0
+// Description  : Getting version information.
+// Return value : SUCCESS: 1  FAILED: 0
 // --------------------------------------------------------------------------
 int ARDrone::getVersionInfo(void)
 {
@@ -23,6 +25,9 @@ int ARDrone::getVersionInfo(void)
         InternetCloseHandle(hInet);
         return 0;
     }
+
+    // Clear version
+    ZeroMemory(&version, sizeof(VERSION_INFO));
 
     // Get the file
     if (!FtpGetFile(hConnection, filename, filename, FALSE, FILE_ATTRIBUTE_NORMAL, INTERNET_FLAG_TRANSFER_BINARY, 0)) {
@@ -55,8 +60,8 @@ int ARDrone::getVersionInfo(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::getVersion()
-// Getting AR.Drone's version.
-// Return value Version number of your AR.Drone.
+// Description  : Getting AR.Drone's version.
+// Return value : Version number of the AR.Drone.
 // --------------------------------------------------------------------------
 int ARDrone::getVersion(void)
 {

@@ -8,12 +8,12 @@ IDI_ICON          ICON          "icon.ico"
 //
 // Version
 //
-#define VER_COMMENT             "ARDrone with OpenCV Test"
-#define VER_COMPANYNAME         "http://pukulab.blog.fc2.com/"
+#define VER_COMMENT             "AR.Drone with OpenCV Test"
+#define VER_COMPANYNAME         "https://github.com/puku0x/cvdrone"
 #define VER_FILEDESCRIPTION     "AR.Drone with OpenCV"
 #define VER_FILEVERSION         "1.0"
 #define VER_INTERNAL_NAME       "Test"
-#define VER_LEGALCOPYRIGHT      "Copyright(C) 2012 Puku."
+#define VER_LEGALCOPYRIGHT      "Copyright(C) 2012 puku0x"
 #define VER_ORIGINAL_FILENAME   "test.exe"
 #define VER_PRODUCTNAME         "test"
 #define VER_PRODUCTVERSION      "1.0"

@@ -5,8 +5,8 @@
 
 // --------------------------------------------------------------------------
 // main(Number of arguments, Value of arguments)
-// This is the main function.
-// Return value Success:0 Error:-1
+// Description  : This is the main function.
+// Return value : SUCCESS:0  ERROR:-1
 // --------------------------------------------------------------------------
 int main(int argc, char **argv)
 {
@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 
     // Main loop
     while (!GetAsyncKeyState(VK_ESCAPE)) {
-        // Update your AR.Drone
+        // Update
         if (!ardrone.update()) break;
 
         // Get an image
@@ -56,21 +56,15 @@ int main(int argc, char **argv)
             else                    ardrone.landing();
         }
 
-        // Emergency stop
-        if (KEY_PUSH(VK_RETURN)) ardrone.emergency();
-
-        // AR.Drone is flying
-        if (!ardrone.onGround()) {
-            // Move
-            double x = 0.0, y = 0.0, z = 0.0, r = 0.0;
-            if (KEY_DOWN(VK_UP))    x =  0.5;
-            if (KEY_DOWN(VK_DOWN))  x = -0.5;
-            if (KEY_DOWN(VK_LEFT))  r =  0.5;
-            if (KEY_DOWN(VK_RIGHT)) r = -0.5;
-            if (KEY_DOWN('Q'))      z =  0.5;
-            if (KEY_DOWN('A'))      z = -0.5;
-            ardrone.move3D(x, y, z, r);
-        }
+        // Move
+        double x = 0.0, y = 0.0, z = 0.0, r = 0.0;
+        if (KEY_DOWN(VK_UP))    x =  0.5;
+        if (KEY_DOWN(VK_DOWN))  x = -0.5;
+        if (KEY_DOWN(VK_LEFT))  r =  0.5;
+        if (KEY_DOWN(VK_RIGHT)) r = -0.5;
+        if (KEY_DOWN('Q'))      z =  0.5;
+        if (KEY_DOWN('A'))      z = -0.5;
+        ardrone.move3D(x, y, z, r);
 
         // Change camera
         static int mode = 0;

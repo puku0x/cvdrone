@@ -5,8 +5,8 @@
 
 // --------------------------------------------------------------------------
 // main(Number of arguments, Value of arguments)
-// This is the main function.
-// Return value Success:0 Error:-1
+// Description  : This is the main function.
+// Return value : SUCCESS:0  ERROR:-1
 // --------------------------------------------------------------------------
 int main(int argc, char **argv)
 {
@@ -35,10 +35,10 @@ int main(int argc, char **argv)
 
     // Main loop
     while (!GetAsyncKeyState(VK_ESCAPE)) {
-        // Update your AR.Drone
+        // Update
         if (!ardrone.update()) break;
 
-        // Getting an image
+        // Get an image
         image = ardrone.getImage();
 
         // Take off / Landing
@@ -47,18 +47,15 @@ int main(int argc, char **argv)
             else                    ardrone.landing();
         }
 
-        // AR.Drone is flying
-        if (!ardrone.onGround()) {
-            // Move
-            double vx = 0.0, vy = 0.0, vz = 0.0, vr = 0.0;
-            if (KEY_DOWN(VK_UP))    vx =  0.5;
-            if (KEY_DOWN(VK_DOWN))  vx = -0.5;
-            if (KEY_DOWN(VK_LEFT))  vr =  0.5;
-            if (KEY_DOWN(VK_RIGHT)) vr = -0.5;
-            if (KEY_DOWN('Q'))      vz =  0.5;
-            if (KEY_DOWN('A'))      vz = -0.5;
-            ardrone.move3D(vx, vy, vz, vr);
-        }
+        // Move
+        double vx = 0.0, vy = 0.0, vz = 0.0, vr = 0.0;
+        if (KEY_DOWN(VK_UP))    vx =  0.5;
+        if (KEY_DOWN(VK_DOWN))  vx = -0.5;
+        if (KEY_DOWN(VK_LEFT))  vr =  0.5;
+        if (KEY_DOWN(VK_RIGHT)) vr = -0.5;
+        if (KEY_DOWN('Q'))      vz =  0.5;
+        if (KEY_DOWN('A'))      vz = -0.5;
+        ardrone.move3D(vx, vy, vz, vr);
 
         // Convert the camera image to grayscale
         cvCvtColor(image, gray, CV_BGR2GRAY);

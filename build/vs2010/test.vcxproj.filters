@@ -34,9 +34,6 @@
     <ClCompile Include="..\..\src\ardrone\navdata.cpp">
       <Filter>Source Files\ardrone</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ardrone\tcp.cpp">
-      <Filter>Source Files\ardrone</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\ardrone\udp.cpp">
       <Filter>Source Files\ardrone</Filter>
     </ClCompile>
@@ -56,5 +53,8 @@
     <ResourceCompile Include="..\..\src\resource\resource.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\readme.txt" />
   </ItemGroup>
 </Project>

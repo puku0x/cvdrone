@@ -1,9 +1,6 @@
 #ifndef __HEADER_UVLC__
 #define __HEADER_UVLC__
 
-// This codes are based on ARDroneForP5
-// https://github.com/shigeodayo/ARDroneForP5
-
 //#region Copyright Notice
 
 //Copyright © 2007-2011, PARROT SA, all rights reserved. 
@@ -42,7 +39,7 @@ namespace UVLC {
     const int TABLE_QUANTIZATION_MODE = 31;
     const int16_t ZIGZAG_POSITIONS[] = { 0, 1, 8, 16, 9, 2, 3, 10, 17, 24, 32, 25, 18, 11, 4, 5, 12, 19, 26, 33, 40, 48, 41, 34, 27, 20, 13, 6, 7, 14, 21, 28, 35, 42, 49, 56, 57, 50, 43, 36, 29, 22, 15, 23, 30, 37, 44, 51, 58, 59, 52, 45, 38, 31, 39, 46, 53, 60, 61, 54, 47, 55, 62, 63, };
     const int16_t QUANTIZER_VALUES[] = { 3, 5, 7, 9, 11, 13, 15, 17, 5, 7, 9, 11, 13, 15, 17, 19, 7, 9, 11, 13, 15, 17, 19, 21, 9, 11, 13, 15, 17, 19, 21, 23, 11, 13, 15, 17, 19, 21, 23, 25, 13, 15, 17, 19, 21, 23, 25, 27, 15, 17, 19, 21, 23, 25, 27, 29, 17, 19, 21, 23, 25, 27, 29, 31 };
-    uint8_t CLZLUT[] = { 8, 7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    const uint8_t CLZLUT[] = { 8, 7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
     class MacroBlock {
     public:
@@ -370,14 +367,14 @@ namespace UVLC {
         }
     }
 
-    int Saturate5(int x)
+    inline int Saturate5(int x)
     {
         if (x < 0) x = 0;
         x >>= 11;
         return (x > 0x1F) ? 0x1F : x;
     }
 
-    int Saturate6(int x)
+    inline int Saturate6(int x)
     {
         if (x < 0) x = 0;
         x >>= 10;
@@ -388,7 +385,6 @@ namespace UVLC {
     {
         int pixelDataQuadrantOffsets[] = {0, BLOCK_WIDTH, width * BLOCK_WIDTH, (width * BLOCK_WIDTH) + BLOCK_WIDTH};
         int imageDataOffset = (sliceIndex - 1) * width * 16;
-        //int imageDataOffset = (gobIdx - 1) * width * 16;    // <‚±‚ê‚¶‚á‚È‚¢‚ÌH
         const int cromaQuadrantOffsets[] = {0, 4, 32, 36};
 
         for (int i = 0; i < imageSlice->Count; i++) {
@@ -443,9 +439,9 @@ namespace UVLC {
         int resolution;
         int pictureType;
         int quantizerMode;
-		int sliceCount;
+        int sliceCount;
         int blockCount;
-		int frameIndex;
+        int frameIndex;
         int streamField = 0;
         int streamFieldBitIndex = 32;
         int streamIndex = 0;
@@ -453,8 +449,8 @@ namespace UVLC {
         bool pictureComplete = false;
         ImageSlice *imageSlice = NULL;
         uint16_t *javaPixelData = NULL;
-	    const int dataBlockBufferLength = 64;
-		int16_t dataBlockBuffer[dataBlockBufferLength];
+        const int dataBlockBufferLength = 64;
+        int16_t dataBlockBuffer[dataBlockBufferLength];
         bool blockY0HasAcComponents = false;
         bool blockY1HasAcComponents = false;
         bool blockY2HasAcComponents = false;
@@ -483,20 +479,20 @@ namespace UVLC {
                         frameIndex    = ReadStreamData(stream, stream_size, &streamIndex, &streamField, &streamFieldBitIndex, 32);
 
                         switch (pictureFormat) {
-                            case CIF:
-                                *width = CIF_WIDTH << (resolution - 1);
-                                *height = CIG_HEIGHT << (resolution - 1);
-                                break;
-                            case QVGA:
-                                *width = VGA_WIDTH << (resolution - 1);
-                                *height = VGA_HEIGHT << (resolution - 1);
-                                break;
+                        case CIF:
+                            *width = CIF_WIDTH << (resolution - 1);
+                            *height = CIG_HEIGHT << (resolution - 1);
+                            break;
+                        case QVGA:
+                            *width = VGA_WIDTH << (resolution - 1);
+                            *height = VGA_HEIGHT << (resolution - 1);
+                            break;
                         }
 
                         // We assume two bytes per pixel (RGB 565)
                         sliceCount = (*height) >> 4;
                         blockCount = (*width) >> 4;
-                        
+
                         if (imageSlice == NULL) imageSlice = new ImageSlice(blockCount);
                         if (javaPixelData == NULL) javaPixelData = new uint16_t[(*width) * (*height)];
                     }
@@ -547,7 +543,7 @@ namespace UVLC {
             uint8_t r = (javaPixelData[i] & 0xF800) >> 11;
             uint8_t g = (javaPixelData[i] & 0x7E0) >> 5;
             uint8_t b = (javaPixelData[i] & 0x1F);
-            *(img + i*3)   = b << 3;
+            *(img + i*3+0) = b << 3;
             *(img + i*3+1) = g << 2;
             *(img + i*3+2) = r << 3;
         }  

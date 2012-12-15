@@ -1,3 +1,5 @@
+// Copyright(C) 2012 puku0x
+
 #include "ardrone.h"
 #include "uvlc.h"
 
@@ -9,8 +11,8 @@
 
 // --------------------------------------------------------------------------
 // ARDrone::initVideo()
-// Initialize video
-// Return value SUCCESS: 1  FAILED: 0
+// Description  : Initialize video.
+// Return value : SUCCESS: 1  FAILED: 0
 // --------------------------------------------------------------------------
 int ARDrone::initVideo(void)
 {
@@ -28,10 +30,8 @@ int ARDrone::initVideo(void)
         avformat_find_stream_info(pFormatCtx, NULL);
         av_dump_format(pFormatCtx, 0, filename, 0);
 
-        // Get a pointer to the codec context for the video stream
-        pCodecCtx = pFormatCtx->streams[0]->codec;
-
         // Find the decoder for the video stream
+        pCodecCtx = pFormatCtx->streams[0]->codec;
         AVCodec *pCodec = avcodec_find_decoder(pCodecCtx->codec_id);
         if (pCodec == NULL) {
             printf("ERROR: avcodec_find_decoder() failed. (%s, %d)\n", __FILE__, __LINE__);
@@ -52,7 +52,7 @@ int ARDrone::initVideo(void)
         // Assign appropriate parts of buffer to image planes in pFrameBGR
         avpicture_fill((AVPicture*)pFrameBGR, bufferBGR, PIX_FMT_BGR24, pCodecCtx->width, pCodecCtx->height);
 
-        // Convert to BGR
+        // Convert it to BGR
         pConvertCtx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, PIX_FMT_BGR24, SWS_SPLINE, NULL, NULL, NULL);
     }
     // AR.Drone 1.0
@@ -96,8 +96,8 @@ int ARDrone::initVideo(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::loopVideo()
-// Thread function.
-// Return value 0
+// Description  : Thread function.
+// Return value : SUCCESS:0
 // --------------------------------------------------------------------------
 UINT ARDrone::loopVideo(void)
 {
@@ -115,8 +115,8 @@ UINT ARDrone::loopVideo(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::getVideo()
-// Obtaining video stream.
-// Return value SUCCESS: 1  FAILED: 0
+// Description  : Get AR.Drone's video stream.
+// Return value : SUCCESS: 1  FAILED: 0
 // --------------------------------------------------------------------------
 int ARDrone::getVideo(void)
 {
@@ -129,10 +129,15 @@ int ARDrone::getVideo(void)
             int frameFinished;
             avcodec_decode_video2(pCodecCtx, pFrame, &frameFinished, &packet);
 
-            // Convert to BGR
+            // Decoded all frames
             if (frameFinished) {
+                // Enable mutex lock
                 WaitForSingleObject(mutexVideo, INFINITE);
+
+                // Convert to BGR
                 sws_scale(pConvertCtx, (const uint8_t* const*)pFrame->data, pFrame->linesize, 0, pCodecCtx->height, pFrameBGR->data, pFrameBGR->linesize);
+
+                // Disable mutex lock
                 ReleaseMutex(mutexVideo);
             }
         }
@@ -146,10 +151,15 @@ int ARDrone::getVideo(void)
         uint8_t buf[122880];
         int size = sockVideo.receive((void*)&buf, sizeof(buf));
 
-        // Decode video
+        // Received something
         if (size > 0) {
+            // Enable mutex lock
             WaitForSingleObject(mutexVideo, INFINITE);
+
+            // Decode UVLC video
             UVLC::DecodeVideo(buf, size, bufferBGR, &pCodecCtx->width, &pCodecCtx->height);
+
+            // Disable mutex lock
             ReleaseMutex(mutexVideo);
         }
     }
@@ -159,19 +169,23 @@ int ARDrone::getVideo(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::getImage()
-// Obtaining a frame from your AR.Drone.
-// Return value IplImage
+// Description  : Get an image from the AR.Drone's camera.
+// Return value : Pointer to an IplImage (OpenCV image)
 // --------------------------------------------------------------------------
 IplImage* ARDrone::getImage(void)
 {
-    // No image
+    // There is no image
     if (!img) return NULL;
 
     // AR.Drone 2.0
     if (version.major == ARDRONE_VERSION_2) {
-        // Copy the frame to the IplImage
+        // Enable mutex lock
         WaitForSingleObject(mutexVideo, INFINITE);
+
+        // Copy the frame to the IplImage
         memcpy(img->imageData, pFrameBGR->data[0], pCodecCtx->width * pCodecCtx->height * sizeof(uint8_t) * 3);
+
+        // Disable mutex lock
         ReleaseMutex(mutexVideo);
     }
     // AR.Drone 1.0
@@ -179,19 +193,16 @@ IplImage* ARDrone::getImage(void)
         // Enable mutex lock
         WaitForSingleObject(mutexVideo, INFINITE);
 
-        // If the sizes of buffer and IplImage are the same
-        if (pCodecCtx->width == img->width && pCodecCtx->height == img->height) {
-            // Copy the buffer to the IplImage
-            memcpy(img->imageData, bufferBGR, pCodecCtx->width * pCodecCtx->height * sizeof(uint8_t) * 3);
-        }
-        // If the sizes are different
-        else {
+        // If the sizes of buffer and IplImage are differnt
+        if (pCodecCtx->width != img->width || pCodecCtx->height != img->height) {
             // Resize the image to 320x240
             IplImage *small_img = cvCreateImageHeader(cvSize(pCodecCtx->width, pCodecCtx->height), IPL_DEPTH_8U, 3);
             small_img->imageData = (char*)bufferBGR;
-            cvResize(small_img, img);
+            cvResize(small_img, img, CV_INTER_CUBIC);
             cvReleaseImageHeader(&small_img);
         }
+        // For 320x240 image, just copy it
+        else memcpy(img->imageData, bufferBGR, pCodecCtx->width * pCodecCtx->height * sizeof(uint8_t) * 3);
 
         // Disable mutex lock
         ReleaseMutex(mutexVideo);
@@ -202,8 +213,8 @@ IplImage* ARDrone::getImage(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::finalizeVideo()
-// Finalize video.
-// Return value NONE
+// Description  : Finalize video.
+// Return value : NONE
 // --------------------------------------------------------------------------
 void ARDrone::finalizeVideo(void)
 {

@@ -1,9 +1,11 @@
+// Copyright(C) 2012 puku0x
+
 #include "ardrone.h"
 
 // --------------------------------------------------------------------------
 // ARDrone::initNavdata()
-// Initialize Navdata.
-// Return value SUCCESS: 1  FAILED: 0 
+// Description  : Initialize Navdata.
+// Return value : SUCCESS: 1  FAILED: 0 
 // --------------------------------------------------------------------------
 int ARDrone::initNavdata(void)
 {
@@ -57,8 +59,8 @@ int ARDrone::initNavdata(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::loopNavdata()
-// Thread function.
-// Return value 0
+// Description  : Thread function for Navdata.
+// Return value : SUCCESS:0
 // --------------------------------------------------------------------------
 UINT ARDrone::loopNavdata(void)
 {
@@ -76,8 +78,8 @@ UINT ARDrone::loopNavdata(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::getNavdata()
-// Obtaining Navdata information.
-// Return value SUCCESS: 1  FAILED: 0
+// Description  : Get current navigation data of AR.Drone.
+// Return value : SUCCESS: 1  FAILED: 0
 // --------------------------------------------------------------------------
 int ARDrone::getNavdata(void)
 {
@@ -92,9 +94,13 @@ int ARDrone::getNavdata(void)
     if (size > 0) {
         // Check header
         if (buf[0] == ARDRONE_NAVDATA_HEADER) {
-            // Update Navdata
+            // Enable mutex lock
             WaitForSingleObject(mutexNavdata, INFINITE);
+
+            // Update Navdata
             memcpy(&navdata, buf, sizeof(NAVDATA));
+
+            // Disable mutex lock
             ReleaseMutex(mutexNavdata);
         }
     }
@@ -104,8 +110,8 @@ int ARDrone::getNavdata(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::getRoll()
-// Obtaining role angle.
-// Return value Role angle [rad]
+// Description  : Get current role angle of AR.Drone.
+// Return value : Role angle [rad]
 // --------------------------------------------------------------------------
 double ARDrone::getRoll(void)
 {
@@ -114,8 +120,8 @@ double ARDrone::getRoll(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::getPitch()
-// Obtaining pitch angle.
-// Return value Pitch angle [rad]
+// Description  : Get surrent pitch angle of AR.Drone.
+// Return value : Pitch angle [rad]
 // --------------------------------------------------------------------------
 double ARDrone::getPitch(void)
 {
@@ -124,8 +130,8 @@ double ARDrone::getPitch(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::getYaw()
-// Obtaining yaw angle.
-// Return value Yaw angle [rad]
+// Description  : Get current yaw angle of AR.Drone.
+// Return value : Yaw angle [rad]
 // --------------------------------------------------------------------------
 double ARDrone::getYaw(void)
 {
@@ -134,8 +140,8 @@ double ARDrone::getYaw(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::getAltitude()
-// Obtaining altitude.
-// Return value Altitude [m]
+// Description  : Get current altitude of AR.Drone.
+// Return value : Altitude [m]
 // --------------------------------------------------------------------------
 double ARDrone::getAltitude(void)
 {
@@ -144,8 +150,8 @@ double ARDrone::getAltitude(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::getVelocity(X velocity[m/s], Y velocity[m/s], Z velocity[m/s])
-// Obtaining velocity.
-// Return value Velocity [m/s]
+// Description  : Get estimated velocity of AR.Drone.
+// Return value : Velocity [m/s]
 // --------------------------------------------------------------------------
 double ARDrone::getVelocity(double *vx, double *vy, double *vz)
 {
@@ -157,8 +163,8 @@ double ARDrone::getVelocity(double *vx, double *vy, double *vz)
 
 // --------------------------------------------------------------------------
 // ARDrone::getBatteryPercentage()
-// Obtaining tattery percentage.
-// Return value Battery percentage [%]
+// Description  : Get current battery percentage of AR.Drone.
+// Return value : Battery percentage [%]
 // --------------------------------------------------------------------------
 int ARDrone::getBatteryPercentage(void)
 {
@@ -167,8 +173,8 @@ int ARDrone::getBatteryPercentage(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::onGround()
-// Check AR.Drone is on ground or not.
-// Return value YES:1 NO:0
+// Description  : Check whether AR.Drone is on ground.
+// Return value : YES:1 NO:0
 // --------------------------------------------------------------------------
 int ARDrone::onGround(void)
 {
@@ -178,8 +184,8 @@ int ARDrone::onGround(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::finalizeNavdata()
-// Finalize Navdata.
-// Return value NONE
+// Description  : Finalize Navdata.
+// Return value : NONE
 // --------------------------------------------------------------------------
 void ARDrone::finalizeNavdata(void)
 {

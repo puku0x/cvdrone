@@ -2,8 +2,8 @@
 
 // --------------------------------------------------------------------------
 // main(Number of arguments, Value of arguments)
-// This is the main function.
-// Return value Success:0 Error:-1
+// Description  : This is the main function.
+// Return value : SUCCESS:0  ERROR:-1
 // --------------------------------------------------------------------------
 int main(int argc, char **argv)
 {
@@ -12,10 +12,10 @@ int main(int argc, char **argv)
 
     // Main loop
     while (1) {
-        // Update your AR.Drone
+        // Update
         if (!ardrone.update()) break;
 
-        // Getting an image
+        // Get an image
         IplImage *image = ardrone.getImage();
 
         // Display the image

@@ -47,7 +47,7 @@ int ARDrone::initVideo(void)
         // Allocate video frames and a buffer
         pFrame = avcodec_alloc_frame();
         pFrameBGR = avcodec_alloc_frame();
-        bufferBGR = (uint8_t*)av_malloc(avpicture_get_size(PIX_FMT_BGR24, pCodecCtx->width, pCodecCtx->height));
+        bufferBGR = (uint8_t*)av_malloc(avpicture_get_size(PIX_FMT_BGR24, pCodecCtx->width, pCodecCtx->height) * sizeof(uint8_t));
 
         // Assign appropriate parts of buffer to image planes in pFrameBGR
         avpicture_fill((AVPicture*)pFrameBGR, bufferBGR, PIX_FMT_BGR24, pCodecCtx->width, pCodecCtx->height);
@@ -122,11 +122,12 @@ int ARDrone::getVideo(void)
 {
     // AR.Drone 2.0
     if (version.major == ARDRONE_VERSION_2) {
-        // Read a frame
         AVPacket packet;
-        if (av_read_frame(pFormatCtx, &packet) >= 0) {
+        int frameFinished;
+
+        // Read all frames
+        while (av_read_frame(pFormatCtx, &packet) >= 0) {
             // Decode the frame
-            int frameFinished;
             avcodec_decode_video2(pCodecCtx, pFrame, &frameFinished, &packet);
 
             // Decoded all frames
@@ -140,6 +141,9 @@ int ARDrone::getVideo(void)
                 // Disable mutex lock
                 ReleaseMutex(mutexVideo);
             }
+
+            // Free the packet
+            av_free_packet(&packet);
         }
     }
     // AR.Drone 1.0

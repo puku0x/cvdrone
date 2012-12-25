@@ -19,6 +19,10 @@ int main(int argc, char **argv)
         return -1;
     }
 
+    // Recording flag
+    int rec = 0;
+    printf("Press 'R' to start/stop recording.");
+
     // Main loop
     while (!GetAsyncKeyState(VK_ESCAPE)) {
         // Update
@@ -27,23 +31,23 @@ int main(int argc, char **argv)
         // Get an image
         IplImage *image = ardrone.getImage();
 
-        // Take off / Landing
-        if (KEY_PUSH(VK_SPACE)) {
-            if (ardrone.onGround()) ardrone.takeoff();
-            else                    ardrone.landing();
+        // Video recording start / stop
+        if (KEY_PUSH('R')) {
+            if (rec) {
+                ardrone.stopVideoRecord();
+                rec = 0;
+            }
+            else {
+                ardrone.startVideoRecord();
+                rec = 1;
+            }
         }
 
-        // Move
-        double x = 0.0, y = 0.0, z = 0.0, r = 0.0;
-        if (KEY_DOWN(VK_UP))    x =  0.5;
-        if (KEY_DOWN(VK_DOWN))  x = -0.5;
-        if (KEY_DOWN(VK_LEFT))  r =  0.5;
-        if (KEY_DOWN(VK_RIGHT)) r = -0.5;
-        ardrone.move3D(x, y, z, r);
-
-        // Change camera
-        static int mode = 0;
-        if (KEY_PUSH('C')) ardrone.setCamera(++mode%4);
+        // Show recording state
+        if (rec) {
+            static CvFont font = cvFont(1.0);
+            cvPutText(image, "REC", cvPoint(10, 20), &font, CV_RGB(255,0,0));
+        }
 
         // Display the image
         cvShowImage("camera", image);

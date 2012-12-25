@@ -5,11 +5,11 @@
 // --------------------------------------------------------------------------
 // ARDrone::initCommand()
 // Description  : Initialize AT command.
-// Return value : SUCCESS: 1  FAILED: 0
+// Return value : SUCCESS: 1  FAILURE: 0
 // --------------------------------------------------------------------------
 int ARDrone::initCommand(void)
 {
-    // Open the socket
+    // Open athe socket
     if (!sockCommand.open(ip, ARDRONE_COMMAND_PORT)) {
         printf("ERROR: UDPSocket::open(port=%d) failed. (%s, %d)\n", ARDRONE_COMMAND_PORT, __FILE__, __LINE__);
         return 0;
@@ -117,6 +117,60 @@ void ARDrone::setLED(int id, float freq, int duration)
     //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
     //sockCommand.sendf("AT*CONFIG=%d,\"leds:leds_anim\",\"%d,%d,%d\"\r", seq++, id, *(int*)(&freq), duration);
     //Sleep(100);
+}
+
+// --------------------------------------------------------------------------
+// ARDrone::startVideoRecord()
+// Start recording video.
+// This function is only for AR.Drone 2.0
+// You should set a USB key with > 100MB to your drone
+// Return value NONE
+// --------------------------------------------------------------------------
+void ARDrone::startVideoRecord(void)
+{
+    if (version.major == ARDRONE_VERSION_2) {
+        // Finalize video
+        finalizeVideo();
+
+        // Enable video record
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"TRUE\"\r", seq++);
+        Sleep(100);
+
+        // Output video with MP4_360P_H264_720P_CODEC
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x82);
+        Sleep(100);
+
+        // Initialize video
+        initVideo();
+    }
+}
+
+// --------------------------------------------------------------------------
+// ARDrone::stopVideoRecord()
+// Stop recording video.
+// This function is only for AR.Drone 2.0
+// Return value NONE
+// --------------------------------------------------------------------------
+void ARDrone::stopVideoRecord(void)
+{
+    if (version.major == ARDRONE_VERSION_2) {
+        // Finalize video
+        finalizeVideo();
+
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"FALSE\"\r", seq++);
+        Sleep(100);
+
+        // Output video with 360P
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x81);
+        Sleep(100);
+
+        // Initialize video
+        initVideo();
+    }
 }
 
 // --------------------------------------------------------------------------

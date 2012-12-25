@@ -62,8 +62,6 @@ int main(int argc, char **argv)
         if (KEY_DOWN(VK_DOWN))  x = -0.5;
         if (KEY_DOWN(VK_LEFT))  r =  0.5;
         if (KEY_DOWN(VK_RIGHT)) r = -0.5;
-        if (KEY_DOWN('Q'))      z =  0.5;
-        if (KEY_DOWN('A'))      z = -0.5;
         ardrone.move3D(x, y, z, r);
 
         // Change camera

@@ -273,6 +273,8 @@ public:
     int  onGround(void);                            // Check on ground
     void setAnimation(int id, int duration);        // Flight animation
     void setLED(int id, float freq, int duration);  // LED animation
+    void startVideoRecord(void);                    // Video recording for AR.Drone 2.0
+    void stopVideoRecord(void);                     // You should set a USB key with > 100MB to your drone
     void resetEmergency(void);                      // Reset emergency
     void resetWatchDog(void);                       // Reset hovering
 

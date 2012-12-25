@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------
 // ARDrone::getVersionInfo()
 // Description  : Getting version information.
-// Return value : SUCCESS: 1  FAILED: 0
+// Return value : SUCCESS: 1  FAILURE: 0
 // --------------------------------------------------------------------------
 int ARDrone::getVersionInfo(void)
 {

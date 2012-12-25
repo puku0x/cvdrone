@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------
 // ARDrone::initNavdata()
 // Description  : Initialize Navdata.
-// Return value : SUCCESS: 1  FAILED: 0 
+// Return value : SUCCESS: 1  FAILURE: 0 
 // --------------------------------------------------------------------------
 int ARDrone::initNavdata(void)
 {
@@ -79,7 +79,7 @@ UINT ARDrone::loopNavdata(void)
 // --------------------------------------------------------------------------
 // ARDrone::getNavdata()
 // Description  : Get current navigation data of AR.Drone.
-// Return value : SUCCESS: 1  FAILED: 0
+// Return value : SUCCESS: 1  FAILURE: 0
 // --------------------------------------------------------------------------
 int ARDrone::getNavdata(void)
 {

@@ -58,7 +58,7 @@ ARDrone::~ARDrone()
 // --------------------------------------------------------------------------
 // ARDrone::open(IP address of AR.Drone)
 // Description  : Initialize the AR.Drone.
-// Return value : SUCCESS: 1  FAILED: 0
+// Return value : SUCCESS: 1  FAILURE: 0
 // --------------------------------------------------------------------------
 int ARDrone::open(const char *ardrone_addr)
 {
@@ -78,9 +78,6 @@ int ARDrone::open(const char *ardrone_addr)
     if (!getVersionInfo()) return 0;
     printf("AR.Drone Ver. %d.%d.%d\n", version.major, version.minor, version.revision);
 
-    // Initialize Video
-    if (!initVideo()) return 0;
-
     // Initialize AT Command
     if (!initCommand()) return 0;
 
@@ -89,6 +86,9 @@ int ARDrone::open(const char *ardrone_addr)
 
     // Initialize Navdata
     if (!initNavdata()) return 0;
+
+    // Initialize Video
+    if (!initVideo()) return 0;
 
     // Wait for updating state
     Sleep(500);
@@ -103,7 +103,7 @@ int ARDrone::open(const char *ardrone_addr)
 // --------------------------------------------------------------------------
 // ARDrone::update()
 // Description  : Update the informations.
-// Return value : SUCCESS: 1  FAILED: 0
+// Return value : SUCCESS: 1  FAILURE: 0
 // --------------------------------------------------------------------------
 int ARDrone::update(void)
 {

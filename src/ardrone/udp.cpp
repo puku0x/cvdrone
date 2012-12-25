@@ -22,7 +22,7 @@ UDPSocket::~UDPSocket()
 // --------------------------------------------------------------------------
 // UDPSocket::open(IP address, Port number)
 // Description  : Initialize specified  socket.
-// Return value : SUCCESS: 1  FAILED: 0
+// Return value : SUCCESS: 1  FAILURE: 0
 // --------------------------------------------------------------------------
 int UDPSocket::open(const char *addr, int port)
 {
@@ -71,7 +71,7 @@ int UDPSocket::open(const char *addr, int port)
 // --------------------------------------------------------------------------
 // UDPSocket:::send2(Sending data, Size of data)
 // Description  : Send the specified data.
-// Return value : SUCCESS: Number of sent bytes  FAILED: 0
+// Return value : SUCCESS: Number of sent bytes  FAILURE: 0
 // --------------------------------------------------------------------------
 int UDPSocket::send2(void *data, int size)
 {
@@ -88,7 +88,7 @@ int UDPSocket::send2(void *data, int size)
 // --------------------------------------------------------------------------
 // UDPSocket::sendf(Messages)
 // Description  : Send the data with format.
-// Return value : SUCCESS: Number of sent bytes  FAILED: 0
+// Return value : SUCCESS: Number of sent bytes  FAILURE: 0
 // --------------------------------------------------------------------------
 int UDPSocket::sendf(char *str, ...)
 {
@@ -110,7 +110,7 @@ int UDPSocket::sendf(char *str, ...)
 // --------------------------------------------------------------------------
 // UDPSocket::receive(Receiving data, Size of data)
 // Description  : Receive the data.
-// Return value : SUCCESS: Number of received bytes  FAILED: 0
+// Return value : SUCCESS: Number of received bytes  FAILURE: 0
 // --------------------------------------------------------------------------
 int UDPSocket::receive(void *data, int size)
 {

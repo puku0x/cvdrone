@@ -54,4 +54,3 @@ int main(int argc, char **argv)
     ardrone.close();
 
     return 0;
-}

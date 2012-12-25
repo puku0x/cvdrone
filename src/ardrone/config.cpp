@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------
 // ARDrone::initConfig()
 // Description  : Initialize the Config.
-// Return value : SUCCESS: 1  FAILED: 0
+// Return value : SUCCESS: 1  FAILURE: 0
 // --------------------------------------------------------------------------
 int ARDrone::initConfig(void)
 {
@@ -45,12 +45,22 @@ int ARDrone::initConfig(void)
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x81);
         Sleep(100);
 
+        // Output video with MP4_360P_H264_720P_CODEC
+        //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x82);
+        //Sleep(100);
+
         // Output video with 720p
         //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x83);
         //Sleep(100);
 
-        // Set video channel
+        // Output video with MP4_360P_H264_360P_CODEC
+        //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x88);
+        //Sleep(100);
+
+        // Set video channel to default
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"0\"\r", seq++);
         Sleep(100);
@@ -85,7 +95,7 @@ int ARDrone::initConfig(void)
         //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x40);
         //Sleep(100);
         
-        // Set video channel
+        // Set video channel to default
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"0\"\r", seq++);
         Sleep(100);
 
@@ -100,7 +110,7 @@ int ARDrone::initConfig(void)
 // --------------------------------------------------------------------------
 // ARDrone::getConfig()
 // Description  : Get current configurations of AR.Drone.
-// Return value : SUCCESS: 1  FAILED: 0
+// Return value : SUCCESS: 1  FAILURE: 0
 // --------------------------------------------------------------------------
 int ARDrone::getConfig(void)
 {

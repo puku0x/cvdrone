@@ -12,7 +12,7 @@
 // --------------------------------------------------------------------------
 // ARDrone::initVideo()
 // Description  : Initialize video.
-// Return value : SUCCESS: 1  FAILED: 0
+// Return value : SUCCESS: 1  FAILURE: 0
 // --------------------------------------------------------------------------
 int ARDrone::initVideo(void)
 {
@@ -73,7 +73,7 @@ int ARDrone::initVideo(void)
     }
 
     // Allocate an IplImage
-    img = cvCreateImage(cvSize(pCodecCtx->width, pCodecCtx->height), IPL_DEPTH_8U, 3);
+    img = cvCreateImage(cvSize(pCodecCtx->width, (pCodecCtx->height == 368) ? 360 : pCodecCtx->height), IPL_DEPTH_8U, 3);
     if (!img) return 0;
     cvZero(img);
 
@@ -116,14 +116,14 @@ UINT ARDrone::loopVideo(void)
 // --------------------------------------------------------------------------
 // ARDrone::getVideo()
 // Description  : Get AR.Drone's video stream.
-// Return value : SUCCESS: 1  FAILED: 0
+// Return value : SUCCESS: 1  FAILURE: 0
 // --------------------------------------------------------------------------
 int ARDrone::getVideo(void)
 {
     // AR.Drone 2.0
     if (version.major == ARDRONE_VERSION_2) {
         AVPacket packet;
-        int frameFinished;
+        int frameFinished = 0;
 
         // Read all frames
         while (av_read_frame(pFormatCtx, &packet) >= 0) {
@@ -140,6 +140,10 @@ int ARDrone::getVideo(void)
 
                 // Disable mutex lock
                 ReleaseMutex(mutexVideo);
+
+                // Free the packet and break immidiately
+                av_free_packet(&packet);
+                break;
             }
 
             // Free the packet
@@ -187,7 +191,7 @@ IplImage* ARDrone::getImage(void)
         WaitForSingleObject(mutexVideo, INFINITE);
 
         // Copy the frame to the IplImage
-        memcpy(img->imageData, pFrameBGR->data[0], pCodecCtx->width * pCodecCtx->height * sizeof(uint8_t) * 3);
+        memcpy(img->imageData, pFrameBGR->data[0], pCodecCtx->width * ((pCodecCtx->height == 368) ? 360 : pCodecCtx->height) * sizeof(uint8_t) * 3);
 
         // Disable mutex lock
         ReleaseMutex(mutexVideo);

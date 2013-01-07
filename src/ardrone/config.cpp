@@ -1,4 +1,25 @@
-// Copyright(C) 2012 puku0x
+// -------------------------------------------------------------------------
+// CV Drone (= OpenCV + AR.Drone)
+// Copyright(C) 2013 puku0x
+// https://github.com/puku0x/cvdrone
+//
+// This source file is part of CV Drone library.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of EITHER:
+// (1) The GNU Lesser General Public License as published by the Free
+//     Software Foundation; either version 2.1 of the License, or (at
+//     your option) any later version. The text of the GNU Lesser
+//     General Public License is included with this library in the
+//     file cvdrone-license-LGPL.txt.
+// (2) The BSD-style license that is included with this library in
+//     the file cvdrone-license-BSD.txt.
+// 
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files
+// cvdrone-license-LGPL.txt and cvdrone-license-BSD.txt for more details.
+// -------------------------------------------------------------------------
 
 #include "ardrone.h"
 
@@ -40,25 +61,13 @@ int ARDrone::initConfig(void)
         sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"0\"\r", seq++);
         Sleep(100);
 
-        // Output video with 360p
+        // Set video codec
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x81);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x81);   // H264_360P_CODEC
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x82); // MP4_360P_H264_720P_CODEC
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x83); // H264_720P_CODEC
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x88); // MP4_360P_H264_360P_CODEC
         Sleep(100);
-
-        // Output video with MP4_360P_H264_720P_CODEC
-        //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x82);
-        //Sleep(100);
-
-        // Output video with 720p
-        //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x83);
-        //Sleep(100);
-
-        // Output video with MP4_360P_H264_360P_CODEC
-        //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x88);
-        //Sleep(100);
 
         // Set video channel to default
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
@@ -87,13 +96,10 @@ int ARDrone::initConfig(void)
         sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"0\"\r", seq++);
         Sleep(100);
 
-        // Output video with UVLC
-        sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x20);
+        // Set video codec
+        sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x20);   // UVLC_CODEC
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x40); // P264_CODEC
         Sleep(100);
-
-        // Output video with P264
-        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x40);
-        //Sleep(100);
         
         // Set video channel to default
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"0\"\r", seq++);

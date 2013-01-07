@@ -26,19 +26,6 @@
 #ifndef AVUTIL_COMMON_H
 #define AVUTIL_COMMON_H
 
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
-    #include <inttypes.h>
-#elif defined(_MSC_VER) || defined(__BORLANDC__)
-    #if !defined(AVUTIL_COMMON_UINT32_DEFINED)
-        typedef unsigned int uint32_t;
-        typedef unsigned __int64 uint64_t;
-        #define UINT64_C(v) (v ## ui64)
-        #define AVUTIL_COMMON_UINT32_DEFINED
-    #endif
-#else
-    #include <inttypes.h>
-#endif
-
 #include <ctype.h>
 #include <errno.h>
 #include <inttypes.h>
@@ -110,6 +97,9 @@ av_const int av_log2_16bit(unsigned v);
  */
 static av_always_inline av_const int av_clip_c(int a, int amin, int amax)
 {
+#if defined(HAVE_AV_CONFIG_H) && defined(ASSERT_LEVEL) && ASSERT_LEVEL >= 2
+    if (amin > amax) abort();
+#endif
     if      (a < amin) return amin;
     else if (a > amax) return amax;
     else               return a;
@@ -124,6 +114,9 @@ static av_always_inline av_const int av_clip_c(int a, int amin, int amax)
  */
 static av_always_inline av_const int64_t av_clip64_c(int64_t a, int64_t amin, int64_t amax)
 {
+#if defined(HAVE_AV_CONFIG_H) && defined(ASSERT_LEVEL) && ASSERT_LEVEL >= 2
+    if (amin > amax) abort();
+#endif
     if      (a < amin) return amin;
     else if (a > amax) return amax;
     else               return a;
@@ -229,6 +222,9 @@ static av_always_inline int av_sat_dadd32_c(int a, int b)
  */
 static av_always_inline av_const float av_clipf_c(float a, float amin, float amax)
 {
+#if defined(HAVE_AV_CONFIG_H) && defined(ASSERT_LEVEL) && ASSERT_LEVEL >= 2
+    if (amin > amax) abort();
+#endif
     if      (a < amin) return amin;
     else if (a > amax) return amax;
     else               return a;
@@ -284,16 +280,17 @@ static av_always_inline av_const int av_popcount64_c(uint64_t x)
 #define GET_UTF8(val, GET_BYTE, ERROR)\
     val= GET_BYTE;\
     {\
-        int ones= 7 - av_log2(val ^ 255);\
-        if(ones==1)\
+        uint32_t top = (val & 128) >> 1;\
+        if ((val & 0xc0) == 0x80)\
             ERROR\
-        val&= 127>>ones;\
-        while(--ones > 0){\
+        while (val & top) {\
             int tmp= GET_BYTE - 128;\
             if(tmp>>6)\
                 ERROR\
             val= (val<<6) + tmp;\
+            top <<= 5;\
         }\
+        val &= (top << 1) - 1;\
     }
 
 /**

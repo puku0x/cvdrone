@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\3rdparty\opencv\include;..\..\src\3rdparty\ffmpeg\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;"
+				AdditionalIncludeDirectories="..\..\src\3rdparty\opencv\include;..\..\src\3rdparty\ffmpeg\include;..\..\src\3rdparty\kijineko\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;__STDC_CONSTANT_MACROS;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -121,8 +121,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\src\3rdparty\opencv\include;..\..\src\3rdparty\ffmpeg\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;"
+				AdditionalIncludeDirectories="..\..\src\3rdparty\opencv\include;..\..\src\3rdparty\ffmpeg\include;..\..\src\3rdparty\kijineko\include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;__STDC_CONSTANT_MACROS;"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"

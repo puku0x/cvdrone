@@ -99,6 +99,9 @@ typedef struct AVPixFmtDescriptor{
  */
 #define PIX_FMT_PSEUDOPAL 64
 
+#define PIX_FMT_ALPHA   128 ///< The pixel format has an alpha channel
+
+
 #if FF_API_PIX_FMT_DESC
 /**
  * The array of all the pixel format descriptors.
@@ -186,6 +189,12 @@ char *av_get_pix_fmt_string (char *buf, int buf_size, enum AVPixelFormat pix_fmt
 int av_get_bits_per_pixel(const AVPixFmtDescriptor *pixdesc);
 
 /**
+ * Return the number of bits per pixel for the pixel format
+ * described by pixdesc, including any padding or unused bits.
+ */
+int av_get_padded_bits_per_pixel(const AVPixFmtDescriptor *pixdesc);
+
+/**
  * @return a pixel format descriptor for provided pixel format or NULL if
  * this pixel format is unknown.
  */
@@ -205,5 +214,24 @@ const AVPixFmtDescriptor *av_pix_fmt_desc_next(const AVPixFmtDescriptor *prev);
  * is not a valid pointer to a pixel format descriptor.
  */
 enum AVPixelFormat av_pix_fmt_desc_get_id(const AVPixFmtDescriptor *desc);
+
+/**
+ * Utility function to access log2_chroma_w log2_chroma_h from
+ * the pixel format AVPixFmtDescriptor.
+ *
+ * See avcodec_get_chroma_sub_sample() for a function that asserts a
+ * valid pixel format instead of returning an error code.
+ * Its recommanded that you use avcodec_get_chroma_sub_sample unless
+ * you do check the return code!
+ *
+ * @param[in]  pix_fmt the pixel format
+ * @param[out] h_shift store log2_chroma_h
+ * @param[out] v_shift store log2_chroma_w
+ *
+ * @return 0 on success, AVERROR(ENOSYS) on invalid or unknown pixel format
+ */
+int av_pix_fmt_get_chroma_sub_sample(enum AVPixelFormat pix_fmt,
+                                     int *h_shift, int *v_shift);
+
 
 #endif /* AVUTIL_PIXDESC_H */

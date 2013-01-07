@@ -1,23 +1,24 @@
 -----------------------------------------------------------------
  CV Drone (= OpenCV + AR.Drone)
- Copyright (C) 2012 puku0x
+ Copyright (C) 2013 puku0x
  https://github.com/puku0x/cvdrone
 -----------------------------------------------------------------
 
 INTRODUCTION
-  This program is free software.
+  CV Drone is free software; you can redistribute it and/or
+  modify it under the terms of EITHER:
+   (1) The GNU Lesser General Public License as published by the Free
+       Software Foundation; either version 2.1 of the License, or (at
+       your option) any later version. The text of the GNU Lesser
+       General Public License is included with this library in the
+       file cvdrone-license-LGPL.txt.
+   (2) The BSD-style license that is included with this library in
+       the file cvdrone-license-BSD.txt.
 
-  You can redistribute it and/or modify it under the terms of the GNU General
-  Public License as published by the Free Software Foundation; either version
-  3 of the License, or (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful, but WITHOUT
-  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-  more details.
-
-  You should have received a copy of the GNU General Public License along with
-  this program. If not, please see http://www.gnu.org/licenses .
+  This software is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files
+  cvdrone-license-LGPL.txt and cvdrone-license-BSD.txt for more details.
 
 HOW TO INSTALL
   Please unzip "cvdrone-master.zip" in any directory.
@@ -50,9 +51,8 @@ LIBRARY DEPENDENCIES
   CV Drone uses following libraries.
   - OpenCV 2.4.3
     http://opencv.org/
-  - FFmpeg 1.0 (git-11d695d)
+  - FFmpeg 1.0 (git-631ec06)
     http://www.ffmpeg.org/
-    http://ffmpeg.zeranoe.com/builds/
   - stdint.h for Visual C++
     http://www.kijineko.co.jp/node/63
 

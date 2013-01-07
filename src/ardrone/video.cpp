@@ -1,4 +1,25 @@
-// Copyright(C) 2012 puku0x
+// -------------------------------------------------------------------------
+// CV Drone (= OpenCV + AR.Drone)
+// Copyright(C) 2013 puku0x
+// https://github.com/puku0x/cvdrone
+//
+// This source file is part of CV Drone library.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of EITHER:
+// (1) The GNU Lesser General Public License as published by the Free
+//     Software Foundation; either version 2.1 of the License, or (at
+//     your option) any later version. The text of the GNU Lesser
+//     General Public License is included with this library in the
+//     file cvdrone-license-LGPL.txt.
+// (2) The BSD-style license that is included with this library in
+//     the file cvdrone-license-BSD.txt.
+// 
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files
+// cvdrone-license-LGPL.txt and cvdrone-license-BSD.txt for more details.
+// -------------------------------------------------------------------------
 
 #include "ardrone.h"
 #include "uvlc.h"

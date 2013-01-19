@@ -132,7 +132,7 @@ int ARDrone::update(void)
 
     // Reset Watch-Dog every 100ms
     if (ardGetTickCount() - timerWdg > 100) {
-        sockCommand.sendf("AT*COMWDG=%d\r", seq++);
+        resetWatchDog();
         timerWdg = ardGetTickCount();
     }
 

@@ -5,7 +5,7 @@
 
 // --------------------------------------------------------------------------
 // main(Number of arguments, Value of arguments)
-// Description  : This is the main function.
+// Description  : This is a main function.
 // Return value : SUCCESS:0  ERROR:-1
 // --------------------------------------------------------------------------
 int main(int argc, char **argv)

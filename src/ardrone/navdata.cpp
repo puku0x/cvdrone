@@ -119,9 +119,9 @@ int ARDrone::getNavdata(void)
             WaitForSingleObject(mutexNavdata, INFINITE);
 
             // Update Navdata
-            memcpy(&navdata, buf, sizeof(NAVDATA));
+            memcpy((void*)&navdata, (const void*)buf, sizeof(NAVDATA));
 
-            // Disable mutex lock
+			// Disable mutex lock
             ReleaseMutex(mutexNavdata);
         }
     }
@@ -136,7 +136,7 @@ int ARDrone::getNavdata(void)
 // --------------------------------------------------------------------------
 double ARDrone::getRoll(void)
 {
-    return navdata.phi * 0.001 * DEG_TO_RAD;
+    return navdata.demo.phi * 0.001 * DEG_TO_RAD;
 }
 
 // --------------------------------------------------------------------------
@@ -146,7 +146,7 @@ double ARDrone::getRoll(void)
 // --------------------------------------------------------------------------
 double ARDrone::getPitch(void)
 {
-    return navdata.theta * 0.001 * DEG_TO_RAD;
+    return navdata.demo.theta * 0.001 * DEG_TO_RAD;
 }
 
 // --------------------------------------------------------------------------
@@ -156,7 +156,7 @@ double ARDrone::getPitch(void)
 // --------------------------------------------------------------------------
 double ARDrone::getYaw(void)
 {
-    return navdata.psi * 0.001 * DEG_TO_RAD;
+    return navdata.demo.psi * 0.001 * DEG_TO_RAD;
 }
 
 // --------------------------------------------------------------------------
@@ -166,7 +166,7 @@ double ARDrone::getYaw(void)
 // --------------------------------------------------------------------------
 double ARDrone::getAltitude(void)
 {
-    return navdata.altitude * 0.001;
+    return navdata.demo.altitude * 0.001;
 }
 
 // --------------------------------------------------------------------------
@@ -176,10 +176,10 @@ double ARDrone::getAltitude(void)
 // --------------------------------------------------------------------------
 double ARDrone::getVelocity(double *vx, double *vy, double *vz)
 {
-    if (vx) *vx = navdata.vx * 0.001;
-    if (vy) *vy = navdata.vy * 0.001;
-    if (vz) *vz = navdata.vz * 0.001;
-    return sqrt(navdata.vx*navdata.vx + navdata.vy*navdata.vy + navdata.vz*navdata.vz);
+    if (vx) *vx = navdata.demo.vx * 0.001;
+    if (vy) *vy = navdata.demo.vy * 0.001;
+    if (vz) *vz = navdata.demo.vz * 0.001;
+    return sqrt(navdata.demo.vx*navdata.demo.vx + navdata.demo.vy*navdata.demo.vy + navdata.demo.vz*navdata.demo.vz);
 }
 
 // --------------------------------------------------------------------------
@@ -189,7 +189,7 @@ double ARDrone::getVelocity(double *vx, double *vy, double *vz)
 // --------------------------------------------------------------------------
 int ARDrone::getBatteryPercentage(void)
 {
-    return navdata.vbat_flying_percentage;
+    return navdata.demo.vbat_flying_percentage;
 }
 
 // --------------------------------------------------------------------------

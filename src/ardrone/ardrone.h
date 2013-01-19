@@ -210,6 +210,25 @@ private:
 // Navdata
 #pragma pack(push, 1)
 struct NAVDATA {
+    // 3x3 matrix
+    struct matrix33_t
+    { 
+        float m11, m12, m13;
+        float m21, m22, m23;
+        float m31, m32, m33;
+    } ;
+
+    // 3x1 vector
+    union vector31_t {
+        float v[3];
+        struct    
+        {
+            float x;
+            float y;
+            float z;
+        };
+    };
+
     // Header
     unsigned int   header;
     unsigned int   ardrone_state;
@@ -217,17 +236,51 @@ struct NAVDATA {
     unsigned int   vision_defined;
 
     // Demo
-    unsigned short tag;
-    unsigned short size;
-    unsigned int   ctrl_state;
-    unsigned int   vbat_flying_percentage;
-    float          theta;
-    float          phi;
-    float          psi;
-    int            altitude;
-    float          vx;
-    float          vy;
-    float          vz;
+    struct NAVDATA_DEMO {
+        unsigned short tag;
+        unsigned short size;
+        unsigned int   ctrl_state;
+        unsigned int   vbat_flying_percentage;
+        float          theta;
+        float          phi;
+        float          psi;
+        int            altitude;
+        float          vx;
+        float          vy;
+        float          vz;
+
+        // Streamed frame index
+        unsigned int num_frames;                // Don't use
+
+        // Camera parameters compute by detection
+        matrix33_t   detection_camera_rot;      // Don't use
+        vector31_t   detection_camera_trans;    // Don't use
+        unsigned int detection_tag_index;       // Don't use
+
+        // Type of tag searched in detection
+        unsigned int detection_camera_type;     // Don't use
+
+        // Camera parameters compute by drone
+        matrix33_t drone_camera_rot;            // Don't use
+        vector31_t drone_camera_trans;          // Don't use
+    } demo;
+
+    // Vision
+    struct NAVDATA_VISION {
+        unsigned short tag_vision;
+        unsigned short size_vision;
+        unsigned int   nb_detected;
+        unsigned int   type[4];
+        unsigned int   xc[4];
+        unsigned int   yc[4];
+        unsigned int   width[4];
+        unsigned int   height[4];
+        unsigned int   dist[4];
+        float          orientation_angle[4];
+        matrix33_t     rotation[4];
+        vector31_t     translation[4];
+        unsigned int   camera_source[4];
+    } vision;
 };
 #pragma pack(pop)
 
@@ -236,7 +289,6 @@ struct VERSION_INFO {
     int major;
     int minor;
     int revision;
-    int build;
 };
 
 // AR.Drone class

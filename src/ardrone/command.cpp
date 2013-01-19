@@ -180,6 +180,7 @@ void ARDrone::stopVideoRecord(void)
         // Finalize video
         finalizeVideo();
 
+        // Enable video record
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"FALSE\"\r", seq++);
         Sleep(100);

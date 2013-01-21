@@ -40,6 +40,10 @@ int ARDrone::initConfig(void)
         sockCommand.sendf("AT*MISC=%d,%d,%d,%d,%d\r", seq++, 2, 20, 2000, 3000);
         //Sleep(100);
 
+        // Send flat trim
+        sockCommand.sendf("AT*FTRIM=%d,\r", seq++);
+        //Sleep(100);
+
         // Set the configuration IDs
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"custom:session_id\",\"%s\"\r", seq++, ARDRONE_SESSION_ID);
@@ -73,10 +77,6 @@ int ARDrone::initConfig(void)
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"0\"\r", seq++);
         Sleep(100);
-
-        // Send flat trim
-        sockCommand.sendf("AT*FTRIM=%d,\r", seq++);
-        //Sleep(100);
     }
     // AR.Drone 1.0
     else {
@@ -86,6 +86,10 @@ int ARDrone::initConfig(void)
 
         // Send undocumented command
         sockCommand.sendf("AT*MISC=%d,%d,%d,%d,%d\r", seq++, 2, 20, 2000, 3000);
+        //Sleep(100);
+
+        // Send flat trim
+        sockCommand.sendf("AT*FTRIM=%d,\r", seq++);
         //Sleep(100);
 
         // Enable video
@@ -104,10 +108,6 @@ int ARDrone::initConfig(void)
         // Set video channel to default
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"0\"\r", seq++);
         Sleep(100);
-
-        // Send flat trim
-        sockCommand.sendf("AT*FTRIM=%d,\r", seq++);
-        //Sleep(100);
     }
     
     return 1;

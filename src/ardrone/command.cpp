@@ -111,6 +111,7 @@ void ARDrone::setCamera(int channel)
     // ARDrone 1.0
     else {
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"%d\"\r", seq++, channel % 4);
+        Sleep(100);
     }
 }
 

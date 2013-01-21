@@ -95,7 +95,12 @@ int ARDrone::initVideo(void)
 
     // Allocate an IplImage
     img = cvCreateImage(cvSize(pCodecCtx->width, (pCodecCtx->height == 368) ? 360 : pCodecCtx->height), IPL_DEPTH_8U, 3);
-    if (!img) return 0;
+    if (!img) {
+        printf("ERROR: cvCreateImage() failed. (%s, %d)\n", __FILE__, __LINE__);
+        return 0;
+    }
+
+    // Clear the image
     cvZero(img);
 
     // Create a mutex

@@ -44,7 +44,7 @@ int ARDrone::initNavdata(void)
 
     // AR.Drone 2.0
     if (version.major == ARDRONE_VERSION_2) {
-       // Disable BOOTSTRAP mode
+        // Disable BOOTSTRAP mode
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"general:navdata_demo\",\"TRUE\"\r", seq++);
         Sleep(100);
@@ -54,7 +54,7 @@ int ARDrone::initNavdata(void)
     }
     // AR.Drone 1.0
     else {
-       // Disable BOOTSTRAP mode
+        // Disable BOOTSTRAP mode
         sockCommand.sendf("AT*CONFIG=%d,\"general:navdata_demo\",\"TRUE\"\r", seq++);
 
         // Send ACK
@@ -121,7 +121,7 @@ int ARDrone::getNavdata(void)
             // Update Navdata
             memcpy((void*)&navdata, (const void*)buf, sizeof(NAVDATA));
 
-			// Disable mutex lock
+            // Disable mutex lock
             ReleaseMutex(mutexNavdata);
         }
     }

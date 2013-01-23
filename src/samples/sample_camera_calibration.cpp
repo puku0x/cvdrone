@@ -12,10 +12,31 @@
 #define PAT_SIZE   (PAT_ROW*PAT_COL)
 #define CHESS_SIZE (24.0)               // Size of a pattern [mm]
 
+// --------------------------------------------------------------------------
+// cvDrawText(Image, Drowing point, Messages)
+// Description  : Draw the specified text.
+// Return value : NONE
+// --------------------------------------------------------------------------
+inline void cvDrawText(IplImage *image, CvPoint point, const char *fmt, ...)
+{
+    // Font
+    static CvFont font = cvFont(1.0);
+
+    // Apply format
+    char text[256];
+    va_list ap;
+    va_start(ap, fmt);
+    vsprintf(text, fmt, ap);
+    va_end(ap);
+
+    // Draw the text
+    cvPutText(image, text, point, &font, cvScalarAll(255));
+}
+
 #if CALIB_MODE
 // --------------------------------------------------------------------------
-// main(Number of arguments, Value of arguments)
-// Description  : This is a main function.
+// main(Number of arguments, Argument values)
+// Description  : This is the entry point of the program.
 // Return value : SUCCESS:0  ERROR:-1
 // --------------------------------------------------------------------------
 int main(int argc, char **argv)
@@ -41,7 +62,7 @@ int main(int argc, char **argv)
         // Get an image
         IplImage *image = ardrone.getImage();
 
-        // If you push Space key,
+        // If you push Space key
         if (KEY_PUSH(VK_SPACE)) {
             // Convert the camera image to grayscale
             IplImage *gray = cvCreateImage(cvGetSize(image), IPL_DEPTH_8U, 1);
@@ -53,7 +74,7 @@ int main(int argc, char **argv)
             CvPoint2D32f corners[PAT_SIZE];
             int found = cvFindChessboardCorners(gray, size, corners, &corner_count);
 
-            // Success
+            // Detected
             if (found) {
                 // Draw corners.
                 cvDrawChessboardCorners(image, size, corners, corner_count, found);
@@ -81,7 +102,7 @@ int main(int argc, char **argv)
 
     // At least one image was taken
     if (!images.empty()) {
-        // Total number of images.
+        // Total number of images
         const int num = (int)images.size();
 
         //// For debug
@@ -161,8 +182,8 @@ int main(int argc, char **argv)
 }
 #else
 // --------------------------------------------------------------------------
-// main(Number of arguments, Value of arguments)
-// Description  : This is a main function.
+// main(Number of arguments, Argument values)
+// Description  : This is the entry point of the program.
 // Return value : SUCCESS:0  ERROR:-1
 // --------------------------------------------------------------------------
 int main(int argc, char **argv)

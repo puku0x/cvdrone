@@ -6,8 +6,8 @@
 #define KEY_PUSH(key) (GetAsyncKeyState(key) & 0x0001)
 
 // --------------------------------------------------------------------------
-// main(Number of arguments, Value of arguments)
-// Description  : This is a main function.
+// main(Number of arguments, Argument values)
+// Description  : This is the entry point of the program.
 // Return value : SUCCESS:0  ERROR:-1
 // --------------------------------------------------------------------------
 int main(int argc, char **argv)
@@ -126,6 +126,8 @@ int main(int argc, char **argv)
                 // Sample points
                 float x = (con->flSamples[i][0]);
                 float y = (con->flSamples[i][1]);
+
+                // Valid sample point
                 if (x > 0 && x < image->width && y > 0 && y < image->height) {
                     // Assume as gauss distribution
                     double sigma = 50.0;
@@ -137,10 +139,10 @@ int main(int argc, char **argv)
             }
         }
 
-        // Update
+        // Update phase
         cvConDensUpdateByTime(con);
 
-        // Accum
+        // Sum of positions and confidences for calcurate weighted mean value
         double sumX = 0, sumY = 0, sumConf = 0;
         for (int i = 0; i < con->SamplesNum; i++) {
             sumX += con->flConfidence[i] * con->flSamples[i][0];
@@ -165,7 +167,7 @@ int main(int argc, char **argv)
         cvReleaseMemStorage(&contourStorage);
     }
 
-    // Release a particle filter
+    // Release the particle filter
     cvReleaseMat(&lowerBound);
     cvReleaseMat(&upperBound);
     cvReleaseConDensation(&con);

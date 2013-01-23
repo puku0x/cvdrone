@@ -1,8 +1,8 @@
 #include "ardrone/ardrone.h"
 
 // --------------------------------------------------------------------------
-// main(Number of arguments, Value of arguments)
-// Description  : This is a main function.
+// main(Number of arguments, Argument values)
+// Description  : This is the entry point of the program.
 // Return value : SUCCESS:0  ERROR:-1
 // --------------------------------------------------------------------------
 int main(int argc, char **argv)

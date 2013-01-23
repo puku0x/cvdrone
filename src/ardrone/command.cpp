@@ -30,9 +30,9 @@
 // --------------------------------------------------------------------------
 int ARDrone::initCommand(void)
 {
-    // Open athe socket
+    // Open the IP address and port
     if (!sockCommand.open(ip, ARDRONE_COMMAND_PORT)) {
-        printf("ERROR: UDPSocket::open(port=%d) failed. (%s, %d)\n", ARDRONE_COMMAND_PORT, __FILE__, __LINE__);
+        ardError("UDPSocket::open(port=%d) failed. (%s, %d)\n", ARDRONE_COMMAND_PORT, __FILE__, __LINE__);
         return 0;
     }
 

@@ -43,7 +43,7 @@ int ARDrone::initVideo(void)
         char filename[256];
         sprintf(filename, "tcp://%s:%d", ip, ARDRONE_VIDEO_PORT);
         if (avformat_open_input(&pFormatCtx, filename, NULL, NULL) < 0) {
-            printf("ERROR: avformat_open_input() failed. (%s, %d)\n", __FILE__, __LINE__);
+            ardError("avformat_open_input() was failed. (%s, %d)\n", __FILE__, __LINE__);
             return 0;
         }
 
@@ -55,13 +55,13 @@ int ARDrone::initVideo(void)
         pCodecCtx = pFormatCtx->streams[0]->codec;
         AVCodec *pCodec = avcodec_find_decoder(pCodecCtx->codec_id);
         if (pCodec == NULL) {
-            printf("ERROR: avcodec_find_decoder() failed. (%s, %d)\n", __FILE__, __LINE__);
+            ardError("avcodec_find_decoder() was failed. (%s, %d)\n", __FILE__, __LINE__);
             return 0;
         }
 
         // Open codec
         if (avcodec_open2(pCodecCtx, pCodec, NULL) < 0) {
-            printf("ERROR: avcodec_open2() failed. (%s, %d)\n", __FILE__, __LINE__);
+            ardError("avcodec_open2() was failed. (%s, %d)\n", __FILE__, __LINE__);
             return 0;
         }
 
@@ -78,9 +78,9 @@ int ARDrone::initVideo(void)
     }
     // AR.Drone 1.0
     else {
-        // Open the socket
+        // Open the IP address and port
         if (!sockVideo.open(ip, ARDRONE_VIDEO_PORT)) {
-            printf("ERROR: UDPSocket::open(port=%d) failed. (%s, %d)\n", ARDRONE_VIDEO_PORT, __FILE__, __LINE__);
+            ardError("UDPSocket::open(port=%d) was failed. (%s, %d)\n", ARDRONE_VIDEO_PORT, __FILE__, __LINE__);
             return 0;
         }
 
@@ -96,7 +96,7 @@ int ARDrone::initVideo(void)
     // Allocate an IplImage
     img = cvCreateImage(cvSize(pCodecCtx->width, (pCodecCtx->height == 368) ? 360 : pCodecCtx->height), IPL_DEPTH_8U, 3);
     if (!img) {
-        printf("ERROR: cvCreateImage() failed. (%s, %d)\n", __FILE__, __LINE__);
+        ardError("cvCreateImage() was failed. (%s, %d)\n", __FILE__, __LINE__);
         return 0;
     }
 
@@ -113,7 +113,7 @@ int ARDrone::initVideo(void)
     UINT id;
     threadVideo = (HANDLE)_beginthreadex(NULL, 0, runVideo, this, 0, &id);
     if (threadVideo == INVALID_HANDLE_VALUE) {
-        printf("ERROR: _beginthreadex() failed. (%s, %d)\n", __FILE__, __LINE__);
+        ardError("_beginthreadex() was failed. (%s, %d)\n", __FILE__, __LINE__);
         return 0;
     }
 

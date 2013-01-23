@@ -1,6 +1,6 @@
 // -------------------------------------------------------------------------
 // CV Drone (= OpenCV + AR.Drone)
-// Copyright(C) 2012 puku0x
+// Copyright(C) 2013 puku0x
 // https://github.com/puku0x/cvdrone
 //
 // This program is free software; you can redistribute it and/or
@@ -132,7 +132,8 @@ int ARDrone::update(void)
 
     // Reset Watch-Dog every 100ms
     if (ardGetTickCount() - timerWdg > 100) {
-        resetWatchDog();
+        //resetWatchDog();
+        sockCommand.sendf("AT*COMWDG=%d\r", seq++);
         timerWdg = ardGetTickCount();
     }
 

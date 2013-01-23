@@ -25,7 +25,7 @@
 
 // --------------------------------------------------------------------------
 // ARDrone::getVersionInfo()
-// Description  : Getting version information.
+// Description  : Get version information.
 // Return value : SUCCESS: 1  FAILURE: 0
 // --------------------------------------------------------------------------
 int ARDrone::getVersionInfo(void)
@@ -42,7 +42,7 @@ int ARDrone::getVersionInfo(void)
     // Connect to FTP server
     HINTERNET hConnection = InternetConnect(hInet, ip, ARDRONE_VERSION_PORT, "anonymous", "", INTERNET_SERVICE_FTP, INTERNET_FLAG_PASSIVE, 0);
     if (hConnection == NULL) {
-        printf("ERROR: InternetConnect(port=%d) failed. (%s, %d)\n", ARDRONE_VERSION_PORT, __FILE__, __LINE__);
+        ardError("InternetConnect(port=%d) was failed. (%s, %d)\n", ARDRONE_VERSION_PORT, __FILE__, __LINE__);
         InternetCloseHandle(hInet);
         return 0;
     }
@@ -50,9 +50,9 @@ int ARDrone::getVersionInfo(void)
     // Clear version
     ZeroMemory(&version, sizeof(VERSION_INFO));
 
-    // Get the file
+    // Get a file through FTP
     if (!FtpGetFile(hConnection, filename, filename, FALSE, FILE_ATTRIBUTE_NORMAL, INTERNET_FLAG_TRANSFER_BINARY, 0)) {
-        printf("ERROR: FtpGetFile() failed. (%s, %d)\n", __FILE__, __LINE__);
+        ardError("FtpGetFile() was failed. (%s, %d)\n", __FILE__, __LINE__);
         InternetCloseHandle(hConnection);
         InternetCloseHandle(hInet);
         return 0;
@@ -81,7 +81,7 @@ int ARDrone::getVersionInfo(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::getVersion()
-// Description  : Getting AR.Drone's version.
+// Description  : Get AR.Drone's version.
 // Return value : Version number of the AR.Drone.
 // --------------------------------------------------------------------------
 int ARDrone::getVersion(void)

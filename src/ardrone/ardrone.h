@@ -24,7 +24,7 @@
 // cvdrone-license-LGPL.txt and cvdrone-license-BSD.txt for more details.
 // -------------------------------------------------------------------------
 
-// Coodinate system
+// Coordinate system
 //   Front of the AR.Drone is X-axis, left is Y-axis, upper is Z-axis.
 //   Also front is 0.0 [rad], each axis CCW is positive.
 //            X
@@ -59,9 +59,9 @@
 
 // FFmpeg
 extern "C" {
-  #include <libavcodec/avcodec.h>
-  #include <libavformat/avformat.h>
-  #include <libswscale/swscale.h>
+#include <libavcodec/avcodec.h>
+    #include <libavformat/avformat.h>
+    #include <libswscale/swscale.h>
 }
 #pragma comment(lib, "avcodec.lib")
 #pragma comment(lib, "avdevice.lib")
@@ -415,7 +415,7 @@ protected:
 // --------------------------------------------------------------------------
 // ardGetTickCount(void)
 // Description  : High-resolution timer.
-// Return value : Tick counts [ms]
+// Return value : Time [ms]
 // --------------------------------------------------------------------------
 inline double ardGetTickCount(void)
 {
@@ -427,9 +427,9 @@ inline double ardGetTickCount(void)
     switch (flag) {
         // Initialize
         case 0:
-            // Get the performance frequency
+            // Get performance frequency
             if (!QueryPerformanceFrequency(&freq)) {
-                // Get the timer capacities
+                // Get timer capacities
                 TIMECAPS Caps;
                 if (timeGetDevCaps(&Caps, sizeof(TIMECAPS)) == TIMERR_NOERROR) {
                     // timeGetTime (Accuracy: 1ms)
@@ -493,7 +493,7 @@ inline void ardError(const char *message, ...)
 // --------------------------------------------------------------------------
 // ardAsk(Message)
 // Description  : Show a question window.
-// Return value : NO: 0 YES:1
+// Return value : NO:0 YES:1
 // --------------------------------------------------------------------------
 inline int ardAsk(const char *message, ...)
 {
@@ -507,27 +507,6 @@ inline int ardAsk(const char *message, ...)
 
     // Show message box
     return (MessageBox(NULL, str, "QUESTION", MB_YESNO|MB_ICONQUESTION|MB_TOPMOST|MB_SETFOREGROUND) == IDYES);
-}
-
-// --------------------------------------------------------------------------
-// cvDrawText(Image, Drowin point, Messages)
-// Description  : Draw the specified text.
-// Return value : NONE
-// --------------------------------------------------------------------------
-inline void cvDrawText(IplImage *image, CvPoint point, const char *fmt, ...)
-{
-    // Font
-    static CvFont font = cvFont(1.0);
-
-    // Apply format
-    char text[256];
-    va_list ap;
-    va_start(ap, fmt);
-    vsprintf(text, fmt, ap);
-    va_end(ap);
-
-    // Draw the text
-    cvPutText(image, text, point, &font, cvScalarAll(255));
 }
 
 #endif

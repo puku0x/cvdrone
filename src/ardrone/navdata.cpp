@@ -30,9 +30,9 @@
 // --------------------------------------------------------------------------
 int ARDrone::initNavdata(void)
 {
-    // Open the socket
+    // Open the IP address and port
     if (!sockNavdata.open(ip, ARDRONE_NAVDATA_PORT)) {
-        printf("ERROR: UDPSocket::open(port=%d) failed. (%s, %d)\n", ARDRONE_NAVDATA_PORT, __FILE__, __LINE__);
+        ardError("UDPSocket::open(port=%d) was failed. (%s, %d)\n", ARDRONE_NAVDATA_PORT, __FILE__, __LINE__);
         return 0;
     }
 
@@ -71,7 +71,7 @@ int ARDrone::initNavdata(void)
     UINT id;
     threadNavdata = (HANDLE)_beginthreadex(NULL, 0, runNavdata, this, 0, &id);
     if (threadNavdata == INVALID_HANDLE_VALUE) {
-        printf("ERROR: _beginthreadex() failed. (%s, %d)\n", __FILE__, __LINE__);
+        ardError("_beginthreadex() was failed. (%s, %d)\n", __FILE__, __LINE__);
         return 0;
     }
 
@@ -141,7 +141,7 @@ double ARDrone::getRoll(void)
 
 // --------------------------------------------------------------------------
 // ARDrone::getPitch()
-// Description  : Get surrent pitch angle of AR.Drone.
+// Description  : Get current pitch angle of AR.Drone.
 // Return value : Pitch angle [rad]
 // --------------------------------------------------------------------------
 double ARDrone::getPitch(void)

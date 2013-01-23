@@ -4,8 +4,8 @@
 #define KEY_PUSH(key) (GetAsyncKeyState(key) & 0x0001)
 
 // --------------------------------------------------------------------------
-// main(Number of arguments, Value of arguments)
-// Description  : This is a main function.
+// main(Number of arguments, Argument values)
+// Description  : This is the entry point of the program.
 // Return value : SUCCESS:0  ERROR:-1
 // --------------------------------------------------------------------------
 int main(int argc, char **argv)
@@ -20,7 +20,7 @@ int main(int argc, char **argv)
     }
 
     // Kalman filter
-    CvKalman* kalman = cvCreateKalman(4, 2);
+    CvKalman *kalman = cvCreateKalman(4, 2);
 
     // Setup
     cvSetIdentity(kalman->measurement_matrix, cvRealScalar(1.0));
@@ -108,24 +108,24 @@ int main(int argc, char **argv)
             CvMat measurement = cvMat(2, 1, CV_32FC1, m);
 
             // Correct phase
-            const CvMat* correction = cvKalmanCorrect(kalman, &measurement);
+            const CvMat *correction = cvKalmanCorrect(kalman, &measurement);
         }
 
         // Prediction phase
-        const CvMat* prediction = cvKalmanPredict(kalman);
+        const CvMat *prediction = cvKalmanPredict(kalman);
 
         // Display the image
         cvCircle(image, cvPointFrom32f(cvPoint2D32f(prediction->data.fl[0], prediction->data.fl[1])), 10, CV_RGB(0,255,0));
 		cvShowImage("camera", image);
 		cvWaitKey(1);
 
-        // Release memories
+        // Release the memories
         cvReleaseImage(&hsv);
         cvReleaseImage(&binalized);
         cvReleaseMemStorage(&contourStorage);
     }
 
-    // Release a kalman filter
+    // Release the kalman filter
     cvReleaseKalman(&kalman);
 
     // See you

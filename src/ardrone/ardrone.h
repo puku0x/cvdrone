@@ -73,20 +73,20 @@ extern "C" {
 
 // OpenCV
 #include <opencv2/opencv.hpp>
-#pragma comment(lib, "opencv_calib3d243.lib")
-#pragma comment(lib, "opencv_contrib243.lib")
-#pragma comment(lib, "opencv_core243.lib")
-#pragma comment(lib, "opencv_features2d243.lib")
-#pragma comment(lib, "opencv_flann243.lib")
-#pragma comment(lib, "opencv_highgui243.lib")
-#pragma comment(lib, "opencv_imgproc243.lib")
-#pragma comment(lib, "opencv_legacy243.lib")
-#pragma comment(lib, "opencv_ml243.lib")
-#pragma comment(lib, "opencv_objdetect243.lib")
-#pragma comment(lib, "opencv_photo243.lib")
-#pragma comment(lib, "opencv_stitching243.lib")
-#pragma comment(lib, "opencv_video243.lib")
-#pragma comment(lib, "opencv_videostab243.lib")
+#pragma comment(lib, "opencv_calib3d249.lib")
+#pragma comment(lib, "opencv_contrib249.lib")
+#pragma comment(lib, "opencv_core249.lib")
+#pragma comment(lib, "opencv_features2d249.lib")
+#pragma comment(lib, "opencv_flann249.lib")
+#pragma comment(lib, "opencv_highgui249.lib")
+#pragma comment(lib, "opencv_imgproc249.lib")
+#pragma comment(lib, "opencv_legacy249.lib")
+#pragma comment(lib, "opencv_ml249.lib")
+#pragma comment(lib, "opencv_objdetect249.lib")
+#pragma comment(lib, "opencv_photo249.lib")
+#pragma comment(lib, "opencv_stitching249.lib")
+#pragma comment(lib, "opencv_video249.lib")
+#pragma comment(lib, "opencv_videostab249.lib")
 
 // Macro definitions
 #define ARDRONE_VERSION_1           (1)             // AR.Drone 1.0

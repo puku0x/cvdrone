@@ -1,23 +1,12 @@
 #ifndef __OPENCV_GTESTCV_HPP__
 #define __OPENCV_GTESTCV_HPP__
 
-#if HAVE_CVCONFIG_H
+#ifdef HAVE_CVCONFIG_H
 #include "cvconfig.h"
 #endif
 #ifndef GTEST_CREATE_SHARED_LIBRARY
 #ifdef BUILD_SHARED_LIBS
 #define GTEST_LINKED_AS_SHARED_LIBRARY 1
-#endif
-#endif
-
-#ifdef ANDROID
-# include <android/api-level.h>
-# define GTEST_HAS_CLONE (__ANDROID_API__ > 7 && !defined __i386__)
-# define GTEST_HAS_POSIX_RE (__ANDROID_API__ > 7)
-# if defined _GLIBCXX_USE_WCHAR_T && _GLIBCXX_USE_WCHAR_T
-#  define GTEST_HAS_STD_WSTRING 1
-# else
-#  define GTEST_HAS_STD_WSTRING 0
 #endif
 #endif
 

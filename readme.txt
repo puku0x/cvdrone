@@ -49,7 +49,7 @@ FOR VS2010 USERS
 
 LIBRARY DEPENDENCIES
   CV Drone uses following libraries.
-  - OpenCV 2.4.3
+  - OpenCV 2.4.9 (git-a8a842332b)
     http://opencv.org/
   - FFmpeg 1.0 (git-631ec06)
     http://www.ffmpeg.org/

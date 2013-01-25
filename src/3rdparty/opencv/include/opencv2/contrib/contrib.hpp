@@ -583,7 +583,7 @@ namespace cv
         virtual ~StereoVar();
 
         //! the stereo correspondence operator that computes disparity map for the specified rectified stereo pair
-        CV_WRAP_AS(compute) virtual void operator()(const Mat& left, const Mat& right, Mat& disp);
+        CV_WRAP_AS(compute) virtual void operator()(const Mat& left, const Mat& right, CV_OUT Mat& disp);
 
         CV_PROP_RW int      levels;
         CV_PROP_RW double   pyrScale;
@@ -861,17 +861,6 @@ namespace cv
         // Optimization Criterion on given data in src and corresponding labels
         // in labels. If 0 (or less) number of components are given, they are
         // automatically determined for given data in computation.
-        LDA(const Mat& src, vector<int> labels,
-                int num_components = 0) :
-                    _num_components(num_components)
-        {
-            this->compute(src, labels); //! compute eigenvectors and eigenvalues
-        }
-
-        // Initializes and performs a Discriminant Analysis with Fisher's
-        // Optimization Criterion on given data in src and corresponding labels
-        // in labels. If 0 (or less) number of components are given, they are
-        // automatically determined for given data in computation.
         LDA(InputArrayOfArrays src, InputArray labels,
                 int num_components = 0) :
                     _num_components(num_components)
@@ -928,7 +917,7 @@ namespace cv
         CV_WRAP virtual void train(InputArrayOfArrays src, InputArray labels) = 0;
 
         // Updates a FaceRecognizer.
-        CV_WRAP void update(InputArrayOfArrays src, InputArray labels);
+        CV_WRAP virtual void update(InputArrayOfArrays src, InputArray labels);
 
         // Gets a prediction from a FaceRecognizer.
         virtual int predict(InputArray src) const = 0;

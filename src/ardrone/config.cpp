@@ -34,15 +34,15 @@ int ARDrone::initConfig(void)
     if (version.major == ARDRONE_VERSION_2) {
         // Send undocumented command
         sockCommand.sendf("AT*PMODE=%d,%d\r", seq++, 2);
-        //Sleep(100);
+        Sleep(100);
 
         // Send undocumented command
         sockCommand.sendf("AT*MISC=%d,%d,%d,%d,%d\r", seq++, 2, 20, 2000, 3000);
-        //Sleep(100);
+        Sleep(100);
 
         // Send flat trim
         sockCommand.sendf("AT*FTRIM=%d,\r", seq++);
-        //Sleep(100);
+        Sleep(100);
 
         // Set the configuration IDs
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
@@ -82,15 +82,15 @@ int ARDrone::initConfig(void)
     else {
         // Send undocumented command
         sockCommand.sendf("AT*PMODE=%d,%d\r", seq++, 2);
-        //Sleep(100);
+        Sleep(100);
 
         // Send undocumented command
         sockCommand.sendf("AT*MISC=%d,%d,%d,%d,%d\r", seq++, 2, 20, 2000, 3000);
-        //Sleep(100);
+        Sleep(100);
 
         // Send flat trim
         sockCommand.sendf("AT*FTRIM=%d,\r", seq++);
-        //Sleep(100);
+        Sleep(100);
 
         // Enable video
         sockCommand.sendf("AT*CONFIG=%d,\"general:video_enable\",\"TRUE\"\r", seq++);

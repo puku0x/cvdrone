@@ -58,9 +58,9 @@ int main(int argc, char **argv)
         cv::Mat RZ(3, 3, CV_64FC1, _RZ);
 
         // Time
-        static double last = ardGetTickCount();
-        double dt = (ardGetTickCount() - last) * 0.001;
-        last = ardGetTickCount();
+        static int64 last = cv::getTickCount();
+        double dt = (cv::getTickCount() - last) / cv::getTickFrequency();
+        last = cv::getTickCount();
 
         // Local movement
         double _M[] = {vx * dt, vy * dt, vz * dt};
@@ -71,6 +71,7 @@ int main(int argc, char **argv)
 
         // Position (x, y, z)
         double pos[3] = {P.at<double>(0,0), P.at<double>(1,0), P.at<double>(2,0)};
+        printf("x = %3.2f, y = %3.2f, z = %3.2f", pos[0], pos[1], pos[2]);
 
         // Take off / Landing
         if (KEY_PUSH(VK_SPACE)) {
@@ -95,7 +96,6 @@ int main(int argc, char **argv)
         // Display the image
         cvDrawCircle(map, cvPoint(-pos[1]*30.0 + map->width/2, -pos[0]*30.0 + map->height/2), 2, CV_RGB(255,0,0));
         cvShowImage("map", map);
-        cvDrawText(image, cvPoint(20, 20), "x = %3.2f, y = %3.2f, z = %3.2f", pos[0], pos[1], pos[2]);
         cvShowImage("camera", image);
         cvWaitKey(1);
     }

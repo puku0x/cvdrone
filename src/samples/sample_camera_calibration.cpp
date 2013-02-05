@@ -33,6 +33,25 @@ inline void cvDrawText(IplImage *image, CvPoint point, const char *fmt, ...)
     cvPutText(image, text, point, &font, cvScalarAll(255));
 }
 
+// --------------------------------------------------------------------------
+// cvAsk(Message)
+// Description  : Show a question.
+// Return value : NO:0 YES:1
+// --------------------------------------------------------------------------
+inline int cvAsk(const char *message, ...)
+{
+    char *arg;
+    char str[256];
+
+    // Apply format
+    va_start(arg, message);
+    vsprintf(str, message, arg);
+    va_end(arg);
+
+    // Show message box
+    return (MessageBox(NULL, str, "QUESTION", MB_YESNO|MB_ICONQUESTION|MB_TOPMOST|MB_SETFOREGROUND) == IDYES);
+}
+
 #if CALIB_MODE
 // --------------------------------------------------------------------------
 // main(Number of arguments, Argument values)
@@ -79,13 +98,13 @@ int main(int argc, char **argv)
                 // Draw corners.
                 cvDrawChessboardCorners(image, size, corners, corner_count, found);
 
-                // Add to buffer.
+                // Add to buffer
                 images.push_back(gray);
                 //Beep(3000, 100);
             }
             // Failed to detect
             else {
-                // Release the image.
+                // Release the image
                 cvReleaseImage(&gray);
                 //Beep(100, 100);
             }
@@ -115,7 +134,7 @@ int main(int argc, char **argv)
         //}
 
         // Ask save parameters or not
-        if (ardAsk("Do you save the camera parameters ?\n")) {
+        if (cvAsk("Do you save the camera parameters ?\n")) {
             // Detect coners
             int *p_count = (int*)malloc(sizeof(int) * num);
             CvPoint2D32f *corners = (CvPoint2D32f*)cvAlloc(sizeof(CvPoint2D32f) * num * PAT_SIZE);

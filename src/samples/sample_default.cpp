@@ -19,6 +19,33 @@ int main(int argc, char **argv)
         return -1;
     }
 
+    // Battery
+    int battery = ardrone.getBatteryPercentage();
+    printf("ardrone.battery = %d [%%]\n", battery);
+
+    // Instructions
+    printf("***************************************\n");
+    printf("*       CV Drone sample program       *\n");
+    printf("*           - Haw To Play -           *\n");
+    printf("***************************************\n");
+    printf("*                                     *\n");
+    printf("* - Controls -                        *\n");
+    printf("*    'Space' -- Takeoff/Landing       *\n");
+    printf("*    'Up'    -- Move forward          *\n");
+    printf("*    'Down'  -- Move backward         *\n");
+    printf("*    'Left'  -- Turn left             *\n");
+    printf("*    'Right' -- Turn right            *\n");
+    printf("*    'Shift+Up'    -- Move upward     *\n");
+    printf("*    'Shift+Down'  -- Move downward   *\n");
+    printf("*    'Shift+Left'  -- Move left       *\n");
+    printf("*    'Shift+Right' -- Move right      *\n");
+    printf("*                                     *\n");
+    printf("* - Others -                          *\n");
+    printf("*    'C'     -- Change camera         *\n");
+    printf("*    'Esc'   -- Exit                  *\n");
+    printf("*                                     *\n");
+    printf("***************************************\n\n");
+
     // Main loop
     while (!GetAsyncKeyState(VK_ESCAPE)) {
         // Update
@@ -34,12 +61,20 @@ int main(int argc, char **argv)
         }
 
         // Move
-        double x = 0.0, y = 0.0, z = 0.0, r = 0.0;
-        if (KEY_DOWN(VK_UP))    x =  0.5;
-        if (KEY_DOWN(VK_DOWN))  x = -0.5;
-        if (KEY_DOWN(VK_LEFT))  r =  0.5;
-        if (KEY_DOWN(VK_RIGHT)) r = -0.5;
-        ardrone.move3D(x, y, z, r);
+        double vx = 0.0, vy = 0.0, vz = 0.0, vr = 0.0;
+        if (KEY_DOWN(VK_SHIFT)) {
+            if (KEY_DOWN(VK_UP))    vz =  1.0;
+            if (KEY_DOWN(VK_DOWN))  vz = -1.0;
+            if (KEY_DOWN(VK_LEFT))  vy =  1.0;
+            if (KEY_DOWN(VK_RIGHT)) vy = -1.0;
+        }
+        else {
+            if (KEY_DOWN(VK_UP))    vx =  1.0;
+            if (KEY_DOWN(VK_DOWN))  vx = -1.0;
+            if (KEY_DOWN(VK_LEFT))  vr =  1.0;
+            if (KEY_DOWN(VK_RIGHT)) vr = -1.0;
+        }
+        ardrone.move3D(vx, vy, vz, vr);
 
         // Change camera
         static int mode = 0;

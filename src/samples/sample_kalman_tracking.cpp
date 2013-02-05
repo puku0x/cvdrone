@@ -70,7 +70,7 @@ int main(int argc, char **argv)
         cvInRangeS(image, lower, upper, binalized);
 
         // Show result
-		cvShowImage("binalized", binalized);
+        cvShowImage("binalized", binalized);
 
         // De-noising
         cvMorphologyEx(binalized, binalized, NULL, NULL, CV_MOP_CLOSE);
@@ -116,8 +116,8 @@ int main(int argc, char **argv)
 
         // Display the image
         cvCircle(image, cvPointFrom32f(cvPoint2D32f(prediction->data.fl[0], prediction->data.fl[1])), 10, CV_RGB(0,255,0));
-		cvShowImage("camera", image);
-		cvWaitKey(1);
+        cvShowImage("camera", image);
+        cvWaitKey(1);
 
         // Release the memories
         cvReleaseImage(&hsv);

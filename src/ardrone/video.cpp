@@ -43,7 +43,7 @@ int ARDrone::initVideo(void)
         char filename[256];
         sprintf(filename, "tcp://%s:%d", ip, ARDRONE_VIDEO_PORT);
         if (avformat_open_input(&pFormatCtx, filename, NULL, NULL) < 0) {
-            ardError("avformat_open_input() was failed. (%s, %d)\n", __FILE__, __LINE__);
+            CVDRONE_ERROR("avformat_open_input() was failed. (%s, %d)\n", __FILE__, __LINE__);
             return 0;
         }
 
@@ -55,20 +55,20 @@ int ARDrone::initVideo(void)
         pCodecCtx = pFormatCtx->streams[0]->codec;
         AVCodec *pCodec = avcodec_find_decoder(pCodecCtx->codec_id);
         if (pCodec == NULL) {
-            ardError("avcodec_find_decoder() was failed. (%s, %d)\n", __FILE__, __LINE__);
+            CVDRONE_ERROR("avcodec_find_decoder() was failed. (%s, %d)\n", __FILE__, __LINE__);
             return 0;
         }
 
         // Open codec
         if (avcodec_open2(pCodecCtx, pCodec, NULL) < 0) {
-            ardError("avcodec_open2() was failed. (%s, %d)\n", __FILE__, __LINE__);
+            CVDRONE_ERROR("avcodec_open2() was failed. (%s, %d)\n", __FILE__, __LINE__);
             return 0;
         }
 
         // Allocate video frames and a buffer
         pFrame = avcodec_alloc_frame();
         pFrameBGR = avcodec_alloc_frame();
-        bufferBGR = (uint8_t*)av_malloc(avpicture_get_size(PIX_FMT_BGR24, pCodecCtx->width, pCodecCtx->height) * sizeof(uint8_t));
+        bufferBGR = (uint8_t*)av_mallocz(avpicture_get_size(PIX_FMT_BGR24, pCodecCtx->width, pCodecCtx->height) * sizeof(uint8_t));
 
         // Assign appropriate parts of buffer to image planes in pFrameBGR
         avpicture_fill((AVPicture*)pFrameBGR, bufferBGR, PIX_FMT_BGR24, pCodecCtx->width, pCodecCtx->height);
@@ -80,7 +80,7 @@ int ARDrone::initVideo(void)
     else {
         // Open the IP address and port
         if (!sockVideo.open(ip, ARDRONE_VIDEO_PORT)) {
-            ardError("UDPSocket::open(port=%d) was failed. (%s, %d)\n", ARDRONE_VIDEO_PORT, __FILE__, __LINE__);
+            CVDRONE_ERROR("UDPSocket::open(port=%d) was failed. (%s, %d)\n", ARDRONE_VIDEO_PORT, __FILE__, __LINE__);
             return 0;
         }
 
@@ -90,13 +90,13 @@ int ARDrone::initVideo(void)
         pCodecCtx->height = 240;
 
         // Allocate a buffer
-        bufferBGR = (uint8_t*)av_malloc(avpicture_get_size(PIX_FMT_BGR24, pCodecCtx->width, pCodecCtx->height));
+        bufferBGR = (uint8_t*)av_mallocz(avpicture_get_size(PIX_FMT_BGR24, pCodecCtx->width, pCodecCtx->height));
     }
 
     // Allocate an IplImage
     img = cvCreateImage(cvSize(pCodecCtx->width, (pCodecCtx->height == 368) ? 360 : pCodecCtx->height), IPL_DEPTH_8U, 3);
     if (!img) {
-        ardError("cvCreateImage() was failed. (%s, %d)\n", __FILE__, __LINE__);
+        CVDRONE_ERROR("cvCreateImage() was failed. (%s, %d)\n", __FILE__, __LINE__);
         return 0;
     }
 
@@ -113,7 +113,7 @@ int ARDrone::initVideo(void)
     UINT id;
     threadVideo = (HANDLE)_beginthreadex(NULL, 0, runVideo, this, 0, &id);
     if (threadVideo == INVALID_HANDLE_VALUE) {
-        ardError("_beginthreadex() was failed. (%s, %d)\n", __FILE__, __LINE__);
+        CVDRONE_ERROR("_beginthreadex() was failed. (%s, %d)\n", __FILE__, __LINE__);
         return 0;
     }
 
@@ -252,7 +252,7 @@ IplImage* ARDrone::getImage(void)
 // --------------------------------------------------------------------------
 void ARDrone::finalizeVideo(void)
 {
-    // Disable the loop
+    // Disable thread loop
     flagVideo = 0;
 
     // Destroy the thread

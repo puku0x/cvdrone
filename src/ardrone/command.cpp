@@ -32,7 +32,7 @@ int ARDrone::initCommand(void)
 {
     // Open the IP address and port
     if (!sockCommand.open(ip, ARDRONE_COMMAND_PORT)) {
-        ardError("UDPSocket::open(port=%d) failed. (%s, %d)\n", ARDRONE_COMMAND_PORT, __FILE__, __LINE__);
+        CVDRONE_ERROR("UDPSocket::open(port=%d) failed. (%s, %d)\n", ARDRONE_COMMAND_PORT, __FILE__, __LINE__);
         return 0;
     }
 
@@ -46,6 +46,7 @@ int ARDrone::initCommand(void)
 // --------------------------------------------------------------------------
 void ARDrone::takeoff(void)
 {
+    resetWatchDog();
     resetEmergency();
     sockCommand.sendf("AT*REF=%d,290718208\r", seq++);
 }
@@ -57,6 +58,8 @@ void ARDrone::takeoff(void)
 // --------------------------------------------------------------------------
 void ARDrone::landing(void)
 {
+    resetWatchDog();
+    resetEmergency();
     sockCommand.sendf("AT*REF=%d,290717696\r", seq++);
 }
 
@@ -87,10 +90,19 @@ void ARDrone::move(double vx, double vy, double vr)
 // --------------------------------------------------------------------------
 void ARDrone::move3D(double vx, double vy, double vz, double vr)
 {
-    const float gain = 0.4f;
-    float v[4] = {-vy*gain, -vx*gain, vz*gain, -vr*gain};
-    int mode = (fabs(vx) > 0.0 || fabs(vy) > 0.0);
-    sockCommand.sendf("AT*PCMD=%d,%d,%d,%d,%d,%d\r", seq++, mode, *(int*)(&v[0]), *(int*)(&v[1]), *(int*)(&v[2]), *(int*)(&v[3]));
+    // AR.Drone is flying
+    if (!onGround()) {
+        const float gain = 0.4f;
+        float v[4] = {-vy*gain, -vx*gain, vz*gain, -vr*gain};
+        int mode = (fabs(vx) > 0.0 || fabs(vy) > 0.0);
+        sockCommand.sendf("AT*PCMD=%d,%d,%d,%d,%d,%d\r", seq++, mode, *(int*)(&v[0]), *(int*)(&v[1]), *(int*)(&v[2]), *(int*)(&v[3]));
+    }
+
+    // Reset Watch-Dog every 100ms
+    if ((cvGetTickCount() - timer) / cvGetTickFrequency() > 100000) {
+        sockCommand.sendf("AT*COMWDG=%d\r", seq++);
+        timer = cvGetTickCount();
+    }
 }
 
 // --------------------------------------------------------------------------
@@ -181,7 +193,7 @@ void ARDrone::stopVideoRecord(void)
         // Finalize video
         finalizeVideo();
 
-        // Enable video record
+        // Disable video record
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"FALSE\"\r", seq++);
         Sleep(100);

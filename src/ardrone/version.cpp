@@ -42,7 +42,7 @@ int ARDrone::getVersionInfo(void)
     // Connect to FTP server
     HINTERNET hConnection = InternetConnect(hInet, ip, ARDRONE_VERSION_PORT, "anonymous", "", INTERNET_SERVICE_FTP, INTERNET_FLAG_PASSIVE, 0);
     if (hConnection == NULL) {
-        ardError("InternetConnect(port=%d) was failed. (%s, %d)\n", ARDRONE_VERSION_PORT, __FILE__, __LINE__);
+        CVDRONE_ERROR("InternetConnect(port=%d) was failed. (%s, %d)\n", ARDRONE_VERSION_PORT, __FILE__, __LINE__);
         InternetCloseHandle(hInet);
         return 0;
     }
@@ -52,7 +52,7 @@ int ARDrone::getVersionInfo(void)
 
     // Get a file through FTP
     if (!FtpGetFile(hConnection, filename, filename, FALSE, FILE_ATTRIBUTE_NORMAL, INTERNET_FLAG_TRANSFER_BINARY, 0)) {
-        ardError("FtpGetFile() was failed. (%s, %d)\n", __FILE__, __LINE__);
+        CVDRONE_ERROR("FtpGetFile() was failed. (%s, %d)\n", __FILE__, __LINE__);
         InternetCloseHandle(hConnection);
         InternetCloseHandle(hInet);
         return 0;

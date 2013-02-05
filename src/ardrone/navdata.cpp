@@ -32,7 +32,7 @@ int ARDrone::initNavdata(void)
 {
     // Open the IP address and port
     if (!sockNavdata.open(ip, ARDRONE_NAVDATA_PORT)) {
-        ardError("UDPSocket::open(port=%d) was failed. (%s, %d)\n", ARDRONE_NAVDATA_PORT, __FILE__, __LINE__);
+        CVDRONE_ERROR("UDPSocket::open(port=%d) was failed. (%s, %d)\n", ARDRONE_NAVDATA_PORT, __FILE__, __LINE__);
         return 0;
     }
 
@@ -71,7 +71,7 @@ int ARDrone::initNavdata(void)
     UINT id;
     threadNavdata = (HANDLE)_beginthreadex(NULL, 0, runNavdata, this, 0, &id);
     if (threadNavdata == INVALID_HANDLE_VALUE) {
-        ardError("_beginthreadex() was failed. (%s, %d)\n", __FILE__, __LINE__);
+        CVDRONE_ERROR("_beginthreadex() was failed. (%s, %d)\n", __FILE__, __LINE__);
         return 0;
     }
 
@@ -210,10 +210,10 @@ int ARDrone::onGround(void)
 // --------------------------------------------------------------------------
 void ARDrone::finalizeNavdata(void)
 {
-    // Disable the loop
+    // Disable thread loop
     flagNavdata = 0;
 
-    // Destroy teh thread
+    // Destroy the thread
     if (threadNavdata != INVALID_HANDLE_VALUE) {
         WaitForSingleObject(threadNavdata, INFINITE);
         CloseHandle(threadNavdata);

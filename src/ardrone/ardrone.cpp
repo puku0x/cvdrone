@@ -37,7 +37,7 @@ ARDrone::ARDrone(const char *ardrone_addr)
     img = NULL;
 
     // Timer
-    timerWdg = ardGetTickCount();
+    timer = cvGetTickCount();
 
     // Navdata
     ZeroMemory(&navdata, sizeof(NAVDATA));
@@ -109,7 +109,7 @@ int ARDrone::open(const char *ardrone_addr)
     // Initialize Video
     if (!initVideo()) return 0;
 
-    // Wait for updating state
+    // Wait for updating the state
     Sleep(500);
 
     // Reset emergency
@@ -131,10 +131,9 @@ int ARDrone::update(void)
     if (!flagNavdata) return 0;
 
     // Reset Watch-Dog every 100ms
-    if (ardGetTickCount() - timerWdg > 100) {
-        //resetWatchDog();
+    if ((cvGetTickCount() - timer) / cvGetTickFrequency() > 100000) {
         sockCommand.sendf("AT*COMWDG=%d\r", seq++);
-        timerWdg = ardGetTickCount();
+        timer = cvGetTickCount();
     }
 
     return 1;
@@ -150,6 +149,9 @@ void ARDrone::close(void)
     // Stop AR.Drone
     if (!onGround()) landing();
 
+    // Finalize video
+    finalizeVideo();
+
     // Finalize Navdata
     finalizeNavdata();
 
@@ -158,9 +160,6 @@ void ARDrone::close(void)
 
     // Finalize AT command
     finalizeCommand();
-
-    // Finalize video
-    finalizeVideo();
 
     // Finalize WSA
     WSACleanup();

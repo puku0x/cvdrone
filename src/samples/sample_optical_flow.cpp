@@ -22,7 +22,8 @@ int main(int argc, char **argv)
     // Image of AR.Drone's camera
     IplImage *image = ardrone.getImage();
 
-    // Valuables for optical flow
+    // Variables for optical flow
+    int corner_count = 50;
     IplImage *gray = cvCreateImage(cvGetSize(image), IPL_DEPTH_8U, 1);
     IplImage *prev = cvCreateImage(cvGetSize(image), IPL_DEPTH_8U, 1);
     cvCvtColor(image, prev, CV_BGR2GRAY);
@@ -61,7 +62,7 @@ int main(int argc, char **argv)
         cvCvtColor(image, gray, CV_BGR2GRAY);
 
         // Detect features
-        int corner_count = 50;
+        corner_count = 50;
         cvGoodFeaturesToTrack(prev, eig_img, tmp_img, corners1, &corner_count, 0.1, 5.0, NULL);
 
         // Corner detected
@@ -78,6 +79,7 @@ int main(int argc, char **argv)
                 if (status[i]) cvLine(image, cvPointFrom32f(corners1[i]), cvPointFrom32f(corners2[i]), CV_RGB (0, 0, 255), 1, CV_AA, 0);
             }
 
+            // Release the memory
             free(status);
         }
 

@@ -33,6 +33,7 @@
 //            |
 //    Y <-----+ (0,0)
 //            Z
+//
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,10 +53,6 @@
 // WinINet
 #include <wininet.h>
 #pragma comment(lib, "wininet.lib")
-
-// WinMM
-#include <mmsystem.h>
-#pragma comment(lib, "winmm.lib")
 
 // FFmpeg
 extern "C" {
@@ -267,8 +264,8 @@ struct NAVDATA {
 
     // Vision
     struct NAVDATA_VISION {
-        unsigned short tag_vision;
-        unsigned short size_vision;
+        unsigned short tag;
+        unsigned short size;
         unsigned int   nb_detected;
         unsigned int   type[4];
         unsigned int   xc[4];
@@ -320,7 +317,7 @@ public:
     double getAltitude(void);   // Altitude    [m]
     double getVelocity(double *vx = NULL, double *vy = NULL, double *vz = NULL); // Velocity [m/s]
 
-    // Get battery percentage [%]
+    // Battery charge [%]
     int getBatteryPercentage(void);
 
     // Take off / Landing / Emergency
@@ -341,8 +338,6 @@ public:
     void setLED(int id, float freq, int duration);  // LED animation
     void startVideoRecord(void);                    // Video recording for AR.Drone 2.0
     void stopVideoRecord(void);                     // You should set a USB key with > 100MB to your drone
-    void resetEmergency(void);                      // Reset emergency
-    void resetWatchDog(void);                       // Reset hovering
 
 protected:
     // IP address
@@ -355,7 +350,7 @@ protected:
     IplImage *img;
 
     // Timer
-    double timerWdg;
+    int64 timer;
 
     // Sockets
     UDPSocket sockNavdata;
@@ -405,6 +400,10 @@ protected:
     int getVideo(void);
     int getConfig(void);
 
+    // Send commands (internal)
+    void resetWatchDog(void);
+    void resetEmergency(void);
+
     // Finalize (internal)
     void finalizeNavdata(void);
     void finalizeVideo(void);
@@ -413,70 +412,11 @@ protected:
 };
 
 // --------------------------------------------------------------------------
-// ardGetTickCount(void)
-// Description  : High-resolution timer.
-// Return value : Time [ms]
-// --------------------------------------------------------------------------
-inline double ardGetTickCount(void)
-{
-    static int flag = 0;
-    static LARGE_INTEGER freq;
-    double time;
-    LARGE_INTEGER counter;
-
-    switch (flag) {
-        // Initialize
-        case 0:
-            // Get performance frequency
-            if (!QueryPerformanceFrequency(&freq)) {
-                // Get timer capacities
-                TIMECAPS Caps;
-                if (timeGetDevCaps(&Caps, sizeof(TIMECAPS)) == TIMERR_NOERROR) {
-                    // timeGetTime (Accuracy: 1ms)
-                    timeBeginPeriod(Caps.wPeriodMin);
-                    time = timeGetTime();
-                    flag = 1;
-                }
-                else {
-                    // GetTickCount (Accuracy: 15ms)
-                    time = GetTickCount();
-                    flag = 2;
-                }
-            }
-            else {
-                // QueryPerformanceCounter (Accuracy: 1us)
-                QueryPerformanceCounter(&counter);
-                time = (double)(counter.QuadPart * 1000.0/freq.u.LowPart);
-                flag = 3;
-            }
-            break;
-
-        // timeGetTime
-        case 1:
-            time = (double)timeGetTime();
-            break;
-
-        // GetTickCount
-        case 2:
-            time = (double)GetTickCount();
-            break;
-
-        // QueryPerformanceCounter
-        default:
-            QueryPerformanceCounter(&counter);
-            time = (double)counter.QuadPart * 1000.0/freq.u.LowPart;
-            break;
-    }
-
-    return time;
-}
-
-// --------------------------------------------------------------------------
-// ardError(Message)
-// Description  : Show an error window.
+// CVDRONE_ERROR(Message)
+// Description  : Show an error message.
 // Return value : NONE
 // --------------------------------------------------------------------------
-inline void ardError(const char *message, ...)
+CV_INLINE void CVDRONE_ERROR(const char *message, ...)
 {
     char *arg;
     char str[256];
@@ -487,26 +427,7 @@ inline void ardError(const char *message, ...)
     va_end(arg);
 
     // Show message box
-    MessageBox(NULL, str, "ERROR", MB_OK|MB_ICONERROR|MB_TOPMOST|MB_SETFOREGROUND);
-}
-
-// --------------------------------------------------------------------------
-// ardAsk(Message)
-// Description  : Show a question window.
-// Return value : NO:0 YES:1
-// --------------------------------------------------------------------------
-inline int ardAsk(const char *message, ...)
-{
-    char *arg;
-    char str[256];
-
-    // Apply format
-    va_start(arg, message);
-    vsprintf(str, message, arg);
-    va_end(arg);
-
-    // Show message box
-    return (MessageBox(NULL, str, "QUESTION", MB_YESNO|MB_ICONQUESTION|MB_TOPMOST|MB_SETFOREGROUND) == IDYES);
+    MessageBox(NULL, str, "CVDRONE ERROR MESSAGE", MB_OK|MB_ICONERROR|MB_TOPMOST|MB_SETFOREGROUND);
 }
 
 #endif

@@ -88,7 +88,7 @@ UINT ARDrone::loopNavdata(void)
     while (flagNavdata) {
         // Get Navdata
         if (!getNavdata()) break;
-        Sleep(30);
+        Sleep(33);
     }
 
     // Disable thread loop

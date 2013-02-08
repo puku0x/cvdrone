@@ -103,7 +103,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\ardrone\ardrone.cpp" />
-    <ClCompile Include="..\..\src\ardrone\config.cpp" />
     <ClCompile Include="..\..\src\ardrone\command.cpp" />
     <ClCompile Include="..\..\src\ardrone\navdata.cpp" />
     <ClCompile Include="..\..\src\ardrone\udp.cpp" />

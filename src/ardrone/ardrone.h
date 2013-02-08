@@ -298,7 +298,7 @@ public:
     // Initialize
     int open(const char *ardrone_addr = ARDRONE_DEFAULT_ADDR);
 
-    // Update (Call this function in each loop)
+    // Update
     int update(void);
 
     // Finalize (Automatically called)
@@ -308,7 +308,7 @@ public:
     IplImage* getImage(void);
 
     // Get AR.Drone's firmware version
-    int getVersion(void);
+    int getVersion(int *major = NULL, int *minor = NULL, int *revision = NULL);
 
     // Get sensor values
     double getRoll(void);       // Roll angle  [rad]
@@ -344,33 +344,21 @@ protected:
     char ip[16];
 
     // Sequence number
-    long int seq;
+    unsigned long int seq;
 
     // Camera image
     IplImage *img;
 
-    // Timer
-    int64 timer;
-
     // Sockets
+    UDPSocket sockCommand;
     UDPSocket sockNavdata;
     UDPSocket sockVideo;
-    UDPSocket sockCommand;
 
     // Version information
     VERSION_INFO version;
 
     // Navigation data
     NAVDATA navdata;
-
-    // Thread for Navdata
-    int    flagNavdata;
-    HANDLE threadNavdata;
-    HANDLE mutexNavdata;
-    UINT   loopNavdata(void);
-    static UINT WINAPI runNavdata(void *args) {
-        return reinterpret_cast<ARDrone*>(args)->loopNavdata();
-    }
 
     // Video
     AVFormatContext *pFormatCtx;
@@ -379,10 +367,25 @@ protected:
     uint8_t         *bufferBGR;
     SwsContext      *pConvertCtx;
 
+    // Thread for command
+    int    flagCommand;
+    HANDLE threadCommand, mutexCommand;
+    UINT   loopCommand(void);
+    static UINT WINAPI runCommand(void *args) {
+        return reinterpret_cast<ARDrone*>(args)->loopCommand();
+    }
+
+    // Thread for navdata
+    int    flagNavdata;
+    HANDLE threadNavdata, mutexNavdata;
+    UINT   loopNavdata(void);
+    static UINT WINAPI runNavdata(void *args) {
+        return reinterpret_cast<ARDrone*>(args)->loopNavdata();
+    }
+
     // Thread for video
     int    flagVideo;
-    HANDLE threadVideo;
-    HANDLE mutexVideo;
+    HANDLE threadVideo, mutexVideo;
     UINT   loopVideo(void);
     static UINT WINAPI runVideo(void *args) {
         return reinterpret_cast<ARDrone*>(args)->loopVideo();
@@ -392,13 +395,11 @@ protected:
     int initNavdata(void);
     int initVideo(void);
     int initCommand(void);
-    int initConfig(void);
 
     // Get informations (internal)
     int getVersionInfo(void);
     int getNavdata(void);
     int getVideo(void);
-    int getConfig(void);
 
     // Send commands (internal)
     void resetWatchDog(void);
@@ -408,7 +409,6 @@ protected:
     void finalizeNavdata(void);
     void finalizeVideo(void);
     void finalizeCommand(void);
-    void finalizeConfig(void);
 };
 
 // --------------------------------------------------------------------------

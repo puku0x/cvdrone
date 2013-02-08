@@ -36,16 +36,8 @@ ARDrone::ARDrone(const char *ardrone_addr)
     // Camera image
     img = NULL;
 
-    // Timer
-    timer = cvGetTickCount();
-
     // Navdata
     ZeroMemory(&navdata, sizeof(NAVDATA));
-
-    // Thread for Navdata
-    flagNavdata   = 0;
-    threadNavdata = INVALID_HANDLE_VALUE;
-    mutexNavdata  = INVALID_HANDLE_VALUE;
 
     // Video
     pFormatCtx  = NULL;
@@ -54,6 +46,16 @@ ARDrone::ARDrone(const char *ardrone_addr)
     pFrameBGR   = NULL;
     bufferBGR   = NULL;
     pConvertCtx = NULL;
+
+    // Thread for commnad
+    flagCommand   = 0;
+    threadCommand = INVALID_HANDLE_VALUE;
+    mutexCommand  = INVALID_HANDLE_VALUE;
+
+    // Thread for navdata
+    flagNavdata   = 0;
+    threadNavdata = INVALID_HANDLE_VALUE;
+    mutexNavdata  = INVALID_HANDLE_VALUE;
 
     // Thread for video
     flagVideo   = 0;
@@ -100,9 +102,6 @@ int ARDrone::open(const char *ardrone_addr)
     // Initialize AT Command
     if (!initCommand()) return 0;
 
-    // Initialize Config
-    if (!initConfig()) return 0;
-
     // Initialize Navdata
     if (!initNavdata()) return 0;
 
@@ -127,14 +126,9 @@ int ARDrone::open(const char *ardrone_addr)
 int ARDrone::update(void)
 {
     // Check threads
-    if (!flagVideo) return 0;
+    if (!flagCommand) return 0;
     if (!flagNavdata) return 0;
-
-    // Reset Watch-Dog every 100ms
-    if ((cvGetTickCount() - timer) / cvGetTickFrequency() > 100000) {
-        sockCommand.sendf("AT*COMWDG=%d\r", seq++);
-        timer = cvGetTickCount();
-    }
+    if (!flagVideo) return 0;
 
     return 1;
 }
@@ -154,9 +148,6 @@ void ARDrone::close(void)
 
     // Finalize Navdata
     finalizeNavdata();
-
-    // Finalize configuration
-    finalizeConfig();
 
     // Finalize AT command
     finalizeCommand();

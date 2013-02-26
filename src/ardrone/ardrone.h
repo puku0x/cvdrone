@@ -189,6 +189,21 @@ enum ARDRONE_LED_ANIMATION_ID {
     BLINK_STANDARD
 };
 
+//// TCP Class
+//class TCPSocket {
+//public:
+//    TCPSocket();                            // Constructor
+//    ~TCPSocket();                           // Destructor
+//    int  open(const char *addr, int port);  // Initialize
+//    int  send2(void *data, int size);       // Send data
+//    int  sendf(char *str, ...);             // Send with format
+//    int  receive(void *data, int size);     // Receive data
+//    void close(void);                       // Finalize
+//private:
+//    SOCKET sock;                            // Sockets
+//    sockaddr_in server_addr, client_addr;   // Server/Client IP adrress
+//};
+
 // UDP Class
 class UDPSocket {
 public:
@@ -336,8 +351,8 @@ public:
     int  onGround(void);                            // Check on ground
     void setAnimation(int id, int duration);        // Flight animation
     void setLED(int id, float freq, int duration);  // LED animation
-    void startVideoRecord(void);                    // Video recording for AR.Drone 2.0
-    void stopVideoRecord(void);                     // You should set a USB key with > 100MB to your drone
+    void setVideoRecord(bool activate);             // Video recording (only for AR.Drone 2.0)
+    void setOutdoorMode(bool activate);             // Outdoor mode (experimental)
 
 protected:
     // IP address
@@ -353,6 +368,7 @@ protected:
     UDPSocket sockCommand;
     UDPSocket sockNavdata;
     UDPSocket sockVideo;
+    //TCPSocket sockConfig;
 
     // Version information
     VERSION_INFO version;

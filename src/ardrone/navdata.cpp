@@ -88,7 +88,7 @@ UINT ARDrone::loopNavdata(void)
     while (flagNavdata) {
         // Get Navdata
         if (!getNavdata()) break;
-        Sleep(33);
+        Sleep(60);
     }
 
     // Disable thread loop
@@ -115,14 +115,10 @@ int ARDrone::getNavdata(void)
     if (size > 0) {
         // Check header
         if (buf[0] == ARDRONE_NAVDATA_HEADER) {
-            // Enable mutex lock
-            WaitForSingleObject(mutexNavdata, INFINITE);
-
             // Update Navdata
+            if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
             memcpy((void*)&navdata, (const void*)buf, sizeof(NAVDATA));
-
-            // Disable mutex lock
-            ReleaseMutex(mutexNavdata);
+            if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
         }
     }
 
@@ -136,7 +132,12 @@ int ARDrone::getNavdata(void)
 // --------------------------------------------------------------------------
 double ARDrone::getRoll(void)
 {
-    return navdata.demo.phi * 0.001 * DEG_TO_RAD;
+    // Get the data
+    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    double roll = navdata.demo.phi * 0.001 * DEG_TO_RAD;
+    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+
+    return roll;
 }
 
 // --------------------------------------------------------------------------
@@ -146,7 +147,12 @@ double ARDrone::getRoll(void)
 // --------------------------------------------------------------------------
 double ARDrone::getPitch(void)
 {
-    return navdata.demo.theta * 0.001 * DEG_TO_RAD;
+    // Get the data
+    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    double pitch = -navdata.demo.theta * 0.001 * DEG_TO_RAD;
+    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+
+    return pitch;
 }
 
 // --------------------------------------------------------------------------
@@ -156,7 +162,12 @@ double ARDrone::getPitch(void)
 // --------------------------------------------------------------------------
 double ARDrone::getYaw(void)
 {
-    return navdata.demo.psi * 0.001 * DEG_TO_RAD;
+    // Get the data
+    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    double yaw = -navdata.demo.psi * 0.001 * DEG_TO_RAD;
+    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+
+    return yaw;
 }
 
 // --------------------------------------------------------------------------
@@ -166,7 +177,12 @@ double ARDrone::getYaw(void)
 // --------------------------------------------------------------------------
 double ARDrone::getAltitude(void)
 {
-    return navdata.demo.altitude * 0.001;
+    // Get the data
+    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    double altitude = navdata.demo.altitude * 0.001;
+    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+
+    return altitude;
 }
 
 // --------------------------------------------------------------------------
@@ -176,10 +192,20 @@ double ARDrone::getAltitude(void)
 // --------------------------------------------------------------------------
 double ARDrone::getVelocity(double *vx, double *vy, double *vz)
 {
-    if (vx) *vx = navdata.demo.vx * 0.001;
-    if (vy) *vy = navdata.demo.vy * 0.001;
-    if (vz) *vz = navdata.demo.vz * 0.001;
-    return sqrt(navdata.demo.vx*navdata.demo.vx + navdata.demo.vy*navdata.demo.vy + navdata.demo.vz*navdata.demo.vz);
+    // Get the data
+    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    double velocity_x =  navdata.demo.vx * 0.001;
+    double velocity_y = -navdata.demo.vy * 0.001;
+    double velocity_z = -navdata.demo.vz * 0.001;
+    double velocity = sqrt(velocity_x*velocity_x + velocity_y*velocity_y + velocity_z*velocity_z);
+    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+
+    // Velocities
+    if (vx) *vx = velocity_x;
+    if (vy) *vy = velocity_y;
+    if (vz) *vz = velocity_z;
+
+    return velocity;
 }
 
 // --------------------------------------------------------------------------
@@ -189,7 +215,12 @@ double ARDrone::getVelocity(double *vx, double *vy, double *vz)
 // --------------------------------------------------------------------------
 int ARDrone::getBatteryPercentage(void)
 {
-    return navdata.demo.vbat_flying_percentage;
+    // Get the data
+    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    int battery = navdata.demo.vbat_flying_percentage;
+    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+
+    return battery;
 }
 
 // --------------------------------------------------------------------------
@@ -199,8 +230,12 @@ int ARDrone::getBatteryPercentage(void)
 // --------------------------------------------------------------------------
 int ARDrone::onGround(void)
 {
-    if (navdata.ardrone_state & ARDRONE_FLY_MASK) return 0;
-    return 1;
+    // Get the data
+    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    int on_ground = (navdata.ardrone_state & ARDRONE_FLY_MASK) ? 0 : 1;
+    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+
+    return on_ground;
 }
 
 // --------------------------------------------------------------------------

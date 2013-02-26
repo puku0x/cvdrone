@@ -149,12 +149,12 @@ UINT ARDrone::loopCommand(void)
     while (flagCommand) {
         // Reset Watch-Dog every 100ms
         if ((cvGetTickCount() - timer) / freq > 100000) {
-            WaitForSingleObject(mutexCommand, INFINITE);
+            if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
             sockCommand.sendf("AT*COMWDG=%d\r", seq++);
-            ReleaseMutex(mutexCommand);
+            if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
             timer = cvGetTickCount();
         }
-        Sleep(33);
+        Sleep(30);
     }
 
     // Disable thread loop
@@ -175,9 +175,9 @@ void ARDrone::takeoff(void)
     resetEmergency();
 
     // Send take off
-    WaitForSingleObject(mutexCommand, INFINITE);
+    if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
     sockCommand.sendf("AT*REF=%d,290718208\r", seq++);
-    ReleaseMutex(mutexCommand);
+    if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
 }
 
 // --------------------------------------------------------------------------
@@ -192,9 +192,9 @@ void ARDrone::landing(void)
     resetEmergency();
 
     // Send landing
-    WaitForSingleObject(mutexCommand, INFINITE);
+    if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
     sockCommand.sendf("AT*REF=%d,290717696\r", seq++);
-    ReleaseMutex(mutexCommand);
+    if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
 }
 
 // --------------------------------------------------------------------------
@@ -205,9 +205,9 @@ void ARDrone::landing(void)
 void ARDrone::emergency(void)
 {
     // Send emergency
-    WaitForSingleObject(mutexCommand, INFINITE);
+    if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
     sockCommand.sendf("AT*REF=%d,290717952\r", seq++);
-    ReleaseMutex(mutexCommand);
+    if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
 }
 
 // --------------------------------------------------------------------------
@@ -234,9 +234,9 @@ void ARDrone::move3D(double vx, double vy, double vz, double vr)
         int mode = (fabs(vx) > 0.0 || fabs(vy) > 0.0);
 
         // Send a command
-        WaitForSingleObject(mutexCommand, INFINITE);
+        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
         sockCommand.sendf("AT*PCMD=%d,%d,%d,%d,%d,%d\r", seq++, mode, *(int*)(&v[0]), *(int*)(&v[1]), *(int*)(&v[2]), *(int*)(&v[3]));
-        ReleaseMutex(mutexCommand);
+        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
     }
 }
 
@@ -250,7 +250,7 @@ void ARDrone::move3D(double vx, double vy, double vz, double vr)
 void ARDrone::setCamera(int channel)
 {
     // Enable mutex lock
-    WaitForSingleObject(mutexCommand, INFINITE);
+    if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
 
     // AR.Drone 2.0
     if (version.major == ARDRONE_VERSION_2) {
@@ -263,7 +263,7 @@ void ARDrone::setCamera(int channel)
     }
 
     // Disable mutex lock
-    ReleaseMutex(mutexCommand);
+    if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
 
     Sleep(100);
 }
@@ -276,11 +276,11 @@ void ARDrone::setCamera(int channel)
 void ARDrone::setAnimation(int id, int duration)
 {
     // Send animation command
-    WaitForSingleObject(mutexCommand, INFINITE);
+    if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
     sockCommand.sendf("AT*ANIM=%d,%d,%d\r", seq++, id, duration);
     //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
     //sockCommand.sendf("AT*CONFIG=%d,\"leds:flight_anim\",\"%d,%d\"\r", seq++, id, duration);
-    ReleaseMutex(mutexCommand);
+    if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
     //Sleep(100);
 }
 
@@ -292,40 +292,42 @@ void ARDrone::setAnimation(int id, int duration)
 void ARDrone::setLED(int id, float freq, int duration)
 {
     // Send a command
-    WaitForSingleObject(mutexCommand, INFINITE);
+    if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
     sockCommand.sendf("AT*LED=%d,%d,%d,%d\r", seq++, id, *(int*)(&freq), duration);
     //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
     //sockCommand.sendf("AT*CONFIG=%d,\"leds:leds_anim\",\"%d,%d,%d\"\r", seq++, id, *(int*)(&freq), duration);
-    ReleaseMutex(mutexCommand);
-
+    if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
     //Sleep(100);
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::startVideoRecord()
+// ARDrone::startVideoRecord(Enable/Disable recording)
 // Start recording video.
 // This function is only for AR.Drone 2.0
 // You should set a USB key with > 100MB to your drone
 // Return value NONE
 // --------------------------------------------------------------------------
-void ARDrone::startVideoRecord(void)
+void ARDrone::setVideoRecord(bool activate)
 {
+    // AR.Drone 2.0
     if (version.major == ARDRONE_VERSION_2) {
         // Finalize video
         finalizeVideo();
 
-        // Enable video record
-        WaitForSingleObject(mutexCommand, INFINITE);
+        // Enable/Disable video recording
+        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"TRUE\"\r", seq++);
-        ReleaseMutex(mutexCommand);
+        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"TRUE\"\r",  seq++);
+        else          sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"FALSE\"\r", seq++);
+        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
         Sleep(100);
 
-        // Output video with MP4_360P_H264_720P_CODEC
-        WaitForSingleObject(mutexCommand, INFINITE);
+        // Output video with MP4_360P_H264_720P_CODEC / H264_360P_CODEC
+        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x82);
-        ReleaseMutex(mutexCommand);
+        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x82);
+        else          sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x81);
+        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
         Sleep(100);
 
         // Initialize video
@@ -334,33 +336,45 @@ void ARDrone::startVideoRecord(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::stopVideoRecord()
+// ARDrone::setOutdoorMode(Enable/Disable outdoor mode)
 // Stop recording video.
-// This function is only for AR.Drone 2.0
 // Return value NONE
 // --------------------------------------------------------------------------
-void ARDrone::stopVideoRecord(void)
+void ARDrone::setOutdoorMode(bool activate)
 {
+    // AR.Drone 2.0
     if (version.major == ARDRONE_VERSION_2) {
-        // Finalize video
-        finalizeVideo();
-
-        // Disable video record
-        WaitForSingleObject(mutexCommand, INFINITE);
+        // Enable/Disable outdoor mode
+        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"FALSE\"\r", seq++);
-        ReleaseMutex(mutexCommand);
+        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"control:outdoor\",\"TRUE\"\r",  seq++);
+        else          sockCommand.sendf("AT*CONFIG=%d,\"control:outdoor\",\"FALSE\"\r", seq++);
+        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
         Sleep(100);
 
-        // Output video with 360P
-        WaitForSingleObject(mutexCommand, INFINITE);
+        // Without/With shell
+        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x81);
-        ReleaseMutex(mutexCommand);
+        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"control:flight_without_shell\",\"TRUE\"\r",  seq++);
+        else          sockCommand.sendf("AT*CONFIG=%d,\"control:flight_without_shell\",\"FALSE\"\r", seq++);
+        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
+        Sleep(100);
+    }
+    // AR.Drone 1.0
+    else {
+        // Enable/Disable outdoor mode
+        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"control:outdoor\",\"TRUE\"\r",  seq++);
+        else          sockCommand.sendf("AT*CONFIG=%d,\"control:outdoor\",\"FALSE\"\r", seq++);
+        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
         Sleep(100);
 
-        // Initialize video
-        initVideo();
+        // Without/With shell
+        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"control:flight_without_shell\",\"TRUE\"\r",  seq++);
+        else          sockCommand.sendf("AT*CONFIG=%d,\"control:flight_without_shell\",\"FALSE\"\r", seq++);
+        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
+        Sleep(100);
     }
 }
 
@@ -371,11 +385,16 @@ void ARDrone::stopVideoRecord(void)
 // --------------------------------------------------------------------------
 void ARDrone::resetWatchDog(void)
 {
+    // Get the state
+    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    int state = navdata.ardrone_state;
+    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+
     // If AR.Drone is in Watch-Dog, reset it
-    if (navdata.ardrone_state & ARDRONE_COM_WATCHDOG_MASK) {
-        WaitForSingleObject(mutexCommand, INFINITE);
+    if (state & ARDRONE_COM_WATCHDOG_MASK) {
+        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
         sockCommand.sendf("AT*COMWDG=%d\r", seq++);
-        ReleaseMutex(mutexCommand);
+        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
     }
 }
 
@@ -386,11 +405,16 @@ void ARDrone::resetWatchDog(void)
 // --------------------------------------------------------------------------
 void ARDrone::resetEmergency(void)
 {
+    // Get the state
+    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    int state = navdata.ardrone_state;
+    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+
     // If AR.Drone is in emergency, reset it
-    if (navdata.ardrone_state & ARDRONE_EMERGENCY_MASK) {
-        WaitForSingleObject(mutexCommand, INFINITE);
+    if (state & ARDRONE_EMERGENCY_MASK) {
+        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
         sockCommand.sendf("AT*REF=%d,290717952\r", seq++);
-        ReleaseMutex(mutexCommand);
+        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
     }
 }
 

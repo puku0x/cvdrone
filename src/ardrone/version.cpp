@@ -80,7 +80,7 @@ int ARDrone::getVersionInfo(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::getVersion()
+// ARDrone::getVersion(Major version, Minor version, Revision number)
 // Description  : Get AR.Drone's version.
 // Return value : Version number of the AR.Drone.
 // --------------------------------------------------------------------------

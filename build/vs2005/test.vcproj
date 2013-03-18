@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\3rdparty\opencv\include;..\..\src\3rdparty\ffmpeg\include;..\..\src\3rdparty\kijineko\include"
+				AdditionalIncludeDirectories="..\..\src\3rdparty\opencv\include;..\..\src\3rdparty\ffmpeg\include;..\..\src\3rdparty\pthread\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;__STDC_CONSTANT_MACROS;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,8 +62,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="wsock32.lib wininet.lib opencv_calib3d244.lib opencv_contrib244.lib opencv_core244.lib opencv_features2d244.lib opencv_flann244.lib opencv_highgui244.lib opencv_imgproc244.lib opencv_legacy244.lib opencv_ml244.lib opencv_objdetect244.lib opencv_photo244.lib opencv_stitching244.lib opencv_video244.lib opencv_videostab244.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib swresample.lib swscale.lib pthreadVC2.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\src\3rdparty\opencv\lib\vs2005;..\..\src\3rdparty\ffmpeg\lib"
+				AdditionalLibraryDirectories="..\..\src\3rdparty\opencv\lib\vs2005;..\..\src\3rdparty\ffmpeg\lib;..\..\src\3rdparty\pthread\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\obj\debug\debug.pdb"
 				SubSystem="1"
@@ -121,7 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\src\3rdparty\opencv\include;..\..\src\3rdparty\ffmpeg\include;..\..\src\3rdparty\kijineko\include"
+				AdditionalIncludeDirectories="..\..\src\3rdparty\opencv\include;..\..\src\3rdparty\ffmpeg\include;..\..\src\3rdparty\pthread\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;__STDC_CONSTANT_MACROS;"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -141,8 +142,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="wsock32.lib wininet.lib opencv_calib3d244.lib opencv_contrib244.lib opencv_core244.lib opencv_features2d244.lib opencv_flann244.lib opencv_highgui244.lib opencv_imgproc244.lib opencv_legacy244.lib opencv_ml244.lib opencv_objdetect244.lib opencv_photo244.lib opencv_stitching244.lib opencv_video244.lib opencv_videostab244.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib swresample.lib swscale.lib pthreadVC2.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\src\3rdparty\opencv\lib\vs2005;..\..\src\3rdparty\ffmpeg\lib"
+				AdditionalLibraryDirectories="..\..\src\3rdparty\opencv\lib\vs2005;..\..\src\3rdparty\ffmpeg\lib;..\..\src\3rdparty\pthread\lib"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\obj\release\release.pdb"

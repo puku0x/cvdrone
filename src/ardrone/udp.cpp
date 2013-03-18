@@ -80,12 +80,12 @@ int UDPSocket::open(const char *addr, int port)
     //    return 0;
     //}
 
-    //// Enable re-use address option
-    //int reuse = 1;
-    //if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&reuse, sizeof(reuse)) == SOCKET_ERROR) {
-    //    printf("ERROR: setsockopt() failed. (%s, %d)\n", __FILE__, __LINE__);
-    //    return 0;
-    //}
+    // Enable re-use address option
+    int reuse = 1;
+    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&reuse, sizeof(reuse)) == SOCKET_ERROR) {
+        printf("ERROR: setsockopt() failed. (%s, %d)\n", __FILE__, __LINE__);
+        return 0;
+    }
 
     return 1;
 }

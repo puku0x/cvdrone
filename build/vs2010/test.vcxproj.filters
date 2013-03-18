@@ -28,9 +28,6 @@
     <ClCompile Include="..\..\src\ardrone\command.cpp">
       <Filter>Source Files\ardrone</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ardrone\config.cpp">
-      <Filter>Source Files\ardrone</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\ardrone\navdata.cpp">
       <Filter>Source Files\ardrone</Filter>
     </ClCompile>

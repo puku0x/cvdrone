@@ -40,36 +40,36 @@ int ARDrone::initCommand(void)
     if (version.major == ARDRONE_VERSION_2) {
         // Send undocumented command
         sockCommand.sendf("AT*PMODE=%d,%d\r", seq++, 2);
-        Sleep(100);
+        msleep(100);
 
         // Send undocumented command
         sockCommand.sendf("AT*MISC=%d,%d,%d,%d,%d\r", seq++, 2, 20, 2000, 3000);
-        Sleep(100);
+        msleep(100);
 
         // Send flat trim
         sockCommand.sendf("AT*FTRIM=%d,\r", seq++);
-        Sleep(100);
+        msleep(100);
 
         // Set the configuration IDs
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"custom:session_id\",\"%s\"\r", seq++, ARDRONE_SESSION_ID);
-        Sleep(100);
+        msleep(100);
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"custom:profile_id\",\"%s\"\r", seq++, ARDRONE_PROFILE_ID);
-        Sleep(100);
+        msleep(100);
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"custom:application_id\",\"%s\"\r", seq++, ARDRONE_APPLOCATION_ID);
-        Sleep(100);
+        msleep(100);
 
         //// Enable video
         //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         //sockCommand.sendf("AT*CONFIG=%d,\"general:video_enable\",\"TRUE\"\r", seq++);
-        //Sleep(100);
+        //msleep(100);
 
         //// Disable bitrate control mode
         //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         //sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"0\"\r", seq++);
-        //Sleep(100);
+        //msleep(100);
 
         // Set video codec
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
@@ -77,56 +77,53 @@ int ARDrone::initCommand(void)
         //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x82); // MP4_360P_H264_720P_CODEC
         //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x83); // H264_720P_CODEC
         //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x88); // MP4_360P_H264_360P_CODEC
-        Sleep(100);
+        msleep(100);
 
         // Set video channel to default
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"0\"\r", seq++);
-        Sleep(100);
+        msleep(100);
     }
     // AR.Drone 1.0
     else {
         // Send undocumented command
         sockCommand.sendf("AT*PMODE=%d,%d\r", seq++, 2);
-        Sleep(100);
+        msleep(100);
 
         // Send undocumented command
         sockCommand.sendf("AT*MISC=%d,%d,%d,%d,%d\r", seq++, 2, 20, 2000, 3000);
-        Sleep(100);
+        msleep(100);
 
         // Send flat trim
         sockCommand.sendf("AT*FTRIM=%d,\r", seq++);
-        Sleep(100);
+        msleep(100);
 
         //// Enable video
         //sockCommand.sendf("AT*CONFIG=%d,\"general:video_enable\",\"TRUE\"\r", seq++);
-        //Sleep(100);
+        //msleep(100);
 
         //// Disable bitrate control mode
         //sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"0\"\r", seq++);
-        //Sleep(100);
+        //msleep(100);
 
         // Set video codec
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x20);   // UVLC_CODEC
         //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x40); // P264_CODEC
-        Sleep(100);
+        msleep(100);
         
         // Set video channel to default
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"0\"\r", seq++);
-        Sleep(100);
+        msleep(100);
     }
 
     // Create a mutex
-    mutexCommand= CreateMutex(NULL, FALSE, NULL);
-
-    // Enable thread loop
-    flagCommand = 1;
+    mutexCommand = new pthread_mutex_t;
+    pthread_mutex_init(mutexCommand, NULL);
 
     // Create a thread
-    UINT id;
-    threadCommand = (HANDLE)_beginthreadex(NULL, 0, runCommand, this, 0, &id);
-    if (threadCommand == INVALID_HANDLE_VALUE) {
-        CVDRONE_ERROR("_beginthreadex() was failed. (%s, %d)\n", __FILE__, __LINE__);
+    threadCommand = new pthread_t;
+    if (pthread_create(threadCommand, NULL, runCommand, this) != 0) {
+        CVDRONE_ERROR("pthread_create() was failed. (%s, %d)\n", __FILE__, __LINE__);
         return 0;
     }
 
@@ -138,7 +135,7 @@ int ARDrone::initCommand(void)
 // Description  : Thread function for AT Command.
 // Return value : SUCCESS:0
 // --------------------------------------------------------------------------
-UINT ARDrone::loopCommand(void)
+void ARDrone::loopCommand(void)
 {
     // Ticks per frequency
     const double freq = cvGetTickFrequency();
@@ -146,21 +143,17 @@ UINT ARDrone::loopCommand(void)
     // Timer
     int64 timer = cvGetTickCount();
 
-    while (flagCommand) {
+    while (1) {
         // Reset Watch-Dog every 100ms
         if ((cvGetTickCount() - timer) / freq > 100000) {
-            if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+            if (mutexCommand) pthread_mutex_lock(mutexCommand);
             sockCommand.sendf("AT*COMWDG=%d\r", seq++);
-            if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
+            if (mutexCommand) pthread_mutex_unlock(mutexCommand);
             timer = cvGetTickCount();
         }
-        Sleep(30);
+        pthread_testcancel();
+        msleep(30);
     }
-
-    // Disable thread loop
-    flagCommand = 0;
-
-    return 0;
 }
 
 // --------------------------------------------------------------------------
@@ -175,9 +168,9 @@ void ARDrone::takeoff(void)
     resetEmergency();
 
     // Send take off
-    if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+    if (mutexCommand) pthread_mutex_lock(mutexCommand);
     sockCommand.sendf("AT*REF=%d,290718208\r", seq++);
-    if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
+    if (mutexCommand) pthread_mutex_unlock(mutexCommand);
 }
 
 // --------------------------------------------------------------------------
@@ -192,9 +185,9 @@ void ARDrone::landing(void)
     resetEmergency();
 
     // Send landing
-    if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+    if (mutexCommand) pthread_mutex_lock(mutexCommand);
     sockCommand.sendf("AT*REF=%d,290717696\r", seq++);
-    if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
+    if (mutexCommand) pthread_mutex_unlock(mutexCommand);
 }
 
 // --------------------------------------------------------------------------
@@ -205,9 +198,9 @@ void ARDrone::landing(void)
 void ARDrone::emergency(void)
 {
     // Send emergency
-    if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+    if (mutexCommand) pthread_mutex_lock(mutexCommand);
     sockCommand.sendf("AT*REF=%d,290717952\r", seq++);
-    if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
+    if (mutexCommand) pthread_mutex_unlock(mutexCommand);
 }
 
 // --------------------------------------------------------------------------
@@ -234,9 +227,9 @@ void ARDrone::move3D(double vx, double vy, double vz, double vr)
         int mode = (fabs(vx) > 0.0 || fabs(vy) > 0.0);
 
         // Send a command
-        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+        if (mutexCommand) pthread_mutex_lock(mutexCommand);
         sockCommand.sendf("AT*PCMD=%d,%d,%d,%d,%d,%d\r", seq++, mode, *(int*)(&v[0]), *(int*)(&v[1]), *(int*)(&v[2]), *(int*)(&v[3]));
-        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
+        if (mutexCommand) pthread_mutex_unlock(mutexCommand);
     }
 }
 
@@ -250,7 +243,7 @@ void ARDrone::move3D(double vx, double vy, double vz, double vr)
 void ARDrone::setCamera(int channel)
 {
     // Enable mutex lock
-    if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+    if (mutexCommand) pthread_mutex_lock(mutexCommand);
 
     // AR.Drone 2.0
     if (version.major == ARDRONE_VERSION_2) {
@@ -263,9 +256,9 @@ void ARDrone::setCamera(int channel)
     }
 
     // Disable mutex lock
-    if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
+    if (mutexCommand) pthread_mutex_unlock(mutexCommand);
 
-    Sleep(100);
+    msleep(100);
 }
 
 // --------------------------------------------------------------------------
@@ -276,12 +269,12 @@ void ARDrone::setCamera(int channel)
 void ARDrone::setAnimation(int id, int duration)
 {
     // Send animation command
-    if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+    if (mutexCommand) pthread_mutex_lock(mutexCommand);
     sockCommand.sendf("AT*ANIM=%d,%d,%d\r", seq++, id, duration);
     //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
     //sockCommand.sendf("AT*CONFIG=%d,\"leds:flight_anim\",\"%d,%d\"\r", seq++, id, duration);
-    if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
-    //Sleep(100);
+    if (mutexCommand) pthread_mutex_unlock(mutexCommand);
+    //msleep(100);
 }
 
 // --------------------------------------------------------------------------
@@ -292,20 +285,20 @@ void ARDrone::setAnimation(int id, int duration)
 void ARDrone::setLED(int id, float freq, int duration)
 {
     // Send a command
-    if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+    if (mutexCommand) pthread_mutex_lock(mutexCommand);
     sockCommand.sendf("AT*LED=%d,%d,%d,%d\r", seq++, id, *(int*)(&freq), duration);
     //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
     //sockCommand.sendf("AT*CONFIG=%d,\"leds:leds_anim\",\"%d,%d,%d\"\r", seq++, id, *(int*)(&freq), duration);
-    if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
-    //Sleep(100);
+    if (mutexCommand) pthread_mutex_unlock(mutexCommand);
+    //msleep(100);
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::startVideoRecord(Enable/Disable recording)
-// Start recording video.
-// This function is only for AR.Drone 2.0
-// You should set a USB key with > 100MB to your drone
-// Return value NONE
+// ARDrone::startVideoRecord(Enable/Disable)
+// Description  : Start or stop recording video.
+//                This function is only for AR.Drone 2.0
+//                You should set a USB key with > 100MB to your drone
+// Return value : NONE
 // --------------------------------------------------------------------------
 void ARDrone::setVideoRecord(bool activate)
 {
@@ -315,20 +308,20 @@ void ARDrone::setVideoRecord(bool activate)
         finalizeVideo();
 
         // Enable/Disable video recording
-        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+        if (mutexCommand) pthread_mutex_lock(mutexCommand);
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         if (activate) sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"TRUE\"\r",  seq++);
         else          sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"FALSE\"\r", seq++);
-        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
-        Sleep(100);
+        if (mutexCommand) pthread_mutex_unlock(mutexCommand);
+        msleep(100);
 
         // Output video with MP4_360P_H264_720P_CODEC / H264_360P_CODEC
-        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+        if (mutexCommand) pthread_mutex_lock(mutexCommand);
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         if (activate) sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x82);
         else          sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x81);
-        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
-        Sleep(100);
+        if (mutexCommand) pthread_mutex_unlock(mutexCommand);
+        msleep(100);
 
         // Initialize video
         initVideo();
@@ -336,45 +329,45 @@ void ARDrone::setVideoRecord(bool activate)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::setOutdoorMode(Enable/Disable outdoor mode)
-// Stop recording video.
-// Return value NONE
+// ARDrone::setOutdoorMode(Enable/Disable)
+// Description  : Set outdoor mode.
+// Return value : NONE
 // --------------------------------------------------------------------------
 void ARDrone::setOutdoorMode(bool activate)
 {
     // AR.Drone 2.0
     if (version.major == ARDRONE_VERSION_2) {
         // Enable/Disable outdoor mode
-        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+        if (mutexCommand) pthread_mutex_lock(mutexCommand);
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         if (activate) sockCommand.sendf("AT*CONFIG=%d,\"control:outdoor\",\"TRUE\"\r",  seq++);
         else          sockCommand.sendf("AT*CONFIG=%d,\"control:outdoor\",\"FALSE\"\r", seq++);
-        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
-        Sleep(100);
+        if (mutexCommand) pthread_mutex_unlock(mutexCommand);
+        msleep(100);
 
         // Without/With shell
-        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+        if (mutexCommand) pthread_mutex_lock(mutexCommand);
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         if (activate) sockCommand.sendf("AT*CONFIG=%d,\"control:flight_without_shell\",\"TRUE\"\r",  seq++);
         else          sockCommand.sendf("AT*CONFIG=%d,\"control:flight_without_shell\",\"FALSE\"\r", seq++);
-        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
-        Sleep(100);
+        if (mutexCommand) pthread_mutex_unlock(mutexCommand);
+        msleep(100);
     }
     // AR.Drone 1.0
     else {
         // Enable/Disable outdoor mode
-        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+        if (mutexCommand) pthread_mutex_lock(mutexCommand);
         if (activate) sockCommand.sendf("AT*CONFIG=%d,\"control:outdoor\",\"TRUE\"\r",  seq++);
         else          sockCommand.sendf("AT*CONFIG=%d,\"control:outdoor\",\"FALSE\"\r", seq++);
-        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
-        Sleep(100);
+        if (mutexCommand) pthread_mutex_unlock(mutexCommand);
+        msleep(100);
 
         // Without/With shell
-        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+        if (mutexCommand) pthread_mutex_lock(mutexCommand);
         if (activate) sockCommand.sendf("AT*CONFIG=%d,\"control:flight_without_shell\",\"TRUE\"\r",  seq++);
         else          sockCommand.sendf("AT*CONFIG=%d,\"control:flight_without_shell\",\"FALSE\"\r", seq++);
-        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
-        Sleep(100);
+        if (mutexCommand) pthread_mutex_unlock(mutexCommand);
+        msleep(100);
     }
 }
 
@@ -386,15 +379,15 @@ void ARDrone::setOutdoorMode(bool activate)
 void ARDrone::resetWatchDog(void)
 {
     // Get the state
-    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    if (mutexCommand) pthread_mutex_lock(mutexNavdata);
     int state = navdata.ardrone_state;
-    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+    if (mutexCommand) pthread_mutex_unlock(mutexNavdata);
 
     // If AR.Drone is in Watch-Dog, reset it
     if (state & ARDRONE_COM_WATCHDOG_MASK) {
-        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+        if (mutexCommand) pthread_mutex_lock(mutexCommand);
         sockCommand.sendf("AT*COMWDG=%d\r", seq++);
-        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
+        if (mutexCommand) pthread_mutex_unlock(mutexCommand);
     }
 }
 
@@ -406,15 +399,15 @@ void ARDrone::resetWatchDog(void)
 void ARDrone::resetEmergency(void)
 {
     // Get the state
-    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    if (mutexCommand) pthread_mutex_lock(mutexNavdata);
     int state = navdata.ardrone_state;
-    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+    if (mutexCommand) pthread_mutex_unlock(mutexNavdata);
 
     // If AR.Drone is in emergency, reset it
     if (state & ARDRONE_EMERGENCY_MASK) {
-        if (mutexCommand != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexCommand, INFINITE);
+        if (mutexCommand) pthread_mutex_lock(mutexCommand);
         sockCommand.sendf("AT*REF=%d,290717952\r", seq++);
-        if (mutexCommand != INVALID_HANDLE_VALUE) ReleaseMutex(mutexCommand);
+        if (mutexCommand) pthread_mutex_unlock(mutexCommand);
     }
 }
 
@@ -425,20 +418,19 @@ void ARDrone::resetEmergency(void)
 // --------------------------------------------------------------------------
 void ARDrone::finalizeCommand(void)
 {
-    // Disable thread loop
-    flagCommand = 0;
-
     // Destroy the thread
-    if (threadCommand != INVALID_HANDLE_VALUE) {
-        WaitForSingleObject(threadCommand, INFINITE);
-        CloseHandle(threadCommand);
-        threadCommand = INVALID_HANDLE_VALUE;
+    if (threadCommand) {
+        pthread_cancel(*threadCommand);
+        pthread_join(*threadCommand, NULL);
+        delete threadCommand;
+        threadCommand = NULL;
     }
 
     // Delete the mutex
-    if (mutexCommand != INVALID_HANDLE_VALUE) {
-        CloseHandle(mutexCommand);
-        mutexCommand = INVALID_HANDLE_VALUE;
+    if (mutexCommand) {
+        pthread_mutex_destroy(mutexCommand);
+        delete mutexCommand;
+        mutexCommand = NULL;
     }
 
     // Close the socket

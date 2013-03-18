@@ -37,7 +37,7 @@ int ARDrone::initNavdata(void)
     }
 
     // Clear Navdata
-    ZeroMemory(&navdata, sizeof(NAVDATA));
+    memset(&navdata, 0, sizeof(NAVDATA));
 
     // Start Navdata
     sockNavdata.sendf("\x01\x00\x00\x00");
@@ -45,9 +45,11 @@ int ARDrone::initNavdata(void)
     // AR.Drone 2.0
     if (version.major == ARDRONE_VERSION_2) {
         // Disable BOOTSTRAP mode
+        if (mutexCommand) pthread_mutex_lock(mutexCommand);
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"general:navdata_demo\",\"TRUE\"\r", seq++);
-        Sleep(100);
+        if (mutexCommand) pthread_mutex_unlock(mutexCommand);
+        msleep(100);
 
         // Seed ACK
         sockCommand.sendf("AT*CTRL=%d,0\r", seq++);
@@ -55,23 +57,22 @@ int ARDrone::initNavdata(void)
     // AR.Drone 1.0
     else {
         // Disable BOOTSTRAP mode
+        if (mutexCommand) pthread_mutex_lock(mutexCommand);
         sockCommand.sendf("AT*CONFIG=%d,\"general:navdata_demo\",\"TRUE\"\r", seq++);
+        if (mutexCommand) pthread_mutex_unlock(mutexCommand);
 
         // Send ACK
         sockCommand.sendf("AT*CTRL=%d,0\r", seq++);
     }
 
     // Create a mutex
-    mutexNavdata= CreateMutex(NULL, FALSE, NULL);
-
-    // Enable thread loop
-    flagNavdata = 1;
+    mutexNavdata = new pthread_mutex_t;
+    pthread_mutex_init(mutexNavdata, NULL);
 
     // Create a thread
-    UINT id;
-    threadNavdata = (HANDLE)_beginthreadex(NULL, 0, runNavdata, this, 0, &id);
-    if (threadNavdata == INVALID_HANDLE_VALUE) {
-        CVDRONE_ERROR("_beginthreadex() was failed. (%s, %d)\n", __FILE__, __LINE__);
+    threadNavdata = new pthread_t;
+    if (pthread_create(threadNavdata, NULL, runNavdata, this) != 0) {
+        CVDRONE_ERROR("pthread_create() was failed. (%s, %d)\n", __FILE__, __LINE__);
         return 0;
     }
 
@@ -83,18 +84,14 @@ int ARDrone::initNavdata(void)
 // Description  : Thread function for Navdata.
 // Return value : SUCCESS:0
 // --------------------------------------------------------------------------
-UINT ARDrone::loopNavdata(void)
+void ARDrone::loopNavdata(void)
 {
-    while (flagNavdata) {
+    while (1) {
         // Get Navdata
         if (!getNavdata()) break;
-        Sleep(60);
+        pthread_testcancel();
+        msleep(60);
     }
-
-    // Disable thread loop
-    flagNavdata = 0;
-
-    return 0;
 }
 
 // --------------------------------------------------------------------------
@@ -116,9 +113,9 @@ int ARDrone::getNavdata(void)
         // Check header
         if (buf[0] == ARDRONE_NAVDATA_HEADER) {
             // Update Navdata
-            if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+            if (mutexNavdata) pthread_mutex_lock(mutexNavdata);
             memcpy((void*)&navdata, (const void*)buf, sizeof(NAVDATA));
-            if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+            if (mutexNavdata) pthread_mutex_unlock(mutexNavdata);
         }
     }
 
@@ -133,9 +130,9 @@ int ARDrone::getNavdata(void)
 double ARDrone::getRoll(void)
 {
     // Get the data
-    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    if (mutexNavdata) pthread_mutex_lock(mutexNavdata);
     double roll = navdata.demo.phi * 0.001 * DEG_TO_RAD;
-    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+    if (mutexNavdata) pthread_mutex_unlock(mutexNavdata);
 
     return roll;
 }
@@ -148,9 +145,9 @@ double ARDrone::getRoll(void)
 double ARDrone::getPitch(void)
 {
     // Get the data
-    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    if (mutexNavdata) pthread_mutex_lock(mutexNavdata);
     double pitch = -navdata.demo.theta * 0.001 * DEG_TO_RAD;
-    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+    if (mutexNavdata) pthread_mutex_unlock(mutexNavdata);
 
     return pitch;
 }
@@ -163,9 +160,9 @@ double ARDrone::getPitch(void)
 double ARDrone::getYaw(void)
 {
     // Get the data
-    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    if (mutexNavdata) pthread_mutex_lock(mutexNavdata);
     double yaw = -navdata.demo.psi * 0.001 * DEG_TO_RAD;
-    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+    if (mutexNavdata) pthread_mutex_unlock(mutexNavdata);
 
     return yaw;
 }
@@ -178,9 +175,9 @@ double ARDrone::getYaw(void)
 double ARDrone::getAltitude(void)
 {
     // Get the data
-    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    if (mutexNavdata) pthread_mutex_lock(mutexNavdata);
     double altitude = navdata.demo.altitude * 0.001;
-    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+    if (mutexNavdata) pthread_mutex_unlock(mutexNavdata);
 
     return altitude;
 }
@@ -193,12 +190,12 @@ double ARDrone::getAltitude(void)
 double ARDrone::getVelocity(double *vx, double *vy, double *vz)
 {
     // Get the data
-    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    if (mutexNavdata) pthread_mutex_lock(mutexNavdata);
     double velocity_x =  navdata.demo.vx * 0.001;
     double velocity_y = -navdata.demo.vy * 0.001;
     double velocity_z = -navdata.demo.vz * 0.001;
     double velocity = sqrt(velocity_x*velocity_x + velocity_y*velocity_y + velocity_z*velocity_z);
-    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+    if (mutexNavdata) pthread_mutex_unlock(mutexNavdata);
 
     // Velocities
     if (vx) *vx = velocity_x;
@@ -216,9 +213,9 @@ double ARDrone::getVelocity(double *vx, double *vy, double *vz)
 int ARDrone::getBatteryPercentage(void)
 {
     // Get the data
-    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    if (mutexNavdata) pthread_mutex_lock(mutexNavdata);
     int battery = navdata.demo.vbat_flying_percentage;
-    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+    if (mutexNavdata) pthread_mutex_unlock(mutexNavdata);
 
     return battery;
 }
@@ -231,9 +228,9 @@ int ARDrone::getBatteryPercentage(void)
 int ARDrone::onGround(void)
 {
     // Get the data
-    if (mutexNavdata != INVALID_HANDLE_VALUE) WaitForSingleObject(mutexNavdata, INFINITE);
+    if (mutexNavdata) pthread_mutex_lock(mutexNavdata);
     int on_ground = (navdata.ardrone_state & ARDRONE_FLY_MASK) ? 0 : 1;
-    if (mutexNavdata != INVALID_HANDLE_VALUE) ReleaseMutex(mutexNavdata);
+    if (mutexNavdata) pthread_mutex_unlock(mutexNavdata);
 
     return on_ground;
 }
@@ -245,20 +242,19 @@ int ARDrone::onGround(void)
 // --------------------------------------------------------------------------
 void ARDrone::finalizeNavdata(void)
 {
-    // Disable thread loop
-    flagNavdata = 0;
-
     // Destroy the thread
-    if (threadNavdata != INVALID_HANDLE_VALUE) {
-        WaitForSingleObject(threadNavdata, INFINITE);
-        CloseHandle(threadNavdata);
-        threadNavdata = INVALID_HANDLE_VALUE;
+    if (threadNavdata) {
+        pthread_cancel(*threadNavdata);
+        pthread_join(*threadNavdata, NULL);
+        delete threadNavdata;
+        threadNavdata = NULL;
     }
 
     // Delete the mutex
-    if (mutexNavdata != INVALID_HANDLE_VALUE) {
-        CloseHandle(mutexNavdata);
-        mutexNavdata = INVALID_HANDLE_VALUE;
+    if (mutexNavdata) {
+        pthread_mutex_destroy(mutexNavdata);
+        delete mutexNavdata;
+        mutexNavdata = NULL;
     }
 
     // Close the socket

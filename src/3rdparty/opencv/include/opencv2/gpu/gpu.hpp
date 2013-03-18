@@ -145,43 +145,49 @@ public:
     ~Stream();
 
     Stream(const Stream&);
-    Stream& operator=(const Stream&);
+    Stream& operator =(const Stream&);
 
     bool queryIfComplete();
     void waitForCompletion();
 
-    //! downloads asynchronously.
+    //! downloads asynchronously
     // Warning! cv::Mat must point to page locked memory (i.e. to CudaMem data or to its subMat)
     void enqueueDownload(const GpuMat& src, CudaMem& dst);
     void enqueueDownload(const GpuMat& src, Mat& dst);
 
-    //! uploads asynchronously.
+    //! uploads asynchronously
     // Warning! cv::Mat must point to page locked memory (i.e. to CudaMem data or to its ROI)
     void enqueueUpload(const CudaMem& src, GpuMat& dst);
     void enqueueUpload(const Mat& src, GpuMat& dst);
 
+    //! copy asynchronously
     void enqueueCopy(const GpuMat& src, GpuMat& dst);
 
+    //! memory set asynchronously
     void enqueueMemSet(GpuMat& src, Scalar val);
     void enqueueMemSet(GpuMat& src, Scalar val, const GpuMat& mask);
 
-    // converts matrix type, ex from float to uchar depending on type
-    void enqueueConvert(const GpuMat& src, GpuMat& dst, int type, double a = 1, double b = 0);
+    //! converts matrix type, ex from float to uchar depending on type
+    void enqueueConvert(const GpuMat& src, GpuMat& dst, int dtype, double a = 1, double b = 0);
+
+    //! adds a callback to be called on the host after all currently enqueued items in the stream have completed
+    typedef void (*StreamCallback)(Stream& stream, int status, void* userData);
+    void enqueueHostCallback(StreamCallback callback, void* userData);
 
     static Stream& Null();
 
     operator bool() const;
 
 private:
+    struct Impl;
+
+    explicit Stream(Impl* impl);
     void create();
     void release();
 
-    struct Impl;
     Impl *impl;
 
     friend struct StreamAccessor;
-
-    explicit Stream(Impl* impl);
 };
 
 
@@ -458,6 +464,12 @@ CV_EXPORTS void cartToPolar(const GpuMat& x, const GpuMat& y, GpuMat& magnitude,
 //! converts polar coordinates to Cartesian
 //! supports only floating-point source
 CV_EXPORTS void polarToCart(const GpuMat& magnitude, const GpuMat& angle, GpuMat& x, GpuMat& y, bool angleInDegrees = false, Stream& stream = Stream::Null());
+
+//! scales and shifts array elements so that either the specified norm (alpha) or the minimum (alpha) and maximum (beta) array values get the specified values
+CV_EXPORTS void normalize(const GpuMat& src, GpuMat& dst, double alpha = 1, double beta = 0,
+                          int norm_type = NORM_L2, int dtype = -1, const GpuMat& mask = GpuMat());
+CV_EXPORTS void normalize(const GpuMat& src, GpuMat& dst, double a, double b,
+                          int norm_type, int dtype, const GpuMat& mask, GpuMat& norm_buf, GpuMat& cvt_buf);
 
 
 //////////////////////////// Per-element operations ////////////////////////////////////
@@ -801,7 +813,12 @@ struct CV_EXPORTS CannyBuf
     GpuMat mag;
     GpuMat map;
     GpuMat st1, st2;
+    GpuMat unused;
     Ptr<FilterEngine_GPU> filterDX, filterDY;
+
+    CannyBuf() {}
+    explicit CannyBuf(const Size& image_size, int apperture_size = 3) {create(image_size, apperture_size);}
+    CannyBuf(const GpuMat& dx_, const GpuMat& dy_);
 };
 
 CV_EXPORTS void Canny(const GpuMat& image, GpuMat& edges, double low_thresh, double high_thresh, int apperture_size = 3, bool L2gradient = false);
@@ -910,11 +927,8 @@ CV_EXPORTS void meanStdDev(const GpuMat& mtx, Scalar& mean, Scalar& stddev, GpuM
 //! supports NORM_INF, NORM_L1, NORM_L2
 //! supports all matrices except 64F
 CV_EXPORTS double norm(const GpuMat& src1, int normType=NORM_L2);
-
-//! computes norm of array
-//! supports NORM_INF, NORM_L1, NORM_L2
-//! supports all matrices except 64F
 CV_EXPORTS double norm(const GpuMat& src1, int normType, GpuMat& buf);
+CV_EXPORTS double norm(const GpuMat& src1, int normType, const GpuMat& mask, GpuMat& buf);
 
 //! computes norm of the difference between two arrays
 //! supports NORM_INF, NORM_L1, NORM_L2
@@ -924,45 +938,33 @@ CV_EXPORTS double norm(const GpuMat& src1, const GpuMat& src2, int normType=NORM
 //! computes sum of array elements
 //! supports only single channel images
 CV_EXPORTS Scalar sum(const GpuMat& src);
-
-//! computes sum of array elements
-//! supports only single channel images
 CV_EXPORTS Scalar sum(const GpuMat& src, GpuMat& buf);
+CV_EXPORTS Scalar sum(const GpuMat& src, const GpuMat& mask, GpuMat& buf);
 
 //! computes sum of array elements absolute values
 //! supports only single channel images
 CV_EXPORTS Scalar absSum(const GpuMat& src);
-
-//! computes sum of array elements absolute values
-//! supports only single channel images
 CV_EXPORTS Scalar absSum(const GpuMat& src, GpuMat& buf);
+CV_EXPORTS Scalar absSum(const GpuMat& src, const GpuMat& mask, GpuMat& buf);
 
 //! computes squared sum of array elements
 //! supports only single channel images
 CV_EXPORTS Scalar sqrSum(const GpuMat& src);
-
-//! computes squared sum of array elements
-//! supports only single channel images
 CV_EXPORTS Scalar sqrSum(const GpuMat& src, GpuMat& buf);
+CV_EXPORTS Scalar sqrSum(const GpuMat& src, const GpuMat& mask, GpuMat& buf);
 
 //! finds global minimum and maximum array elements and returns their values
 CV_EXPORTS void minMax(const GpuMat& src, double* minVal, double* maxVal=0, const GpuMat& mask=GpuMat());
-
-//! finds global minimum and maximum array elements and returns their values
 CV_EXPORTS void minMax(const GpuMat& src, double* minVal, double* maxVal, const GpuMat& mask, GpuMat& buf);
 
 //! finds global minimum and maximum array elements and returns their values with locations
 CV_EXPORTS void minMaxLoc(const GpuMat& src, double* minVal, double* maxVal=0, Point* minLoc=0, Point* maxLoc=0,
                           const GpuMat& mask=GpuMat());
-
-//! finds global minimum and maximum array elements and returns their values with locations
 CV_EXPORTS void minMaxLoc(const GpuMat& src, double* minVal, double* maxVal, Point* minLoc, Point* maxLoc,
                           const GpuMat& mask, GpuMat& valbuf, GpuMat& locbuf);
 
 //! counts non-zero array elements
 CV_EXPORTS int countNonZero(const GpuMat& src);
-
-//! counts non-zero array elements
 CV_EXPORTS int countNonZero(const GpuMat& src, GpuMat& buf);
 
 //! reduces a matrix to a vector
@@ -1033,9 +1035,11 @@ CV_EXPORTS void histRange(const GpuMat& src, GpuMat hist[4], const GpuMat levels
 //! Calculates histogram for 8u one channel image
 //! Output hist will have one row, 256 cols and CV32SC1 type.
 CV_EXPORTS void calcHist(const GpuMat& src, GpuMat& hist, Stream& stream = Stream::Null());
+CV_EXPORTS void calcHist(const GpuMat& src, GpuMat& hist, GpuMat& buf, Stream& stream = Stream::Null());
 
 //! normalizes the grayscale image brightness and contrast by normalizing its histogram
 CV_EXPORTS void equalizeHist(const GpuMat& src, GpuMat& dst, Stream& stream = Stream::Null());
+CV_EXPORTS void equalizeHist(const GpuMat& src, GpuMat& dst, GpuMat& hist, Stream& stream = Stream::Null());
 CV_EXPORTS void equalizeHist(const GpuMat& src, GpuMat& dst, GpuMat& hist, GpuMat& buf, Stream& stream = Stream::Null());
 
 //////////////////////////////// StereoBM_GPU ////////////////////////////////
@@ -1320,10 +1324,12 @@ protected:
 
 ////////////////////////////////// BruteForceMatcher //////////////////////////////////
 
-class CV_EXPORTS BFMatcher_GPU
+class CV_EXPORTS BruteForceMatcher_GPU_base
 {
 public:
-    explicit BFMatcher_GPU(int norm = cv::NORM_L2);
+    enum DistType {L1Dist = 0, L2Dist, HammingDist};
+
+    explicit BruteForceMatcher_GPU_base(DistType distType = L2Dist);
 
     // Add descriptors to train descriptor collection
     void add(const std::vector<GpuMat>& descCollection);
@@ -1465,7 +1471,7 @@ public:
     void radiusMatch(const GpuMat& query, std::vector< std::vector<DMatch> >& matches, float maxDistance,
         const std::vector<GpuMat>& masks = std::vector<GpuMat>(), bool compactResult = false);
 
-    int norm;
+    DistType distType;
 
 private:
     std::vector<GpuMat> trainDescCollection;
@@ -1475,24 +1481,30 @@ template <class Distance>
 class CV_EXPORTS BruteForceMatcher_GPU;
 
 template <typename T>
-class CV_EXPORTS BruteForceMatcher_GPU< L1<T> > : public BFMatcher_GPU
+class CV_EXPORTS BruteForceMatcher_GPU< L1<T> > : public BruteForceMatcher_GPU_base
 {
 public:
-    explicit BruteForceMatcher_GPU() : BFMatcher_GPU(NORM_L1) {}
-    explicit BruteForceMatcher_GPU(L1<T> /*d*/) : BFMatcher_GPU(NORM_L1) {}
+    explicit BruteForceMatcher_GPU() : BruteForceMatcher_GPU_base(L1Dist) {}
+    explicit BruteForceMatcher_GPU(L1<T> /*d*/) : BruteForceMatcher_GPU_base(L1Dist) {}
 };
 template <typename T>
-class CV_EXPORTS BruteForceMatcher_GPU< L2<T> > : public BFMatcher_GPU
+class CV_EXPORTS BruteForceMatcher_GPU< L2<T> > : public BruteForceMatcher_GPU_base
 {
 public:
-    explicit BruteForceMatcher_GPU() : BFMatcher_GPU(NORM_L2) {}
-    explicit BruteForceMatcher_GPU(L2<T> /*d*/) : BFMatcher_GPU(NORM_L2) {}
+    explicit BruteForceMatcher_GPU() : BruteForceMatcher_GPU_base(L2Dist) {}
+    explicit BruteForceMatcher_GPU(L2<T> /*d*/) : BruteForceMatcher_GPU_base(L2Dist) {}
 };
-template <> class CV_EXPORTS BruteForceMatcher_GPU< Hamming > : public BFMatcher_GPU
+template <> class CV_EXPORTS BruteForceMatcher_GPU< Hamming > : public BruteForceMatcher_GPU_base
 {
 public:
-    explicit BruteForceMatcher_GPU() : BFMatcher_GPU(NORM_HAMMING) {}
-    explicit BruteForceMatcher_GPU(Hamming /*d*/) : BFMatcher_GPU(NORM_HAMMING) {}
+    explicit BruteForceMatcher_GPU() : BruteForceMatcher_GPU_base(HammingDist) {}
+    explicit BruteForceMatcher_GPU(Hamming /*d*/) : BruteForceMatcher_GPU_base(HammingDist) {}
+};
+
+class CV_EXPORTS BFMatcher_GPU : public BruteForceMatcher_GPU_base
+{
+public:
+    explicit BFMatcher_GPU(int norm = NORM_L2) : BruteForceMatcher_GPU_base(norm == NORM_L1 ? L1Dist : norm == NORM_L2 ? L2Dist : HammingDist) {}
 };
 
 ////////////////////////////////// CascadeClassifier_GPU //////////////////////////////////////////
@@ -1510,6 +1522,7 @@ public:
 
     /* returns number of detected objects */
     int detectMultiScale(const GpuMat& image, GpuMat& objectsBuf, double scaleFactor = 1.2, int minNeighbors = 4, Size minSize = Size());
+    int detectMultiScale(const GpuMat& image, GpuMat& objectsBuf, Size maxObjectSize, Size minSize = Size(), double scaleFactor = 1.1, int minNeighbors = 4);
 
     bool findLargestObject;
     bool visualizeInPlace;
@@ -1522,101 +1535,7 @@ private:
     struct HaarCascade;
     struct LbpCascade;
     friend class CascadeClassifier_GPU_LBP;
-
-public:
-    int detectMultiScale(const GpuMat& image, GpuMat& objectsBuf, Size maxObjectSize, Size minSize = Size(), double scaleFactor = 1.1, int minNeighbors = 4);
 };
-
-// ======================== GPU version for soft cascade ===================== //
-
-class CV_EXPORTS ChannelsProcessor
-{
-public:
-    enum
-    {
-        GENERIC   = 1 << 4,
-        SEPARABLE = 2 << 4
-    };
-
-    // Appends specified number of HOG first-order features integrals into given vector.
-    // Param frame is an input 3-channel bgr image.
-    // Param channels is a GPU matrix of optionally shrinked channels
-    // Param stream is stream is a high-level CUDA stream abstraction used for asynchronous execution.
-    virtual void apply(InputArray frame, OutputArray channels, Stream& stream = Stream::Null()) = 0;
-
-    // Creates a specific preprocessor implementation.
-    // Param shrinkage is a resizing factor. Resize is applied before the computing integral sum
-    // Param bins is a number of HOG-like channels.
-    // Param flags is a channel computing extra flags.
-    static cv::Ptr<ChannelsProcessor> create(const int shrinkage, const int bins, const int flags = GENERIC);
-
-    virtual ~ChannelsProcessor();
-
-protected:
-    ChannelsProcessor();
-};
-
-// Implementation of soft (stageless) cascaded detector.
-class CV_EXPORTS SCascade : public Algorithm
-{
-public:
-
-    // Representation of detectors result.
-    struct CV_EXPORTS Detection
-    {
-        ushort x;
-        ushort y;
-        ushort w;
-        ushort h;
-        float confidence;
-        int kind;
-
-        enum {PEDESTRIAN = 0};
-    };
-
-    enum { NO_REJECT = 1, DOLLAR = 2, /*PASCAL = 4,*/ DEFAULT = NO_REJECT, NMS_MASK = 0xF};
-
-    // An empty cascade will be created.
-    // Param minScale is a minimum scale relative to the original size of the image on which cascade will be applyed.
-    // Param minScale is a maximum scale relative to the original size of the image on which cascade will be applyed.
-    // Param scales is a number of scales from minScale to maxScale.
-    // Param flags is an extra tuning flags.
-    SCascade(const double minScale = 0.4, const double maxScale = 5., const int scales = 55,
-        const int flags = NO_REJECT || ChannelsProcessor::GENERIC);
-
-    virtual ~SCascade();
-
-    cv::AlgorithmInfo* info() const;
-
-    // Load cascade from FileNode.
-    // Param fn is a root node for cascade. Should be <cascade>.
-    virtual bool load(const FileNode& fn);
-
-    // Load cascade config.
-    virtual void read(const FileNode& fn);
-
-    // Return the matrix of of detectioned objects.
-    // Param image is a frame on which detector will be applied.
-    // Param rois is a regions of interests mask generated by genRoi.
-    //    Only the objects that fall into one of the regions will be returned.
-    // Param objects is an output array of Detections represented as GpuMat of detections (SCascade::Detection)
-    //    The first element of the matrix is  actually a count of detections.
-    // Param stream is stream is a high-level CUDA stream abstraction used for asynchronous execution
-    virtual void detect(InputArray image, InputArray rois, OutputArray objects, Stream& stream = Stream::Null()) const;
-
-private:
-
-    struct Fields;
-    Fields* fields;
-
-    double minScale;
-    double maxScale;
-    int scales;
-
-    int flags;
-};
-
-CV_EXPORTS bool initModule_gpu(void);
 
 ////////////////////////////////// SURF //////////////////////////////////////////
 
@@ -1645,12 +1564,12 @@ public:
     int descriptorSize() const;
 
     //! upload host keypoints to device memory
-    static void uploadKeypoints(const vector<KeyPoint>& keypoints, GpuMat& keypointsGPU);
+    void uploadKeypoints(const vector<KeyPoint>& keypoints, GpuMat& keypointsGPU);
     //! download keypoints from device to host memory
-    static void downloadKeypoints(const GpuMat& keypointsGPU, vector<KeyPoint>& keypoints);
+    void downloadKeypoints(const GpuMat& keypointsGPU, vector<KeyPoint>& keypoints);
 
     //! download descriptors from device to host memory
-    static void downloadDescriptors(const GpuMat& descriptorsGPU, vector<float>& descriptors);
+    void downloadDescriptors(const GpuMat& descriptorsGPU, vector<float>& descriptors);
 
     //! finds the keypoints using fast hessian detector used in SURF
     //! supports CV_8UC1 images
@@ -1717,10 +1636,10 @@ public:
     void operator ()(const GpuMat& image, const GpuMat& mask, std::vector<KeyPoint>& keypoints);
 
     //! download keypoints from device to host memory
-    static void downloadKeypoints(const GpuMat& d_keypoints, std::vector<KeyPoint>& keypoints);
+    void downloadKeypoints(const GpuMat& d_keypoints, std::vector<KeyPoint>& keypoints);
 
     //! convert keypoints to KeyPoint vector
-    static void convertKeypoints(const Mat& h_keypoints, std::vector<KeyPoint>& keypoints);
+    void convertKeypoints(const Mat& h_keypoints, std::vector<KeyPoint>& keypoints);
 
     //! release temporary buffer's memory
     void release();
@@ -1791,9 +1710,10 @@ public:
     void operator()(const GpuMat& image, const GpuMat& mask, GpuMat& keypoints, GpuMat& descriptors);
 
     //! download keypoints from device to host memory
-    static void downloadKeyPoints(const GpuMat& d_keypoints, std::vector<KeyPoint>& keypoints);
+    void downloadKeyPoints(GpuMat& d_keypoints, std::vector<KeyPoint>& keypoints);
+
     //! convert keypoints to KeyPoint vector
-    static void convertKeyPoints(const Mat& d_keypoints, std::vector<KeyPoint>& keypoints);
+    void convertKeyPoints(Mat& d_keypoints, std::vector<KeyPoint>& keypoints);
 
     //! returns the descriptor size in bytes
     inline int descriptorSize() const { return kBytes; }
@@ -1953,16 +1873,19 @@ public:
     Size winSize;
     int maxLevel;
     int iters;
+    double derivLambda; //unused
     bool useInitialFlow;
+    float minEigThreshold; //unused
+    bool getMinEigenVals;  //unused
 
 private:
+    GpuMat uPyr_[2];
     vector<GpuMat> prevPyr_;
     vector<GpuMat> nextPyr_;
-
-    GpuMat buf_;
-
-    GpuMat uPyr_[2];
     GpuMat vPyr_[2];
+    vector<GpuMat> buf_;
+    vector<GpuMat> unused;
+    bool isDeviceArch11_;
 };
 
 
@@ -1979,6 +1902,7 @@ public:
         polyN = 5;
         polySigma = 1.1;
         flags = 0;
+        isDeviceArch11_ = !DeviceInfo().supports(FEATURE_SET_COMPUTE_12);
     }
 
     int numLevels;
@@ -2026,6 +1950,8 @@ private:
     GpuMat frames_[2];
     GpuMat pyrLevel_[2], M_, bufM_, R_[2], blurredFrame_[2];
     std::vector<GpuMat> pyramid0_, pyramid1_;
+
+    bool isDeviceArch11_;
 };
 
 

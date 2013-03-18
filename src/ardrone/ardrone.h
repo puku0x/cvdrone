@@ -40,50 +40,29 @@
 #include <string.h>
 #include <math.h>
 
-// Win32API
-#include <windows.h>
-
-// Thread
-#include <process.h>
-
-// WinSock
-#include <winsock.h>
-#pragma comment(lib, "wsock32.lib")
-
-// WinINet
-#include <wininet.h>
-#pragma comment(lib, "wininet.lib")
+// OpenCV
+#include <opencv2/opencv.hpp>
 
 // FFmpeg
 extern "C" {
-#include <libavcodec/avcodec.h>
+    #include <libavcodec/avcodec.h>
     #include <libavformat/avformat.h>
     #include <libswscale/swscale.h>
 }
-#pragma comment(lib, "avcodec.lib")
-#pragma comment(lib, "avdevice.lib")
-#pragma comment(lib, "avfilter.lib")
-#pragma comment(lib, "avformat.lib")
-#pragma comment(lib, "avutil.lib")
-#pragma comment(lib, "swresample.lib")
-#pragma comment(lib, "swscale.lib")
 
-// OpenCV
-#include <opencv2/opencv.hpp>
-#pragma comment(lib, "opencv_calib3d249.lib")
-#pragma comment(lib, "opencv_contrib249.lib")
-#pragma comment(lib, "opencv_core249.lib")
-#pragma comment(lib, "opencv_features2d249.lib")
-#pragma comment(lib, "opencv_flann249.lib")
-#pragma comment(lib, "opencv_highgui249.lib")
-#pragma comment(lib, "opencv_imgproc249.lib")
-#pragma comment(lib, "opencv_legacy249.lib")
-#pragma comment(lib, "opencv_ml249.lib")
-#pragma comment(lib, "opencv_objdetect249.lib")
-#pragma comment(lib, "opencv_photo249.lib")
-#pragma comment(lib, "opencv_stitching249.lib")
-#pragma comment(lib, "opencv_video249.lib")
-#pragma comment(lib, "opencv_videostab249.lib")
+// POSIX threads
+#include <pthread.h>
+
+// Sleep [ms] implementation
+#ifdef _WIN32
+#include <windows.h>
+#define msleep(ms) Sleep((DWORD)ms)
+#else
+#include <unistd.h>
+inline void msleep(unsigned long ms) {
+    while (ms--) usleep(1000);
+}
+#endif
 
 // Macro definitions
 #define ARDRONE_VERSION_1           (1)             // AR.Drone 1.0
@@ -100,6 +79,9 @@ extern "C" {
 #define ARDRONE_NAVDATA_HEADER      (0x55667788)    // Header of Navdata
 
 // Math constants
+#ifndef NULL
+#define NULL 0
+#endif
 #ifndef M_PI
 #define M_PI  (3.14159265358979323846264338327)
 #endif
@@ -111,7 +93,7 @@ extern "C" {
 #endif
 
 // State masks
-typedef enum ARDRONE_STATE_MASK {
+enum ARDRONE_STATE_MASK {
     ARDRONE_FLY_MASK            = 1 <<  0, // FLY MASK                  : (0) Ardrone is landed, (1) Ardrone is flying
     ARDRONE_VIDEO_MASK          = 1 <<  1, // VIDEO MASK                : (0) Video disable, (1) Video enable
     ARDRONE_VISION_MASK         = 1 <<  2, // VISION MASK               : (0) Vision disable, (1) Vision enable
@@ -119,9 +101,9 @@ typedef enum ARDRONE_STATE_MASK {
     ARDRONE_ALTITUDE_MASK       = 1 <<  4, // ALTITUDE CONTROL ALGO     : (0) Altitude control inactive (1) Altitude control active
     ARDRONE_USER_FEEDBACK_START = 1 <<  5, // USER feedback             :     Start button state 
     ARDRONE_COMMAND_MASK        = 1 <<  6, // Control command ACK       : (0) None, (1) One received
-//  ARDRONE_FW_FILE_MASK        = 1 <<  7, //                           : (1) Firmware file is good
-//  ARDRONE_FW_VER_MASK         = 1 <<  8, //                           : (1) Firmware update is newer
-//  ARDRONE_FW_UPD_MASK         = 1 <<  9, //                           : (1) Firmware update is ongoing
+  //ARDRONE_FW_FILE_MASK        = 1 <<  7, //                           : (1) Firmware file is good
+  //ARDRONE_FW_VER_MASK         = 1 <<  8, //                           : (1) Firmware update is newer
+  //ARDRONE_FW_UPD_MASK         = 1 <<  9, //                           : (1) Firmware update is ongoing
     ARDRONE_NAVDATA_DEMO_MASK   = 1 << 10, // Navdata demo              : (0) All navdata, (1) Only navdata demo
     ARDRONE_NAVDATA_BOOTSTRAP   = 1 << 11, // Navdata bootstrap         : (0) Options sent in all or demo mode, (1) No navdata options sent
     ARDRONE_MOTORS_MASK         = 1 << 12, // Motors status             : (0) Ok, (1) Motors problem
@@ -144,7 +126,7 @@ typedef enum ARDRONE_STATE_MASK {
 };
 
 // Flight animation IDs
-typedef enum ARDRONE_ANIMATION_ID {
+enum ARDRONE_ANIMATION_ID {
     ARDRONE_ANIM_PHI_M30_DEG = 0,
     ARDRONE_ANIM_PHI_30_DEG,
     ARDRONE_ANIM_THETA_M30_DEG,
@@ -384,27 +366,30 @@ protected:
     SwsContext      *pConvertCtx;
 
     // Thread for command
-    int    flagCommand;
-    HANDLE threadCommand, mutexCommand;
-    UINT   loopCommand(void);
-    static UINT WINAPI runCommand(void *args) {
-        return reinterpret_cast<ARDrone*>(args)->loopCommand();
+    pthread_t *threadCommand;
+    pthread_mutex_t *mutexCommand;
+    void loopCommand(void);
+    static void *runCommand(void *args) {
+        reinterpret_cast<ARDrone*>(args)->loopCommand();
+        return NULL;
     }
 
     // Thread for navdata
-    int    flagNavdata;
-    HANDLE threadNavdata, mutexNavdata;
-    UINT   loopNavdata(void);
-    static UINT WINAPI runNavdata(void *args) {
-        return reinterpret_cast<ARDrone*>(args)->loopNavdata();
+    pthread_t *threadNavdata;
+    pthread_mutex_t *mutexNavdata;
+    void loopNavdata(void);
+    static void *runNavdata(void *args) {
+        reinterpret_cast<ARDrone*>(args)->loopNavdata();
+        return NULL;
     }
 
     // Thread for video
-    int    flagVideo;
-    HANDLE threadVideo, mutexVideo;
-    UINT   loopVideo(void);
-    static UINT WINAPI runVideo(void *args) {
-        return reinterpret_cast<ARDrone*>(args)->loopVideo();
+    pthread_t *threadVideo;
+    pthread_mutex_t *mutexVideo;
+    void loopVideo(void);
+    static void *runVideo(void *args) {
+        reinterpret_cast<ARDrone*>(args)->loopVideo();
+        return NULL;
     }
 
     // Initialize (internal)
@@ -442,8 +427,12 @@ CV_INLINE void CVDRONE_ERROR(const char *message, ...)
     vsprintf(str, message, arg);
     va_end(arg);
 
-    // Show message box
+    // Show the message
+    #ifdef _WIN32
     MessageBox(NULL, str, "CVDRONE ERROR MESSAGE", MB_OK|MB_ICONERROR|MB_TOPMOST|MB_SETFOREGROUND);
+    #else
+    fprintf(stderr, str);
+    #endif
 }
 
 #endif

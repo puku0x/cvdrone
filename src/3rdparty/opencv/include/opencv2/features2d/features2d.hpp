@@ -566,19 +566,19 @@ protected:
 CV_EXPORTS void FAST( InputArray image, CV_OUT vector<KeyPoint>& keypoints,
                       int threshold, bool nonmaxSupression=true );
 
-CV_EXPORTS void FAST( InputArray image, CV_OUT vector<KeyPoint>& keypoints,
+CV_EXPORTS void FASTX( InputArray image, CV_OUT vector<KeyPoint>& keypoints,
                       int threshold, bool nonmaxSupression, int type );
 
 class CV_EXPORTS_W FastFeatureDetector : public FeatureDetector
 {
 public:
+
     enum
-    {
+    { // Define it in old class to simplify migration to 2.5
       TYPE_5_8 = 0, TYPE_7_12 = 1, TYPE_9_16 = 2
     };
 
-    CV_WRAP FastFeatureDetector( int threshold=10, bool nonmaxSuppression=true);
-    CV_WRAP FastFeatureDetector( int threshold, bool nonmaxSuppression, int type);
+    CV_WRAP FastFeatureDetector( int threshold=10, bool nonmaxSuppression=true );
     AlgorithmInfo* info() const;
 
 protected:
@@ -586,7 +586,6 @@ protected:
 
     int threshold;
     bool nonmaxSuppression;
-    int type;
 };
 
 
@@ -659,6 +658,7 @@ protected:
   virtual void findBlobs(const Mat &image, const Mat &binaryImage, vector<Center> &centers) const;
 
   Params params;
+  AlgorithmInfo* info() const;
 };
 
 
@@ -1199,13 +1199,14 @@ protected:
 class CV_EXPORTS_W BFMatcher : public DescriptorMatcher
 {
 public:
-    CV_WRAP BFMatcher( int normType, bool crossCheck=false );
+    CV_WRAP BFMatcher( int normType=NORM_L2, bool crossCheck=false );
     virtual ~BFMatcher() {}
 
     virtual bool isMaskSupported() const { return true; }
 
     virtual Ptr<DescriptorMatcher> clone( bool emptyTrainData=false ) const;
 
+    AlgorithmInfo* info() const;
 protected:
     virtual void knnMatchImpl( const Mat& queryDescriptors, vector<vector<DMatch> >& matches, int k,
            const vector<Mat>& masks=vector<Mat>(), bool compactResult=false );
@@ -1239,6 +1240,7 @@ public:
 
     virtual Ptr<DescriptorMatcher> clone( bool emptyTrainData=false ) const;
 
+    AlgorithmInfo* info() const;
 protected:
     static void convertToDMatches( const DescriptorCollection& descriptors,
                                    const Mat& indices, const Mat& distances,

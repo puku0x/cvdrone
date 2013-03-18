@@ -716,12 +716,12 @@ template<typename _Tp, int m> struct CV_EXPORTS Matx_DetOp
     double operator ()(const Matx<_Tp, m, m>& a) const
     {
         Matx<_Tp, m, m> temp = a;
-        double p = LU(temp.val, m, m, 0, 0, 0);
+        double p = LU(temp.val, m*sizeof(_Tp), m, 0, 0, 0);
         if( p == 0 )
             return p;
         for( int i = 0; i < m; i++ )
             p *= temp(i, i);
-        return p;
+        return 1./p;
     }
 };
 
@@ -2690,12 +2690,6 @@ template<typename _Tp> template<typename _Tp2> inline const Ptr<_Tp2> Ptr<_Tp>::
     p.refcount = refcount;
     return p;
 }
-
-template<class _Tp, class _Tp2> inline bool operator==(const Ptr<_Tp>& a, const Ptr<_Tp2>& b) { return a.refcount == b.refcount; }
-template<class _Tp, class _Tp2> inline bool operator!=(const Ptr<_Tp>& a, const Ptr<_Tp2>& b) { return a.refcount != b.refcount; }
-
-
-
 
 //// specializied implementations of Ptr::delete_obj() for classic OpenCV types
 

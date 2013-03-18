@@ -49,12 +49,14 @@ FOR VS2010 USERS
 
 LIBRARY DEPENDENCIES
   CV Drone uses following libraries.
-  - OpenCV 2.4.9 (git-a8a842332b)
+  - OpenCV 2.4.4
     http://opencv.org/
-  - FFmpeg 1.0 (git-631ec06)
+  - FFmpeg 1.2
     http://www.ffmpeg.org/
-  - stdint.h for Visual C++
-    http://www.kijineko.co.jp/node/63
+  - stdint.h/inttypes.h for Microsoft Visual Studio
+    https://code.google.com/p/msinttypes/
+  - POSIX Threads for Win32
+    http://www.sourceware.org/pthreads-win32/
 
   License files for each library can be found in the 'licenses' folder.
 

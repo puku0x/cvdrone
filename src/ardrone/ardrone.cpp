@@ -39,7 +39,7 @@ ARDrone::ARDrone(const char *ardrone_addr)
     img = NULL;
 
     // Navdata
-    ZeroMemory(&navdata, sizeof(NAVDATA));
+    memset(&navdata, 0, sizeof(NAVDATA));
 
     // Video
     pFormatCtx  = NULL;
@@ -49,20 +49,17 @@ ARDrone::ARDrone(const char *ardrone_addr)
     bufferBGR   = NULL;
     pConvertCtx = NULL;
 
-    // Thread for commnad
-    flagCommand   = 0;
-    threadCommand = INVALID_HANDLE_VALUE;
-    mutexCommand  = INVALID_HANDLE_VALUE;
+    // Thread for command
+    threadCommand = NULL;
+    mutexCommand  = NULL;
 
     // Thread for navdata
-    flagNavdata   = 0;
-    threadNavdata = INVALID_HANDLE_VALUE;
-    mutexNavdata  = INVALID_HANDLE_VALUE;
+    threadNavdata = NULL;
+    mutexNavdata  = NULL;
 
     // Thread for video
-    flagVideo   = 0;
-    threadVideo = INVALID_HANDLE_VALUE;
-    mutexVideo  = INVALID_HANDLE_VALUE;
+    threadVideo = NULL;
+    mutexVideo  = NULL;
 
     // When IP address is specified, open it
     if (ardrone_addr) open(ardrone_addr);
@@ -74,7 +71,7 @@ ARDrone::ARDrone(const char *ardrone_addr)
 // --------------------------------------------------------------------------
 ARDrone::~ARDrone()
 {
-    // Finalize the AR.Drone
+    // See you
     close();
 }
 
@@ -85,9 +82,11 @@ ARDrone::~ARDrone()
 // --------------------------------------------------------------------------
 int ARDrone::open(const char *ardrone_addr)
 {
+    #if _WIN32
     // Initialize WSA
     WSAData wsaData;
     WSAStartup(MAKEWORD(1,1), &wsaData);
+    #endif
 
     // Initialize FFmpeg
     av_register_all();
@@ -111,7 +110,7 @@ int ARDrone::open(const char *ardrone_addr)
     if (!initVideo()) return 0;
 
     // Wait for updating the state
-    Sleep(500);
+    msleep(500);
 
     // Reset emergency
     resetWatchDog();
@@ -122,16 +121,11 @@ int ARDrone::open(const char *ardrone_addr)
 
 // --------------------------------------------------------------------------
 // ARDrone::update()
-// Description  : Update the informations.
+// Description  : No use
 // Return value : SUCCESS: 1  FAILURE: 0
 // --------------------------------------------------------------------------
 int ARDrone::update(void)
 {
-    // Check threads
-    if (!flagCommand) return 0;
-    if (!flagNavdata) return 0;
-    if (!flagVideo) return 0;
-
     return 1;
 }
 
@@ -154,6 +148,8 @@ void ARDrone::close(void)
     // Finalize AT command
     finalizeCommand();
 
+    #if _WIN32
     // Finalize WSA
     WSACleanup();
+    #endif
 }

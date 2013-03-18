@@ -104,16 +104,13 @@ int ARDrone::initVideo(void)
     cvZero(img);
 
     // Create a mutex
-    mutexVideo = CreateMutex(NULL, FALSE, NULL);
-
-    // Enable thread loop
-    flagVideo = 1;
+    mutexVideo = new pthread_mutex_t;
+    pthread_mutex_init(mutexVideo, NULL);
 
     // Create a thread
-    UINT id;
-    threadVideo = (HANDLE)_beginthreadex(NULL, 0, runVideo, this, 0, &id);
-    if (threadVideo == INVALID_HANDLE_VALUE) {
-        CVDRONE_ERROR("_beginthreadex() was failed. (%s, %d)\n", __FILE__, __LINE__);
+    threadVideo = new pthread_t;
+    if (pthread_create(threadVideo, NULL, runVideo, this) != 0) {
+        CVDRONE_ERROR("pthread_create() was failed. (%s, %d)\n", __FILE__, __LINE__);
         return 0;
     }
 
@@ -125,18 +122,14 @@ int ARDrone::initVideo(void)
 // Description  : Thread function.
 // Return value : SUCCESS:0
 // --------------------------------------------------------------------------
-UINT ARDrone::loopVideo(void)
+void ARDrone::loopVideo(void)
 {
-    while (flagVideo) {
+    while (1) {
         // Get video stream
         if (!getVideo()) break;
-        Sleep(1);
+        pthread_testcancel();
+        msleep(1);
     }
-
-    // Disable thread loop
-    flagVideo = 0;
-
-    return 0;
 }
 
 // --------------------------------------------------------------------------
@@ -158,14 +151,10 @@ int ARDrone::getVideo(void)
 
             // Decoded all frames
             if (frameFinished) {
-                // Enable mutex lock
-                WaitForSingleObject(mutexVideo, INFINITE);
-
                 // Convert to BGR
+                if (mutexVideo) pthread_mutex_lock(mutexVideo);
                 sws_scale(pConvertCtx, (const uint8_t* const*)pFrame->data, pFrame->linesize, 0, pCodecCtx->height, pFrameBGR->data, pFrameBGR->linesize);
-
-                // Disable mutex lock
-                ReleaseMutex(mutexVideo);
+                if (mutexVideo) pthread_mutex_unlock(mutexVideo);
 
                 // Free the packet and break immidiately
                 av_free_packet(&packet);
@@ -187,14 +176,10 @@ int ARDrone::getVideo(void)
 
         // Received something
         if (size > 0) {
-            // Enable mutex lock
-            WaitForSingleObject(mutexVideo, INFINITE);
-
             // Decode UVLC video
+            if (mutexVideo) pthread_mutex_lock(mutexVideo);
             UVLC::DecodeVideo(buf, size, bufferBGR, &pCodecCtx->width, &pCodecCtx->height);
-
-            // Disable mutex lock
-            ReleaseMutex(mutexVideo);
+            if (mutexVideo) pthread_mutex_unlock(mutexVideo);
         }
     }
 
@@ -211,22 +196,16 @@ IplImage* ARDrone::getImage(void)
     // There is no image
     if (!img) return NULL;
 
+    // Enable mutex lock
+    if (mutexVideo) pthread_mutex_lock(mutexVideo);
+
     // AR.Drone 2.0
     if (version.major == ARDRONE_VERSION_2) {
-        // Enable mutex lock
-        WaitForSingleObject(mutexVideo, INFINITE);
-
         // Copy the frame to the IplImage
         memcpy(img->imageData, pFrameBGR->data[0], pCodecCtx->width * ((pCodecCtx->height == 368) ? 360 : pCodecCtx->height) * sizeof(uint8_t) * 3);
-
-        // Disable mutex lock
-        ReleaseMutex(mutexVideo);
     }
     // AR.Drone 1.0
     else {
-        // Enable mutex lock
-        WaitForSingleObject(mutexVideo, INFINITE);
-
         // If the sizes of buffer and IplImage are differnt
         if (pCodecCtx->width != img->width || pCodecCtx->height != img->height) {
             // Resize the image to 320x240
@@ -237,10 +216,10 @@ IplImage* ARDrone::getImage(void)
         }
         // For 320x240 image, just copy it
         else memcpy(img->imageData, bufferBGR, pCodecCtx->width * pCodecCtx->height * sizeof(uint8_t) * 3);
-
-        // Disable mutex lock
-        ReleaseMutex(mutexVideo);
     }
+
+    // Disable mutex lock
+    if (mutexVideo) pthread_mutex_unlock(mutexVideo);
 
     return img;
 }
@@ -252,20 +231,19 @@ IplImage* ARDrone::getImage(void)
 // --------------------------------------------------------------------------
 void ARDrone::finalizeVideo(void)
 {
-    // Disable thread loop
-    flagVideo = 0;
-
     // Destroy the thread
-    if (threadVideo != INVALID_HANDLE_VALUE) {
-        WaitForSingleObject(threadVideo, INFINITE);
-        CloseHandle(threadVideo);
-        threadVideo = INVALID_HANDLE_VALUE;
+    if (threadVideo) {
+        pthread_cancel(*threadVideo);
+        pthread_join(*threadVideo, NULL);
+        delete threadVideo;
+        threadVideo = NULL;
     }
 
     // Delete the mutex
-    if (mutexVideo != INVALID_HANDLE_VALUE) {
-        CloseHandle(mutexVideo);
-        mutexVideo = INVALID_HANDLE_VALUE;
+    if (mutexVideo) {
+        pthread_mutex_destroy(mutexVideo);
+        delete mutexVideo;
+        mutexVideo = NULL;
     }
 
     // Release the IplImage

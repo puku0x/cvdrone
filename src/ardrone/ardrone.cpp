@@ -38,8 +38,14 @@ ARDrone::ARDrone(const char *ardrone_addr)
     // Camera image
     img = NULL;
 
+    // Version information
+    memset(&version, 0, sizeof(ARDRONE_VERSION));
+
     // Navdata
-    memset(&navdata, 0, sizeof(NAVDATA));
+    memset(&navdata, 0, sizeof(ARDRONE_NAVDATA));
+
+    // Configurations
+    memset(&config, 0, sizeof(ARDRONE_CONFIG));
 
     // Video
     pFormatCtx  = NULL;
@@ -49,15 +55,15 @@ ARDrone::ARDrone(const char *ardrone_addr)
     bufferBGR   = NULL;
     pConvertCtx = NULL;
 
-    // Thread for command
+    // Thread for AT command
     threadCommand = NULL;
     mutexCommand  = NULL;
 
-    // Thread for navdata
+    // Thread for Navdata
     threadNavdata = NULL;
     mutexNavdata  = NULL;
 
-    // Thread for video
+    // Thread for Video
     threadVideo = NULL;
     mutexVideo  = NULL;
 
@@ -96,11 +102,14 @@ int ARDrone::open(const char *ardrone_addr)
     // Save IP address
     strncpy(ip, ardrone_addr, 16);
 
-    // Get version informations
+    // Get version information
     if (!getVersionInfo()) return 0;
     printf("AR.Drone Ver. %d.%d.%d\n", version.major, version.minor, version.revision);
 
-    // Initialize AT Command
+    // Get configurations
+    if (!getConfig()) return 0;
+
+    // Initialize AT command
     if (!initCommand()) return 0;
 
     // Initialize Navdata
@@ -109,7 +118,7 @@ int ARDrone::open(const char *ardrone_addr)
     // Initialize Video
     if (!initVideo()) return 0;
 
-    // Wait for updating the state
+    // Wait for updating state
     msleep(500);
 
     // Reset emergency

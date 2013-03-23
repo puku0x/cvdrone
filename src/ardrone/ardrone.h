@@ -171,26 +171,26 @@ enum ARDRONE_LED_ANIMATION_ID {
     BLINK_STANDARD
 };
 
-//// TCP Class
-//class TCPSocket {
-//public:
-//    TCPSocket();                            // Constructor
-//    ~TCPSocket();                           // Destructor
-//    int  open(const char *addr, int port);  // Initialize
-//    int  send2(void *data, int size);       // Send data
-//    int  sendf(char *str, ...);             // Send with format
-//    int  receive(void *data, int size);     // Receive data
-//    void close(void);                       // Finalize
-//private:
-//    SOCKET sock;                            // Sockets
-//    sockaddr_in server_addr, client_addr;   // Server/Client IP adrress
-//};
+// TCP Class
+class TCPSocket {
+public:
+    TCPSocket();                            // Constructor
+    virtual ~TCPSocket();                   // Destructor
+    int  open(const char *addr, int port);  // Initialize
+    int  send2(void *data, int size);       // Send data
+    int  sendf(char *str, ...);             // Send with format
+    int  receive(void *data, int size);     // Receive data
+    void close(void);                       // Finalize
+private:
+    SOCKET sock;                            // Sockets
+    sockaddr_in server_addr, client_addr;   // Server/Client IP adrress
+};
 
 // UDP Class
 class UDPSocket {
 public:
     UDPSocket();                            // Constructor
-    ~UDPSocket();                           // Destructor
+    virtual ~UDPSocket();                   // Destructor
     int  open(const char *addr, int port);  // Initialize
     int  send2(void *data, int size);       // Send data
     int  sendf(char *str, ...);             // Send with format
@@ -203,10 +203,9 @@ private:
 
 // Navdata
 #pragma pack(push, 1)
-struct NAVDATA {
+struct ARDRONE_NAVDATA {
     // 3x3 matrix
-    struct matrix33_t
-    { 
+    struct matrix33_t { 
         float m11, m12, m13;
         float m21, m22, m23;
         float m31, m32, m33;
@@ -215,8 +214,7 @@ struct NAVDATA {
     // 3x1 vector
     union vector31_t {
         float v[3];
-        struct    
-        {
+        struct {
             float x;
             float y;
             float z;
@@ -224,10 +222,10 @@ struct NAVDATA {
     };
 
     // Header
-    unsigned int   header;
-    unsigned int   ardrone_state;
-    unsigned int   sequence;
-    unsigned int   vision_defined;
+    unsigned int header;
+    unsigned int ardrone_state;
+    unsigned int sequence;
+    unsigned int vision_defined;
 
     // Demo
     struct NAVDATA_DEMO {
@@ -242,21 +240,13 @@ struct NAVDATA {
         float          vx;
         float          vy;
         float          vz;
-
-        // Streamed frame index
-        unsigned int num_frames;                // Don't use
-
-        // Camera parameters compute by detection
-        matrix33_t   detection_camera_rot;      // Don't use
-        vector31_t   detection_camera_trans;    // Don't use
-        unsigned int detection_tag_index;       // Don't use
-
-        // Type of tag searched in detection
-        unsigned int detection_camera_type;     // Don't use
-
-        // Camera parameters compute by drone
-        matrix33_t drone_camera_rot;            // Don't use
-        vector31_t drone_camera_trans;          // Don't use
+        unsigned int   num_frames;                // Don't use
+        matrix33_t     detection_camera_rot;      // Don't use
+        vector31_t     detection_camera_trans;    // Don't use
+        unsigned int   detection_tag_index;       // Don't use
+        unsigned int   detection_camera_type;     // Don't use
+        matrix33_t     drone_camera_rot;          // Don't use
+        vector31_t     drone_camera_trans;        // Don't use
     } demo;
 
     // Vision
@@ -278,8 +268,148 @@ struct NAVDATA {
 };
 #pragma pack(pop)
 
+// Configurations
+struct ARDRONE_CONFIG {
+    struct GENERAL {
+        int   num_version_config;
+        int   num_version_mb;
+        char  num_version_soft[32];
+        char  drone_serial[32];
+        char  soft_build_date[32];
+        float motor1_soft;
+        float motor1_hard;
+        float motor1_supplier;
+        float motor2_soft;
+        float motor2_hard;
+        float motor2_supplier;
+        float motor3_soft;
+        float motor3_hard;
+        float motor3_supplier;
+        float motor4_soft;
+        float motor4_hard;
+        float motor4_supplier;
+        char  ardrone_name[32];
+        int   flying_time;
+        bool  navdata_demo;
+        int   com_watchdog;
+        bool  video_enable;
+        bool  vision_enable;
+        int   vbat_min;
+        int   localtime;
+        int   navdata_options;
+    } general;
+
+    struct CONTROL {
+        float accs_offset[3];
+        float accs_gains[9];
+        float gyros_offset[3];
+        float gyros_gains[3];
+        float gyros110_offset[2];
+        float gyros110_gains[2];
+        float magneto_offset[3];
+        float magneto_radius;
+        float gyro_offset_thr_x;
+        float gyro_offset_thr_y;
+        float gyro_offset_thr_z;
+        int   pwm_ref_gyros;
+        int   osctun_value;
+        bool  osctun_test;
+        int   altitude_max;
+        int   altitude_min;
+        bool  outdoor;
+        bool  flight_without_shell;
+        bool  autonomous_flight;
+        int   flight_anim[2];
+        int   control_level;
+        float euler_angle_max;
+        float control_iphone_tilt;
+        float control_vz_max;
+        float control_yaw;
+        bool  manual_trim;
+        float indoor_euler_angle_max;
+        float indoor_control_vz_max;
+        float indoor_control_yaw;
+        float outdoor_euler_angle_max;
+        float outdoor_control_vz_max;
+        float outdoor_control_yaw;
+        int   flying_mode;
+        int   hovering_range;
+    } control;
+
+    struct NETWORK {
+        char ssid_single_player[32];
+        char ssid_multi_player[32];
+        int  wifi_mode;
+        int  wifi_rate;
+        char owner_mac[18];
+    } network;
+
+    struct PIC {
+        int ultrasound_freq;
+        int ultrasound_watchdog;
+        int pic_version;
+    } pic;
+
+    struct VIDEO {
+        int  camif_fps;
+        int  camif_buffers;
+        int  num_trackers;
+        int  video_storage_space;
+        bool video_on_usb;
+        int  video_file_index;
+        int  bitrate;
+        int  bitrate_ctrl_mode;
+        int  bitrate_storage;
+        int  codec_fps;
+        int  video_codec;
+        int  video_slices;
+        int  video_live_socket;
+        int  max_bitrate;
+        int  video_channel;
+    } video;
+
+    struct LEDS {
+        int leds_anim[3];
+    } leds;
+
+    struct DETECT {
+        int enemy_colors;
+        int enemy_without_shell;
+        int groundstripe_colors;
+        int detect_type;
+        int detections_select_h;
+        int detections_select_v_hsync;
+        int detections_select_v;
+    } detect;
+
+    struct SYSLOG {
+        int output;
+        int max_size;
+        int nb_files;
+    } syslog;
+
+    struct CUSTOM {
+        char application_desc[64];
+        char profile_desc[64];
+        char session_desc[64];
+        char application_id[9];
+        char profile_id[9];
+        char session_id[9];
+    } custom;
+
+    struct USERBOX {
+        int userbox_cmd;
+    } userbox;
+
+    struct GPS {
+        float latitude;
+        float longitude;
+        float altitude;
+    } gps;
+};
+
 // Version information
-struct VERSION_INFO {
+struct ARDRONE_VERSION {
     int major;
     int minor;
     int revision;
@@ -350,13 +480,15 @@ protected:
     UDPSocket sockCommand;
     UDPSocket sockNavdata;
     UDPSocket sockVideo;
-    //TCPSocket sockConfig;
 
     // Version information
-    VERSION_INFO version;
+    ARDRONE_VERSION version;
 
     // Navigation data
-    NAVDATA navdata;
+    ARDRONE_NAVDATA navdata;
+
+    // Configurations
+    ARDRONE_CONFIG config;
 
     // Video
     AVFormatContext *pFormatCtx;
@@ -365,7 +497,7 @@ protected:
     uint8_t         *bufferBGR;
     SwsContext      *pConvertCtx;
 
-    // Thread for command
+    // Thread for AT command
     pthread_t *threadCommand;
     pthread_mutex_t *mutexCommand;
     void loopCommand(void);
@@ -374,7 +506,7 @@ protected:
         return NULL;
     }
 
-    // Thread for navdata
+    // Thread for Navdata
     pthread_t *threadNavdata;
     pthread_mutex_t *mutexNavdata;
     void loopNavdata(void);
@@ -383,7 +515,7 @@ protected:
         return NULL;
     }
 
-    // Thread for video
+    // Thread for Video
     pthread_t *threadVideo;
     pthread_mutex_t *mutexVideo;
     void loopVideo(void);
@@ -393,12 +525,13 @@ protected:
     }
 
     // Initialize (internal)
+    int initCommand(void);
     int initNavdata(void);
     int initVideo(void);
-    int initCommand(void);
 
     // Get informations (internal)
     int getVersionInfo(void);
+    int getConfig(void);
     int getNavdata(void);
     int getVideo(void);
 
@@ -407,9 +540,9 @@ protected:
     void resetEmergency(void);
 
     // Finalize (internal)
+    void finalizeCommand(void);
     void finalizeNavdata(void);
     void finalizeVideo(void);
-    void finalizeCommand(void);
 };
 
 // --------------------------------------------------------------------------

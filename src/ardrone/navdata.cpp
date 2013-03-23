@@ -37,7 +37,7 @@ int ARDrone::initNavdata(void)
     }
 
     // Clear Navdata
-    memset(&navdata, 0, sizeof(NAVDATA));
+    memset(&navdata, 0, sizeof(ARDRONE_NAVDATA));
 
     // Start Navdata
     sockNavdata.sendf("\x01\x00\x00\x00");
@@ -105,7 +105,7 @@ int ARDrone::getNavdata(void)
     sockNavdata.sendf("\x01\x00\x00\x00");
 
     // Receive data
-    int buf[512];
+    int buf[512] = {'\0'};
     int size = sockNavdata.receive((void*)&buf, sizeof(buf));
 
     // Received something
@@ -114,7 +114,7 @@ int ARDrone::getNavdata(void)
         if (buf[0] == ARDRONE_NAVDATA_HEADER) {
             // Update Navdata
             if (mutexNavdata) pthread_mutex_lock(mutexNavdata);
-            memcpy((void*)&navdata, (const void*)buf, sizeof(NAVDATA));
+            memcpy((void*)&navdata, (const void*)buf, sizeof(ARDRONE_NAVDATA));
             if (mutexNavdata) pthread_mutex_unlock(mutexNavdata);
         }
     }

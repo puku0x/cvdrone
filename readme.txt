@@ -53,9 +53,9 @@ LIBRARY DEPENDENCIES
     http://opencv.org/
   - FFmpeg 1.2
     http://www.ffmpeg.org/
-  - stdint.h/inttypes.h for Microsoft Visual Studio
+  - stdint.h/inttypes.h for Microsoft Visual Studio r26
     https://code.google.com/p/msinttypes/
-  - POSIX Threads for Win32
+  - POSIX Threads for Win32 2.9.1
     http://www.sourceware.org/pthreads-win32/
 
   License files for each library can be found in the 'licenses' folder.

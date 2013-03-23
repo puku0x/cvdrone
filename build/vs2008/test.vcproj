@@ -203,7 +203,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\ardrone\config.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\ardrone\navdata.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\ardrone\tcp.cpp"
 					>
 				</File>
 				<File

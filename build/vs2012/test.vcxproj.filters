@@ -40,6 +40,12 @@
     <ClCompile Include="..\..\src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\ardrone\config.cpp">
+      <Filter>Source Files\ardrone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ardrone\tcp.cpp">
+      <Filter>Source Files\ardrone</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\ardrone\ardrone.h">

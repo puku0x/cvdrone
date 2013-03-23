@@ -49,7 +49,7 @@ int ARDrone::getVersionInfo(void)
     }
 
     // Clear version
-    ZeroMemory(&version, sizeof(VERSION_INFO));
+    ZeroMemory(&version, sizeof(ARDRONE_VERSION));
 
     // Get a file through FTP
     if (!FtpGetFile(hConnection, filename, filename, FALSE, FILE_ATTRIBUTE_NORMAL, INTERNET_FLAG_TRANSFER_BINARY, 0)) {

@@ -15,6 +15,7 @@ TCPSocket::TCPSocket()
 // --------------------------------------------------------------------------
 TCPSocket::~TCPSocket()
 {
+    close();
 }
 
 // --------------------------------------------------------------------------
@@ -37,15 +38,23 @@ int TCPSocket::open(const char *addr, int port)
     server_addr.sin_port = htons((u_short)port);
     server_addr.sin_addr.S_un.S_addr = inet_addr(addr);
 
-    //// Set the port and address of client
-    //memset(&client_addr, 0, sizeof(sockaddr_in));
-    //client_addr.sin_family = AF_INET;
-    //client_addr.sin_port = htons((u_short)port);
-    //client_addr.sin_addr.S_un.S_addr = inet_addr("192.168.1.2");
-
     // Connect the socket
     if (connect(sock, (sockaddr*)&server_addr, sizeof(sockaddr_in)) == SOCKET_ERROR) {
         printf("ERROR: connect() failed. (%s, %d)\n", __FILE__, __LINE__);
+        return 0;
+    }
+
+    // Set to the non-blocking mode
+    u_long nonblock = 1;
+    if (ioctlsocket(sock, FIONBIO, &nonblock) == SOCKET_ERROR) {
+        printf("ERROR: ioctlsocket() failed. (%s, %d)\n", __FILE__, __LINE__);  
+        return 0;
+    }
+
+    // Enable re-use address option
+    int reuse = 1;
+    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&reuse, sizeof(reuse)) == SOCKET_ERROR) {
+        printf("ERROR: setsockopt() failed. (%s, %d)\n", __FILE__, __LINE__);
         return 0;
     }
 
@@ -92,20 +101,24 @@ int TCPSocket::sendf(char *str, ...)
 }
 
 // --------------------------------------------------------------------------
-// TCPSocket:::receive(Receiving data, Size of data)
+// TCPSocket::receive(Receiving data, Size of data)
 // Receive the data.
 // Return value SUCCESS: Number of received bytes  FAILED: 0
 // --------------------------------------------------------------------------
 int TCPSocket::receive(void *data, int size)
 {
-    // The socket is invalid.
+    // The socket is invalid
     if (sock == INVALID_SOCKET) return 0;
 
-    // Receive data.
-    int n = recv(sock, (char*)data, size, 0);
-    //if (n < 1) return 0;
+    // Receive data
+    int received = 0;
+    while (received < size) {
+        int n = recv(sock, (char*)data + received, size - received, 0);
+        if (n < 1) break;
+        received += n;
+    }
 
-    return n;
+    return received;
 }
 
 // --------------------------------------------------------------------------

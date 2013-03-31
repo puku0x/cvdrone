@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wsock32.lib wininet.lib opencv_calib3d244.lib opencv_contrib244.lib opencv_core244.lib opencv_features2d244.lib opencv_flann244.lib opencv_highgui244.lib opencv_imgproc244.lib opencv_legacy244.lib opencv_ml244.lib opencv_objdetect244.lib opencv_photo244.lib opencv_stitching244.lib opencv_video244.lib opencv_videostab244.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib swresample.lib swscale.lib pthreadVC2.lib"
+				AdditionalDependencies="wsock32.lib wininet.lib opencv_calib3d249.lib opencv_contrib249.lib opencv_core249.lib opencv_features2d249.lib opencv_flann249.lib opencv_highgui249.lib opencv_imgproc249.lib opencv_legacy249.lib opencv_ml249.lib opencv_objdetect249.lib opencv_photo249.lib opencv_softcascade249.lib opencv_stitching249.lib opencv_superres249.lib opencv_video249.lib opencv_videostab249.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib swresample.lib swscale.lib pthreadVC2.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\src\3rdparty\opencv\lib\vs2005;..\..\src\3rdparty\ffmpeg\lib;..\..\src\3rdparty\pthread\lib"
 				GenerateDebugInformation="true"
@@ -142,7 +142,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wsock32.lib wininet.lib opencv_calib3d244.lib opencv_contrib244.lib opencv_core244.lib opencv_features2d244.lib opencv_flann244.lib opencv_highgui244.lib opencv_imgproc244.lib opencv_legacy244.lib opencv_ml244.lib opencv_objdetect244.lib opencv_photo244.lib opencv_stitching244.lib opencv_video244.lib opencv_videostab244.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib swresample.lib swscale.lib pthreadVC2.lib"
+				AdditionalDependencies="wsock32.lib wininet.lib opencv_calib3d249.lib opencv_contrib249.lib opencv_core249.lib opencv_features2d249.lib opencv_flann249.lib opencv_highgui249.lib opencv_imgproc249.lib opencv_legacy249.lib opencv_ml249.lib opencv_objdetect249.lib opencv_photo249.lib opencv_softcascade249.lib opencv_stitching249.lib opencv_superres249.lib opencv_video249.lib opencv_videostab249.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib swresample.lib swscale.lib pthreadVC2.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\src\3rdparty\opencv\lib\vs2005;..\..\src\3rdparty\ffmpeg\lib;..\..\src\3rdparty\pthread\lib"
 				IgnoreAllDefaultLibraries="false"

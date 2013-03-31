@@ -46,7 +46,7 @@
 #ifdef __cplusplus
 
 #include "opencv2/core/core_c.h"
-#include "opencv2/core/core.hpp"
+#include "opencv2/core.hpp"
 
 #if defined _MSC_VER && _MSC_VER >= 1200
 #pragma warning( disable: 4714 ) //__forceinline is not inlined
@@ -71,6 +71,21 @@ void eigen2cv( const Eigen::Matrix<_Tp, _rows, _cols, _options, _maxRows, _maxCo
         Mat _src(src.rows(), src.cols(), DataType<_Tp>::type,
                  (void*)src.data(), src.stride()*sizeof(_Tp));
         _src.copyTo(dst);
+    }
+}
+
+// Matx case
+template<typename _Tp, int _rows, int _cols, int _options, int _maxRows, int _maxCols>
+void eigen2cv( const Eigen::Matrix<_Tp, _rows, _cols, _options, _maxRows, _maxCols>& src,
+               Matx<_Tp, _rows, _cols>& dst )
+{
+    if( !(src.Flags & Eigen::RowMajorBit) )
+    {
+        dst = Matx<_Tp, _cols, _rows>(static_cast<const _Tp*>(src.data())).t();
+    }
+    else
+    {
+        dst = Matx<_Tp, _rows, _cols>(static_cast<const _Tp*>(src.data()));
     }
 }
 

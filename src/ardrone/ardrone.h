@@ -64,6 +64,11 @@ inline void msleep(unsigned long ms) {
 }
 #endif
 
+// Fix for MinGW
+#ifdef __GNUC__
+#define vsprintf_s vsnprintf
+#endif
+
 // Macro definitions
 #define ARDRONE_VERSION_1           (1)             // AR.Drone 1.0
 #define ARDRONE_VERSION_2           (2)             // AR.Drone 2.0
@@ -423,48 +428,48 @@ public:
     virtual ~ARDrone();
 
     // Initialize
-    int open(const char *ardrone_addr = ARDRONE_DEFAULT_ADDR);
+    virtual int open(const char *ardrone_addr = ARDRONE_DEFAULT_ADDR);
 
     // Update
-    int update(void);
+    virtual int update(void);
 
     // Finalize (Automatically called)
-    void close(void);
+    virtual void close(void);
 
     // Get an image for OpenCV
-    IplImage* getImage(void);
+    virtual IplImage* getImage(void);
 
     // Get AR.Drone's firmware version
-    int getVersion(int *major = NULL, int *minor = NULL, int *revision = NULL);
+    virtual int getVersion(int *major = NULL, int *minor = NULL, int *revision = NULL);
 
     // Get sensor values
-    double getRoll(void);       // Roll angle  [rad]
-    double getPitch(void);      // Pitch angle [rad]
-    double getYaw(void);        // Yaw angle   [rad]
-    double getAltitude(void);   // Altitude    [m]
-    double getVelocity(double *vx = NULL, double *vy = NULL, double *vz = NULL); // Velocity [m/s]
+    virtual double getRoll(void);       // Roll angle  [rad]
+    virtual double getPitch(void);      // Pitch angle [rad]
+    virtual double getYaw(void);        // Yaw angle   [rad]
+    virtual double getAltitude(void);   // Altitude    [m]
+    virtual double getVelocity(double *vx = NULL, double *vy = NULL, double *vz = NULL); // Velocity [m/s]
 
     // Battery charge [%]
-    int getBatteryPercentage(void);
+    virtual int getBatteryPercentage(void);
 
     // Take off / Landing / Emergency
-    void takeoff(void);
-    void landing(void);
-    void emergency(void);
+    virtual void takeoff(void);
+    virtual void landing(void);
+    virtual void emergency(void);
 
     // Move with velocity [m/s]
-    void move(double vx, double vy, double vr);
-    void move3D(double vx, double vy, double vz, double vr);
+    virtual void move(double vx, double vy, double vr);
+    virtual void move3D(double vx, double vy, double vz, double vr);
 
     // Change camera channel
-    void setCamera(int channel);
+    virtual void setCamera(int channel);
 
     // Others
-    int  onGround(void);                            // Check on ground
-    void setAnimation(int id, int duration);        // Flight animation
-    void setLED(int id, float freq, int duration);  // LED animation
-    void setVideoRecord(bool activate);             // Video recording (only for AR.Drone 2.0)
-    void setOutdoorMode(bool activate);             // Outdoor mode (experimental)
+    virtual int  onGround(void);                            // Check on ground
+    virtual void setAnimation(int id, int duration);        // Flight animation
+    virtual void setLED(int id, float freq, int duration);  // LED animation
+    virtual void setVideoRecord(bool activate);             // Video recording (only for AR.Drone 2.0)
+    virtual void setOutdoorMode(bool activate);             // Outdoor mode (experimental)
 
 protected:
     // IP address
@@ -500,7 +505,7 @@ protected:
     // Thread for AT command
     pthread_t *threadCommand;
     pthread_mutex_t *mutexCommand;
-    void loopCommand(void);
+    virtual void loopCommand(void);
     static void *runCommand(void *args) {
         reinterpret_cast<ARDrone*>(args)->loopCommand();
         return NULL;
@@ -509,7 +514,7 @@ protected:
     // Thread for Navdata
     pthread_t *threadNavdata;
     pthread_mutex_t *mutexNavdata;
-    void loopNavdata(void);
+    virtual void loopNavdata(void);
     static void *runNavdata(void *args) {
         reinterpret_cast<ARDrone*>(args)->loopNavdata();
         return NULL;
@@ -518,31 +523,31 @@ protected:
     // Thread for Video
     pthread_t *threadVideo;
     pthread_mutex_t *mutexVideo;
-    void loopVideo(void);
+    virtual void loopVideo(void);
     static void *runVideo(void *args) {
         reinterpret_cast<ARDrone*>(args)->loopVideo();
         return NULL;
     }
 
     // Initialize (internal)
-    int initCommand(void);
-    int initNavdata(void);
-    int initVideo(void);
+    virtual int initCommand(void);
+    virtual int initNavdata(void);
+    virtual int initVideo(void);
 
     // Get informations (internal)
-    int getVersionInfo(void);
-    int getConfig(void);
-    int getNavdata(void);
-    int getVideo(void);
+    virtual int getVersionInfo(void);
+    virtual int getConfig(void);
+    virtual int getNavdata(void);
+    virtual int getVideo(void);
 
     // Send commands (internal)
-    void resetWatchDog(void);
-    void resetEmergency(void);
+    virtual void resetWatchDog(void);
+    virtual void resetEmergency(void);
 
     // Finalize (internal)
-    void finalizeCommand(void);
-    void finalizeNavdata(void);
-    void finalizeVideo(void);
+    virtual void finalizeCommand(void);
+    virtual void finalizeNavdata(void);
+    virtual void finalizeVideo(void);
 };
 
 // --------------------------------------------------------------------------

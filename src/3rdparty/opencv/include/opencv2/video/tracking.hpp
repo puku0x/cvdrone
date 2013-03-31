@@ -1,7 +1,3 @@
-/*! \file tracking.hpp
- \brief The Object and Feature Tracking
- */
-
 /*M///////////////////////////////////////////////////////////////////////////////////////
 //
 //  IMPORTANT: READ BEFORE DOWNLOADING, COPYING, INSTALLING OR USING.
@@ -47,8 +43,8 @@
 #ifndef __OPENCV_TRACKING_HPP__
 #define __OPENCV_TRACKING_HPP__
 
-#include "opencv2/core/core.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/core.hpp"
+#include "opencv2/imgproc.hpp"
 
 #ifdef __cplusplus
 extern "C" {
@@ -222,6 +218,7 @@ CVAPI(const CvMat*)  cvKalmanCorrect( CvKalman* kalman, const CvMat* measurement
 #define cvKalmanUpdateByTime  cvKalmanPredict
 #define cvKalmanUpdateByMeasurement cvKalmanCorrect
 
+
 #ifdef __cplusplus
 }
 
@@ -244,7 +241,7 @@ CV_EXPORTS_W double calcGlobalOrientation( InputArray orientation, InputArray ma
                                            double duration );
 
 CV_EXPORTS_W void segmentMotion(InputArray mhi, OutputArray segmask,
-                                CV_OUT vector<Rect>& boundingRects,
+                                CV_OUT std::vector<Rect>& boundingRects,
                                 double timestamp, double segThresh);
 
 //! updates the object tracking window using CAMSHIFT algorithm
@@ -311,7 +308,7 @@ CV_EXPORTS_W int buildOpticalFlowPyramid(InputArray img, OutputArrayOfArrays pyr
 
 //! computes sparse optical flow using multi-scale Lucas-Kanade algorithm
 CV_EXPORTS_W void calcOpticalFlowPyrLK( InputArray prevImg, InputArray nextImg,
-                           InputArray prevPts, CV_OUT InputOutputArray nextPts,
+                           InputArray prevPts, InputOutputArray nextPts,
                            OutputArray status, OutputArray err,
                            Size winSize=Size(21,21), int maxLevel=3,
                            TermCriteria criteria=TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01),
@@ -319,7 +316,7 @@ CV_EXPORTS_W void calcOpticalFlowPyrLK( InputArray prevImg, InputArray nextImg,
 
 //! computes dense optical flow using Farneback algorithm
 CV_EXPORTS_W void calcOpticalFlowFarneback( InputArray prev, InputArray next,
-                           CV_OUT InputOutputArray flow, double pyr_scale, int levels, int winsize,
+                           InputOutputArray flow, double pyr_scale, int levels, int winsize,
                            int iterations, int poly_n, double poly_sigma, int flags );
 
 //! estimates the best-fit Euqcidean, similarity, affine or perspective transformation
@@ -327,17 +324,40 @@ CV_EXPORTS_W void calcOpticalFlowFarneback( InputArray prev, InputArray next,
 CV_EXPORTS_W Mat estimateRigidTransform( InputArray src, InputArray dst,
                                          bool fullAffine);
 
+enum
+{
+    MOTION_TRANSLATION=0,
+    MOTION_EUCLIDEAN=1,
+    MOTION_AFFINE=2,
+    MOTION_HOMOGRAPHY=3
+};
+
+//! estimates the best-fit Translation, Euclidean, Affine or Perspective Transformation
+// with respect to Enhanced Correlation Coefficient criterion that maps one image to
+// another (area-based alignment)
+//
+// see reference:
+// Evangelidis, G. E., Psarakis, E.Z., Parametric Image Alignment using
+// Enhanced Correlation Coefficient Maximization, PAMI, 30(8), 2008
+
+CV_EXPORTS_W double findTransformECC(InputArray templateImage,
+                                     InputArray inputImage,
+                                     InputOutputArray warpMatrix,
+                                     int motionType=MOTION_AFFINE,
+                                     TermCriteria criteria=TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 50, 0.001));
+
+
 //! computes dense optical flow using Simple Flow algorithm
-CV_EXPORTS_W void calcOpticalFlowSF(Mat& from,
-                                    Mat& to,
-                                    Mat& flow,
+CV_EXPORTS_W void calcOpticalFlowSF(InputArray from,
+                                    InputArray to,
+                                    OutputArray flow,
                                     int layers,
                                     int averaging_block_size,
                                     int max_flow);
 
-CV_EXPORTS_W void calcOpticalFlowSF(Mat& from,
-                                    Mat& to,
-                                    Mat& flow,
+CV_EXPORTS_W void calcOpticalFlowSF(InputArray from,
+                                    InputArray to,
+                                    OutputArray flow,
                                     int layers,
                                     int averaging_block_size,
                                     int max_flow,

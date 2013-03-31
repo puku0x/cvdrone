@@ -171,7 +171,7 @@ inline Mat::Mat(Size _sz, int _type, void* _data, size_t _step)
 }
 
 
-template<typename _Tp> inline Mat::Mat(const vector<_Tp>& vec, bool copyData)
+template<typename _Tp> inline Mat::Mat(const std::vector<_Tp>& vec, bool copyData)
     : flags(MAGIC_VAL | DataType<_Tp>::type | CV_MAT_CONT_FLAG),
     dims(2), rows((int)vec.size()), cols(1), data(0), refcount(0),
     datastart(0), dataend(0), allocator(0), size(&rows)
@@ -648,9 +648,9 @@ template<typename _Tp> inline MatIterator_<_Tp> Mat::end()
     return it;
 }
 
-template<typename _Tp> inline Mat::operator vector<_Tp>() const
+template<typename _Tp> inline Mat::operator std::vector<_Tp>() const
 {
-    vector<_Tp> v;
+    std::vector<_Tp> v;
     copyTo(v);
     return v;
 }
@@ -748,11 +748,6 @@ inline Mat::MStep& Mat::MStep::operator = (size_t s)
     return *this;
 }
 
-static inline Mat cvarrToMatND(const CvArr* arr, bool copyData=false, int coiMode=0)
-{
-    return cvarrToMat(arr, copyData, true, coiMode);
-}
-
 ///////////////////////////////////////////// SVD //////////////////////////////////////////////////////
 
 inline SVD::SVD() {}
@@ -769,7 +764,7 @@ inline void SVD::solveZ( InputArray m, OutputArray _dst )
 template<typename _Tp, int m, int n, int nm> inline void
     SVD::compute( const Matx<_Tp, m, n>& a, Matx<_Tp, nm, 1>& w, Matx<_Tp, m, nm>& u, Matx<_Tp, n, nm>& vt )
 {
-    assert( nm == MIN(m, n));
+    CV_StaticAssert( nm == MIN(m, n), "Invalid size of output vector.");
     Mat _a(a, false), _u(u, false), _w(w, false), _vt(vt, false);
     SVD::compute(_a, _w, _u, _vt);
     CV_Assert(_w.data == (uchar*)&w.val[0] && _u.data == (uchar*)&u.val[0] && _vt.data == (uchar*)&vt.val[0]);
@@ -778,7 +773,7 @@ template<typename _Tp, int m, int n, int nm> inline void
 template<typename _Tp, int m, int n, int nm> inline void
 SVD::compute( const Matx<_Tp, m, n>& a, Matx<_Tp, nm, 1>& w )
 {
-    assert( nm == MIN(m, n));
+    CV_StaticAssert( nm == MIN(m, n), "Invalid size of output vector.");
     Mat _a(a, false), _w(w, false);
     SVD::compute(_a, _w);
     CV_Assert(_w.data == (uchar*)&w.val[0]);
@@ -789,7 +784,7 @@ SVD::backSubst( const Matx<_Tp, nm, 1>& w, const Matx<_Tp, m, nm>& u,
                 const Matx<_Tp, n, nm>& vt, const Matx<_Tp, m, nb>& rhs,
                 Matx<_Tp, n, nb>& dst )
 {
-    assert( nm == MIN(m, n));
+    CV_StaticAssert( nm == MIN(m, n), "Invalid size of output vector.");
     Mat _u(u, false), _w(w, false), _vt(vt, false), _rhs(rhs, false), _dst(dst, false);
     SVD::backSubst(_w, _u, _vt, _rhs, _dst);
     CV_Assert(_dst.data == (uchar*)&dst.val[0]);
@@ -873,7 +868,7 @@ template<typename _Tp> inline Mat_<_Tp>::Mat_(const Point3_<typename DataType<_T
 template<typename _Tp> inline Mat_<_Tp>::Mat_(const MatCommaInitializer_<_Tp>& commaInitializer)
     : Mat(commaInitializer) {}
 
-template<typename _Tp> inline Mat_<_Tp>::Mat_(const vector<_Tp>& vec, bool copyData)
+template<typename _Tp> inline Mat_<_Tp>::Mat_(const std::vector<_Tp>& vec, bool copyData)
     : Mat(vec, copyData) {}
 
 template<typename _Tp> inline Mat_<_Tp>& Mat_<_Tp>::operator = (const Mat& m)
@@ -1059,9 +1054,9 @@ template<typename _Tp> inline const _Tp& Mat_<_Tp>::operator ()(int i0, int i1, 
 }
 
 
-template<typename _Tp> inline Mat_<_Tp>::operator vector<_Tp>() const
+template<typename _Tp> inline Mat_<_Tp>::operator std::vector<_Tp>() const
 {
-    vector<_Tp> v;
+    std::vector<_Tp> v;
     copyTo(v);
     return v;
 }
@@ -1116,13 +1111,13 @@ process( const Mat_<T1>& m1, const Mat_<T2>& m2, Mat_<T3>& m3, Op op )
 
 /////////////////////////////// Input/Output Arrays /////////////////////////////////
 
-template<typename _Tp> inline _InputArray::_InputArray(const vector<_Tp>& vec)
+template<typename _Tp> inline _InputArray::_InputArray(const std::vector<_Tp>& vec)
     : flags(FIXED_TYPE + STD_VECTOR + DataType<_Tp>::type), obj((void*)&vec) {}
 
-template<typename _Tp> inline _InputArray::_InputArray(const vector<vector<_Tp> >& vec)
+template<typename _Tp> inline _InputArray::_InputArray(const std::vector<std::vector<_Tp> >& vec)
     : flags(FIXED_TYPE + STD_VECTOR_VECTOR + DataType<_Tp>::type), obj((void*)&vec) {}
 
-template<typename _Tp> inline _InputArray::_InputArray(const vector<Mat_<_Tp> >& vec)
+template<typename _Tp> inline _InputArray::_InputArray(const std::vector<Mat_<_Tp> >& vec)
     : flags(FIXED_TYPE + STD_VECTOR_MAT + DataType<_Tp>::type), obj((void*)&vec) {}
 
 template<typename _Tp, int m, int n> inline _InputArray::_InputArray(const Matx<_Tp, m, n>& mtx)
@@ -1137,11 +1132,11 @@ inline _InputArray::_InputArray(const Scalar& s)
 template<typename _Tp> inline _InputArray::_InputArray(const Mat_<_Tp>& m)
     : flags(FIXED_TYPE + MAT + DataType<_Tp>::type), obj((void*)&m) {}
 
-template<typename _Tp> inline _OutputArray::_OutputArray(vector<_Tp>& vec)
+template<typename _Tp> inline _OutputArray::_OutputArray(std::vector<_Tp>& vec)
     : _InputArray(vec) {}
-template<typename _Tp> inline _OutputArray::_OutputArray(vector<vector<_Tp> >& vec)
+template<typename _Tp> inline _OutputArray::_OutputArray(std::vector<std::vector<_Tp> >& vec)
     : _InputArray(vec) {}
-template<typename _Tp> inline _OutputArray::_OutputArray(vector<Mat_<_Tp> >& vec)
+template<typename _Tp> inline _OutputArray::_OutputArray(std::vector<Mat_<_Tp> >& vec)
     : _InputArray(vec) {}
 template<typename _Tp> inline _OutputArray::_OutputArray(Mat_<_Tp>& m)
     : _InputArray(m) {}
@@ -1150,11 +1145,11 @@ template<typename _Tp, int m, int n> inline _OutputArray::_OutputArray(Matx<_Tp,
 template<typename _Tp> inline _OutputArray::_OutputArray(_Tp* vec, int n)
     : _InputArray(vec, n) {}
 
-template<typename _Tp> inline _OutputArray::_OutputArray(const vector<_Tp>& vec)
+template<typename _Tp> inline _OutputArray::_OutputArray(const std::vector<_Tp>& vec)
     : _InputArray(vec) {flags |= FIXED_SIZE;}
-template<typename _Tp> inline _OutputArray::_OutputArray(const vector<vector<_Tp> >& vec)
+template<typename _Tp> inline _OutputArray::_OutputArray(const std::vector<std::vector<_Tp> >& vec)
     : _InputArray(vec) {flags |= FIXED_SIZE;}
-template<typename _Tp> inline _OutputArray::_OutputArray(const vector<Mat_<_Tp> >& vec)
+template<typename _Tp> inline _OutputArray::_OutputArray(const std::vector<Mat_<_Tp> >& vec)
     : _InputArray(vec) {flags |= FIXED_SIZE;}
 
 template<typename _Tp> inline _OutputArray::_OutputArray(const Mat_<_Tp>& m)
@@ -1667,8 +1662,8 @@ operator ^= (const Mat_<_Tp>& a, const Scalar& s)
 
 /////////////////////////////// Miscellaneous operations //////////////////////////////
 
-template<typename _Tp> void split(const Mat& src, vector<Mat_<_Tp> >& mv)
-{ split(src, (vector<Mat>&)mv ); }
+template<typename _Tp> void split(const Mat& src, std::vector<Mat_<_Tp> >& mv)
+{ split(src, (std::vector<Mat>&)mv ); }
 
 //////////////////////////////////////////////////////////////
 

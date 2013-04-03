@@ -48,6 +48,7 @@ int ARDrone::initNavdata(void)
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"general:navdata_demo\",\"TRUE\"\r", seq++);
+        //sockCommand.sendf("AT*CONFIG=%d,\"general:navdata_demo\",\"FALSE\"\r", seq++);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
         msleep(100);
 
@@ -59,6 +60,7 @@ int ARDrone::initNavdata(void)
         // Disable BOOTSTRAP mode
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
         sockCommand.sendf("AT*CONFIG=%d,\"general:navdata_demo\",\"TRUE\"\r", seq++);
+        //sockCommand.sendf("AT*CONFIG=%d,\"general:navdata_demo\",\"FALSE\"\r", seq++);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
 
         // Send ACK
@@ -105,18 +107,183 @@ int ARDrone::getNavdata(void)
     sockNavdata.sendf("\x01\x00\x00\x00");
 
     // Receive data
-    int buf[512] = {'\0'};
+    char buf[4096] = {'\0'};
     int size = sockNavdata.receive((void*)&buf, sizeof(buf));
 
     // Received something
     if (size > 0) {
-        // Check header
-        if (buf[0] == ARDRONE_NAVDATA_HEADER) {
-            // Update Navdata
-            if (mutexNavdata) pthread_mutex_lock(mutexNavdata);
-            memcpy((void*)&navdata, (const void*)buf, sizeof(ARDRONE_NAVDATA));
-            if (mutexNavdata) pthread_mutex_unlock(mutexNavdata);
+        int index = 0;
+        //printf("size = %d (bytes)\n", size);
+
+        // Enable mutex lock
+        if (mutexNavdata) pthread_mutex_lock(mutexNavdata);
+
+        // Header
+        memcpy((void*)&(navdata.header),         (const void*)(buf + index), 4); index += 4;
+        memcpy((void*)&(navdata.ardrone_state),  (const void*)(buf + index), 4); index += 4;
+        memcpy((void*)&(navdata.sequence),       (const void*)(buf + index), 4); index += 4;
+        memcpy((void*)&(navdata.vision_defined), (const void*)(buf + index), 4); index += 4;
+
+        // Parse navdata
+        while (index < size) {
+            // Tag and data size
+            unsigned short tmp_tag, tmp_size;
+            memcpy((void*)&(tmp_tag),  (const void*)(buf + index), 2); index += 2;  // tag
+            memcpy((void*)&(tmp_size), (const void*)(buf + index), 2); index += 2;  // size
+            //printf("tag = %d\n", tmp_tag);
+
+            // Copy the data to NAVDATA structure
+            switch (tmp_tag) {
+                case 0:
+                    index -= 4;
+                    memcpy((void*)&(navdata.demo), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 1:
+                    index -= 4;
+                    memcpy((void*)&(navdata.time), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 2:
+                    index -= 4;
+                    memcpy((void*)&(navdata.raw_measures), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 3:
+                    index -= 4;
+                    memcpy((void*)&(navdata.phys_measures), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 4:
+                    index -= 4;
+                    memcpy((void*)&(navdata.gyros_offsets), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 5:
+                    index -= 4;
+                    memcpy((void*)&(navdata.euler_angles), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 6:
+                    index -= 4;
+                    memcpy((void*)&(navdata.references), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 7:
+                    index -= 4;
+                    memcpy((void*)&(navdata.trims), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 8:
+                    index -= 4;
+                    memcpy((void*)&(navdata.rc_references), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 9:
+                    index -= 4;
+                    memcpy((void*)&(navdata.pwm), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 10:
+                    index -= 4;
+                    memcpy((void*)&(navdata.altitude), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 11:
+                    index -= 4;
+                    memcpy((void*)&(navdata.vision_raw), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 12:
+                    index -= 4;
+                    memcpy((void*)&(navdata.vision_of), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 13:
+                    index -= 4;
+                    memcpy((void*)&(navdata.vision), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 14:
+                    index -= 4;
+                    memcpy((void*)&(navdata.vision_perf), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 15:
+                    index -= 4;
+                    memcpy((void*)&(navdata.trackers_send), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 16:
+                    index -= 4;
+                    memcpy((void*)&(navdata.vision_detect), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 17:
+                    index -= 4;
+                    memcpy((void*)&(navdata.watchdog), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 18:
+                    index -= 4;
+                    memcpy((void*)&(navdata.adc_data_frame), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 19:
+                    index -= 4;
+                    memcpy((void*)&(navdata.video_stream), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 20:
+                    index -= 4;
+                    memcpy((void*)&(navdata.games), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 21:
+                    index -= 4;
+                    memcpy((void*)&(navdata.pressure_raw), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 22:
+                    index -= 4;
+                    memcpy((void*)&(navdata.magneto), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 23:
+                    index -= 4;
+                    memcpy((void*)&(navdata.wind), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 24:
+                    index -= 4;
+                    memcpy((void*)&(navdata.kalman_pressure), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 25:
+                    index -= 4;
+                    memcpy((void*)&(navdata.hdvideo_stream), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 26:
+                    index -= 4;
+                    memcpy((void*)&(navdata.wifi), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                case 27:
+                    index -= 4;
+                    memcpy((void*)&(navdata.zimmu_3000), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+                default:
+                    index -= 4;
+                    memcpy((void*)&(navdata.cks), (const void*)(buf + index), tmp_size);
+                    index += tmp_size;
+                    break;
+            }
         }
+
+        // Disable mutex lock
+        if (mutexNavdata) pthread_mutex_unlock(mutexNavdata);
     }
 
     return 1;

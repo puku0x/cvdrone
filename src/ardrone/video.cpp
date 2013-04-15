@@ -158,12 +158,14 @@ int ARDrone::getVideo(void)
 
                 // Free the packet and break immidiately
                 av_free_packet(&packet);
-                break;
+                return 1;
+                //break;
             }
 
             // Free the packet
             av_free_packet(&packet);
         }
+        return 0;
     }
     // AR.Drone 1.0
     else {

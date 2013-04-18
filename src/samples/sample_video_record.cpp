@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 
         // Video recording start / stop
         if (KEY_PUSH('R')) {
-            rec != rec;
+            rec = !rec;
             ardrone.setVideoRecord(rec);
         }
 

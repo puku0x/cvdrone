@@ -22,7 +22,6 @@
 // -------------------------------------------------------------------------
 
 #include "ardrone.h"
-#include <wininet.h>
 
 // --------------------------------------------------------------------------
 // ARDrone::getVersionInfo()
@@ -31,6 +30,7 @@
 // --------------------------------------------------------------------------
 int ARDrone::getVersionInfo(void)
 {
+    #if _WIN32
     const char *filename = "version.txt";
 
     // Initialize WinINet
@@ -76,6 +76,7 @@ int ARDrone::getVersionInfo(void)
     // Finalize WinINet
     InternetCloseHandle(hConnection);
     InternetCloseHandle(hInet);
+    #endif
 
     return 1;
 }

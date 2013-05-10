@@ -88,12 +88,6 @@ ARDrone::~ARDrone()
 // --------------------------------------------------------------------------
 int ARDrone::open(const char *ardrone_addr)
 {
-    #if _WIN32
-    // Initialize WSA
-    WSAData wsaData;
-    WSAStartup(MAKEWORD(1,1), &wsaData);
-    #endif
-
     // Initialize FFmpeg
     av_register_all();
     avformat_network_init();
@@ -103,11 +97,13 @@ int ARDrone::open(const char *ardrone_addr)
     strncpy(ip, ardrone_addr, 16);
 
     // Get version information
-    if (!getVersionInfo()) return 0;
-    printf("AR.Drone Ver. %d.%d.%d\n", version.major, version.minor, version.revision);
+    //if (!getVersionInfo()) return 0;
+    //printf("AR.Drone Ver. %d.%d.%d\n", version.major, version.minor, version.revision);
 
     // Get configurations
     if (!getConfig()) return 0;
+    sscanf(config.general.num_version_soft, "%d.%d.%d\n", &version.major, &version.minor, &version.revision);
+    printf("AR.Drone Ver. %d.%d.%d\n", version.major, version.minor, version.revision);
 
     // Initialize AT command
     if (!initCommand()) return 0;
@@ -156,9 +152,4 @@ void ARDrone::close(void)
 
     // Finalize AT command
     finalizeCommand();
-
-    #if _WIN32
-    // Finalize WSA
-    WSACleanup();
-    #endif
 }

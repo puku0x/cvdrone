@@ -48,6 +48,12 @@ UDPSocket::~UDPSocket()
 // --------------------------------------------------------------------------
 int UDPSocket::open(const char *addr, int port)
 {
+    #if _WIN32
+    // Initialize WSA
+    WSAData wsaData;
+    WSAStartup(MAKEWORD(1,1), &wsaData);
+    #endif
+
     // Create a socket.
     sock = socket(AF_INET, SOCK_DGRAM, 0);
     if (sock == INVALID_SOCKET) {
@@ -122,7 +128,7 @@ int UDPSocket::sendf(char *str, ...)
 
     // Apply format 
     va_start(arg, str);
-    vsprintf_s(msg, sizeof(msg), str, arg);
+    vsnprintf(msg, 1024, str, arg);
     va_end(arg);
 
     // Send data
@@ -160,7 +166,16 @@ void UDPSocket::close(void)
 {
     // Close the socket
     if (sock != INVALID_SOCKET) {
+        #if _WIN32
         closesocket(sock);
+        #else
+        close(sock);
+        #endif
         sock = INVALID_SOCKET;
     }
+
+    #if _WIN32
+    // Finalize WSA
+    WSACleanup();
+    #endif
 }

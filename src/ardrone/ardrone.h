@@ -53,20 +53,23 @@ extern "C" {
 // POSIX threads
 #include <pthread.h>
 
-// Sleep [ms] implementation
+// Win32 <-> GCC
 #ifdef _WIN32
 #include <windows.h>
+#include <winsock.h>
+#include <wininet.h>
 #define msleep(ms) Sleep((DWORD)ms)
 #else
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+typedef unsigned int SOCKET;
 inline void msleep(unsigned long ms) {
     while (ms--) usleep(1000);
 }
-#endif
-
-// Fix for MinGW
-#ifdef __GNUC__
-#define vsprintf_s vsnprintf
 #endif
 
 // Macro definitions
@@ -85,10 +88,10 @@ inline void msleep(unsigned long ms) {
 
 // Math constants
 #ifndef NULL
-#define NULL 0
+#define NULL (0)
 #endif
 #ifndef M_PI
-#define M_PI  (3.14159265358979323846264338327)
+#define M_PI (3.14159265358979323846264338327)
 #endif
 #ifndef RAD_TO_DEG
 #define RAD_TO_DEG (180/M_PI)

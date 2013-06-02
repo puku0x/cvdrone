@@ -1,8 +1,5 @@
 #include "ardrone/ardrone.h"
 
-#define KEY_DOWN(key) (GetAsyncKeyState(key) & 0x8000)
-#define KEY_PUSH(key) (GetAsyncKeyState(key) & 0x0001)
-
 // --------------------------------------------------------------------------
 // main(Number of arguments, Argument values)
 // Description  : This is the entry point of the program.
@@ -20,11 +17,15 @@ int main(int argc, char **argv)
     }
 
     // Recording flag
-    int rec = 0;
+    bool rec = false;
     printf("Press 'R' to start/stop recording.");
 
     // Main loop
-    while (!GetAsyncKeyState(VK_ESCAPE)) {
+    while (1) {
+        // Key input
+        int key = cvWaitKey(1);
+        if (key == 0x1b) break;
+
         // Update
         if (!ardrone.update()) break;
 
@@ -32,7 +33,7 @@ int main(int argc, char **argv)
         IplImage *image = ardrone.getImage();
 
         // Video recording start / stop
-        if (KEY_PUSH('R')) {
+        if (key == 'r') {
             rec = !rec;
             ardrone.setVideoRecord(rec);
         }
@@ -45,7 +46,6 @@ int main(int argc, char **argv)
 
         // Display the image
         cvShowImage("camera", image);
-        cvWaitKey(1);
     }
 
     // See you

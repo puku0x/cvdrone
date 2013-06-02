@@ -1,8 +1,5 @@
 #include "ardrone/ardrone.h"
 
-#define KEY_DOWN(key) (GetAsyncKeyState(key) & 0x8000)
-#define KEY_PUSH(key) (GetAsyncKeyState(key) & 0x0001)
-
 // --------------------------------------------------------------------------
 // main(Number of arguments, Argument values)
 // Description  : This is the entry point of the program.
@@ -27,7 +24,11 @@ int main(int argc, char **argv)
     cv::Mat P = cv::Mat::zeros(3, 1, CV_64FC1);
 
     // Main loop
-    while (!GetAsyncKeyState(VK_ESCAPE)) {
+    while (1) {
+        // Key input
+        int key = cvWaitKey(30);
+        if (key == 0x1b) break;
+
         // Update
         if (!ardrone.update()) break;
 
@@ -73,31 +74,30 @@ int main(int argc, char **argv)
         double pos[3] = {P.at<double>(0,0), P.at<double>(1,0), P.at<double>(2,0)};
         printf("x = %3.2f, y = %3.2f, z = %3.2f", pos[0], pos[1], pos[2]);
 
-        // Take off / Landing
-        if (KEY_PUSH(VK_SPACE)) {
+        // Take off / Landing 
+        if (key == ' ') {
             if (ardrone.onGround()) ardrone.takeoff();
             else                    ardrone.landing();
         }
 
         // Move
         double x = 0.0, y = 0.0, z = 0.0, r = 0.0;
-        if (KEY_DOWN(VK_UP))    x =  0.5;
-        if (KEY_DOWN(VK_DOWN))  x = -0.5;
-        if (KEY_DOWN(VK_LEFT))  r =  1.0;
-        if (KEY_DOWN(VK_RIGHT)) r = -1.0;
-        if (KEY_DOWN('Q'))      z =  0.5;
-        if (KEY_DOWN('A'))      z = -0.5;
+        if (key == 0x260000) x =  1.0;
+        if (key == 0x280000) x = -1.0;
+        if (key == 0x250000) r =  1.0;
+        if (key == 0x270000) r = -1.0;
+        if (key == 'q')      z =  1.0;
+        if (key == 'a')      z = -1.0;
         ardrone.move3D(x, y, z, r);
 
         // Change camera
         static int mode = 0;
-        if (KEY_PUSH('C')) ardrone.setCamera(++mode%4);
+        if (key == 'c') ardrone.setCamera(++mode%4);
 
         // Display the image
         cvDrawCircle(map, cvPoint(-pos[1]*30.0 + map->width/2, -pos[0]*30.0 + map->height/2), 2, CV_RGB(255,0,0));
         cvShowImage("map", map);
         cvShowImage("camera", image);
-        cvWaitKey(1);
     }
 
     // See you

@@ -2,6 +2,7 @@
 #define _CAMERAACTIVITY_H_
 
 #include <camera_properties.h>
+//#include <opencv2/core/core.hpp>
 
 class CameraActivity
 {

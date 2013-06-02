@@ -47,7 +47,7 @@
 
 #if defined(HAVE_OPENCV_GPU)
 
-#include "opencv2/gpu.hpp"
+#include "opencv2/gpu/gpu.hpp"
 
 namespace cv { namespace gpu {
 

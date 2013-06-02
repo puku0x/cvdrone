@@ -62,7 +62,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>wsock32.lib;wininet.lib;opencv_calib3d249.lib;opencv_contrib249.lib;opencv_core249.lib;opencv_features2d249.lib;opencv_flann249.lib;opencv_highgui249.lib;opencv_imgproc249.lib;opencv_legacy249.lib;opencv_ml249.lib;opencv_objdetect249.lib;opencv_photo249.lib;opencv_softcascade249.lib;opencv_stitching249.lib;opencv_superres249.lib;opencv_video249.lib;opencv_videostab249.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wsock32.lib;wininet.lib;opencv_calib3d245.lib;opencv_contrib245.lib;opencv_core245.lib;opencv_features2d245.lib;opencv_flann245.lib;opencv_highgui245.lib;opencv_imgproc245.lib;opencv_legacy245.lib;opencv_ml245.lib;opencv_objdetect245.lib;opencv_photo245.lib;opencv_stitching245.lib;opencv_superres245.lib;opencv_video245.lib;opencv_videostab245.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\src\3rdparty\opencv\lib\vs2012;..\..\src\3rdparty\ffmpeg\lib;..\..\src\3rdparty\pthread\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\obj\debug\debug.pdb</ProgramDatabaseFile>
@@ -85,7 +85,7 @@
       <DisableSpecificWarnings>4996;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>wsock32.lib;wininet.lib;opencv_calib3d249.lib;opencv_contrib249.lib;opencv_core249.lib;opencv_features2d249.lib;opencv_flann249.lib;opencv_highgui249.lib;opencv_imgproc249.lib;opencv_legacy249.lib;opencv_ml249.lib;opencv_objdetect249.lib;opencv_photo249.lib;opencv_softcascade249.lib;opencv_stitching249.lib;opencv_superres249.lib;opencv_video249.lib;opencv_videostab249.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wsock32.lib;wininet.lib;opencv_calib3d245.lib;opencv_contrib245.lib;opencv_core245.lib;opencv_features2d245.lib;opencv_flann245.lib;opencv_highgui245.lib;opencv_imgproc245.lib;opencv_legacy245.lib;opencv_ml245.lib;opencv_objdetect245.lib;opencv_photo245.lib;opencv_stitching245.lib;opencv_superres245.lib;opencv_video245.lib;opencv_videostab245.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\src\3rdparty\opencv\lib\vs2012;..\..\src\3rdparty\ffmpeg\lib;..\..\src\3rdparty\pthread\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>

@@ -74,7 +74,11 @@ int main(int argc, char **argv)
     printf("Press space key to take a sample picture !\n");
 
     // Main loop
-    while (!GetAsyncKeyState(VK_ESCAPE)) {
+    while (1) {
+        // Key input
+        int key = cvWaitKey(1);
+        if (key == 0x1b) break;
+
         // Update
         if (!ardrone.update()) break;
 
@@ -82,7 +86,7 @@ int main(int argc, char **argv)
         IplImage *image = ardrone.getImage();
 
         // If you push Space key
-        if (KEY_PUSH(VK_SPACE)) {
+        if (key == ' ') {
             // Convert the camera image to grayscale
             IplImage *gray = cvCreateImage(cvGetSize(image), IPL_DEPTH_8U, 1);
             cvCvtColor(image, gray, CV_BGR2GRAY);
@@ -113,7 +117,6 @@ int main(int argc, char **argv)
         // Display the image
         cvDrawText(image, cvPoint(15, 20), "NUM = %d", (int)images.size());
         cvShowImage("camera", image);
-        cvWaitKey(1);
     }
 
     // Destroy the window
@@ -230,7 +233,11 @@ int main(int argc, char **argv)
     cvInitUndistortMap(intrinsic, distortion, mapx, mapy);
 
     // Main loop
-    while (!GetAsyncKeyState(VK_ESCAPE)) {
+    while (1) {
+        // Key input
+        int key = cvWaitKey(1);
+        if (key == 0x1b) break;
+
         // Update
         if (!ardrone.update()) break;
 
@@ -242,7 +249,6 @@ int main(int argc, char **argv)
 
         // Display the image
         cvShowImage("camera", image);
-        cvWaitKey(1);
     }
 
     // Release the matrices

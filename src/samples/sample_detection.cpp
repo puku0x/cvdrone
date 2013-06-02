@@ -1,8 +1,5 @@
 #include "ardrone/ardrone.h"
 
-#define KEY_DOWN(key) (GetAsyncKeyState(key) & 0x8000)
-#define KEY_PUSH(key) (GetAsyncKeyState(key) & 0x0001)
-
 // --------------------------------------------------------------------------
 // main(Number of arguments, Argument values)
 // Description  : This is the entry point of the program.
@@ -35,7 +32,11 @@ int main(int argc, char **argv)
     cvResizeWindow("binalized", 0, 0);
 
     // Main loop
-    while (!GetAsyncKeyState(VK_ESCAPE)) {
+    while (1) {
+        // Key input
+        int key = cvWaitKey(30);
+        if (key == 0x1b) break;
+
         // Update
         if (!ardrone.update()) break;
 
@@ -93,7 +94,6 @@ int main(int argc, char **argv)
 
         // Display the image
         cvShowImage("camera", image);
-        cvWaitKey(1);
 
         // Release images
         cvReleaseImage(&hsv);

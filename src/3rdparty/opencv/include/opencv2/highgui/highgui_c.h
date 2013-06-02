@@ -223,8 +223,7 @@ enum
     CV_IMWRITE_PNG_STRATEGY_HUFFMAN_ONLY =2,
     CV_IMWRITE_PNG_STRATEGY_RLE =3,
     CV_IMWRITE_PNG_STRATEGY_FIXED =4,
-    CV_IMWRITE_PXM_BINARY =32,
-    CV_IMWRITE_WEBP_QUALITY =64
+    CV_IMWRITE_PXM_BINARY =32
 };
 
 /* save image to file */
@@ -298,6 +297,7 @@ enum
     CV_CAP_UNICAP   =600,   // Unicap drivers
 
     CV_CAP_DSHOW    =700,   // DirectShow (via videoInput)
+    CV_CAP_MSMF     =1400,  // Microsoft Media Foundation (via videoInput)
 
     CV_CAP_PVAPI    =800,   // PvAPI, Prosilica GigE SDK
 

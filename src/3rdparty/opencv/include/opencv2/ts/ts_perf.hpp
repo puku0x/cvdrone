@@ -1,7 +1,8 @@
 #ifndef __OPENCV_TS_PERF_HPP__
 #define __OPENCV_TS_PERF_HPP__
 
-#include "opencv2/core.hpp"
+#include "opencv2/core/core.hpp"
+#include "opencv2/features2d/features2d.hpp"
 #include "ts_gtest.h"
 
 #ifdef HAVE_TBB
@@ -207,6 +208,7 @@ private:
 #define SANITY_CHECK_KEYPOINTS(array, ...) ::perf::Regression::addKeypoints(this, #array, array , ## __VA_ARGS__)
 #define SANITY_CHECK_MATCHES(array, ...) ::perf::Regression::addMatches(this, #array, array , ## __VA_ARGS__)
 
+#ifdef HAVE_CUDA
 class CV_EXPORTS GpuPerf
 {
 public:
@@ -214,6 +216,9 @@ public:
 };
 
 # define PERF_RUN_GPU()  ::perf::GpuPerf::targetDevice()
+#else
+# define PERF_RUN_GPU()  false
+#endif
 
 
 /*****************************************************************************************\

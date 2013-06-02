@@ -1,8 +1,5 @@
 #include "ardrone/ardrone.h"
 
-#define KEY_DOWN(key) (GetAsyncKeyState(key) & 0x8000)
-#define KEY_PUSH(key) (GetAsyncKeyState(key) & 0x0001)
-
 // --------------------------------------------------------------------------
 // main(Number of arguments, Argument values)
 // Description  : This is the entry point of the program.
@@ -35,34 +32,38 @@ int main(int argc, char **argv)
     CvPoint2D32f *corners2 = (CvPoint2D32f*)malloc(corner_count * sizeof(CvPoint2D32f));
 
     // Main loop
-    while (!GetAsyncKeyState(VK_ESCAPE)) {
+    while (1) {
+        // Key input
+        int key = cvWaitKey(30);
+        if (key == 0x1b) break;
+
         // Update
         if (!ardrone.update()) break;
 
         // Get an image
         image = ardrone.getImage();
 
-        // Take off / Landing
-        if (KEY_PUSH(VK_SPACE)) {
+        // Take off / Landing 
+        if (key == ' ') {
             if (ardrone.onGround()) ardrone.takeoff();
             else                    ardrone.landing();
         }
 
         // Move
         double vx = 0.0, vy = 0.0, vz = 0.0, vr = 0.0;
-        if (KEY_DOWN(VK_UP))    vx =  0.5;
-        if (KEY_DOWN(VK_DOWN))  vx = -0.5;
-        if (KEY_DOWN(VK_LEFT))  vr =  0.5;
-        if (KEY_DOWN(VK_RIGHT)) vr = -0.5;
-        if (KEY_DOWN('Q'))      vz =  0.5;
-        if (KEY_DOWN('A'))      vz = -0.5;
+        if (key == 0x260000) vx =  0.5;
+        if (key == 0x280000) vx = -0.5;
+        if (key == 0x250000) vr =  0.5;
+        if (key == 0x270000) vr = -0.5;
+        if (key == 'q')      vz =  0.5;
+        if (key == 'a')      vz = -0.5;
         ardrone.move3D(vx, vy, vz, vr);
 
         // Convert the camera image to grayscale
         cvCvtColor(image, gray, CV_BGR2GRAY);
 
         // Detect features
-        corner_count = 50;
+        int corner_count = 50;
         cvGoodFeaturesToTrack(prev, eig_img, tmp_img, corners1, &corner_count, 0.1, 5.0, NULL);
 
         // Corner detected
@@ -88,7 +89,6 @@ int main(int argc, char **argv)
 
         // Display the image
         cvShowImage("camera", image);
-        cvWaitKey(1);
     }
 
     // Release the images

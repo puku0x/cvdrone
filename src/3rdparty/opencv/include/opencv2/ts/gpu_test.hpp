@@ -43,11 +43,12 @@
 #ifndef __OPENCV_GPU_TEST_UTILITY_HPP__
 #define __OPENCV_GPU_TEST_UTILITY_HPP__
 
-#include "opencv2/core.hpp"
+#include "opencv2/core/core.hpp"
 #include "opencv2/core/gpumat.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/imgproc.hpp"
-#include "opencv2/ts.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/ts/ts.hpp"
+#include "opencv2/ts/ts_perf.hpp"
 
 namespace cvtest
 {

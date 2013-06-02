@@ -43,11 +43,11 @@
 #ifndef __OPENCV_STITCHING_WARPERS_HPP__
 #define __OPENCV_STITCHING_WARPERS_HPP__
 
-#include "opencv2/core.hpp"
-#include "opencv2/imgproc.hpp"
+#include "opencv2/core/core.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/opencv_modules.hpp"
 #ifdef HAVE_OPENCV_GPU
-# include "opencv2/gpu.hpp"
+# include "opencv2/gpu/gpu.hpp"
 #endif
 
 namespace cv {
@@ -70,8 +70,8 @@ public:
 
     virtual Rect warpRoi(Size src_size, const Mat &K, const Mat &R) = 0;
 
-    virtual float getScale() const { return 1.f; }
-    virtual void setScale(float) {}
+    float getScale() const { return 1.f; }
+    void setScale(float) {}
 };
 
 
@@ -133,6 +133,8 @@ class CV_EXPORTS PlaneWarper : public RotationWarperBase<PlaneProjector>
 {
 public:
     PlaneWarper(float scale = 1.f) { projector_.scale = scale; }
+
+    void setScale(float scale) { projector_.scale = scale; }
 
     Point2f warpPoint(const Point2f &pt, const Mat &K, const Mat &R, const Mat &T);
 
@@ -458,7 +460,7 @@ struct SphericalPortraitProjector : ProjectorBase
 
 // Projects image onto unit sphere with origin at (0, 0, 0).
 // Poles are located NOT at (0, -1, 0) and (0, 1, 0) points, BUT at (1, 0, 0) and (-1, 0, 0) points.
-class SphericalPortraitWarper : public RotationWarperBase<SphericalPortraitProjector>
+class CV_EXPORTS SphericalPortraitWarper : public RotationWarperBase<SphericalPortraitProjector>
 {
 public:
     SphericalPortraitWarper(float scale) { projector_.scale = scale; }
@@ -474,7 +476,7 @@ struct CylindricalPortraitProjector : ProjectorBase
 };
 
 
-class CylindricalPortraitWarper : public RotationWarperBase<CylindricalPortraitProjector>
+class CV_EXPORTS CylindricalPortraitWarper : public RotationWarperBase<CylindricalPortraitProjector>
 {
 public:
     CylindricalPortraitWarper(float scale) { projector_.scale = scale; }
@@ -493,7 +495,7 @@ struct PlanePortraitProjector : ProjectorBase
 };
 
 
-class PlanePortraitWarper : public RotationWarperBase<PlanePortraitProjector>
+class CV_EXPORTS PlanePortraitWarper : public RotationWarperBase<PlanePortraitProjector>
 {
 public:
     PlanePortraitWarper(float scale) { projector_.scale = scale; }

@@ -52,8 +52,8 @@
 #ifndef __OPENCV_OPENFABMAP_H_
 #define __OPENCV_OPENFABMAP_H_
 
-#include "opencv2/core.hpp"
-#include "opencv2/features2d.hpp"
+#include "opencv2/core/core.hpp"
+#include "opencv2/features2d/features2d.hpp"
 
 #include <vector>
 #include <list>
@@ -64,6 +64,10 @@
 namespace cv {
 
 namespace of2 {
+
+using std::list;
+using std::map;
+using std::multiset;
 
 /*
     Return data format of a FABMAP compare call
@@ -111,50 +115,50 @@ public:
 
     //methods to add training data for sampling method
     virtual void addTraining(const Mat& queryImgDescriptor);
-    virtual void addTraining(const std::vector<Mat>& queryImgDescriptors);
+    virtual void addTraining(const vector<Mat>& queryImgDescriptors);
 
     //methods to add to the test data
     virtual void add(const Mat& queryImgDescriptor);
-    virtual void add(const std::vector<Mat>& queryImgDescriptors);
+    virtual void add(const vector<Mat>& queryImgDescriptors);
 
     //accessors
-    const std::vector<Mat>& getTrainingImgDescriptors() const;
-    const std::vector<Mat>& getTestImgDescriptors() const;
+    const vector<Mat>& getTrainingImgDescriptors() const;
+    const vector<Mat>& getTestImgDescriptors() const;
 
     //Main FabMap image comparison
     void compare(const Mat& queryImgDescriptor,
-            std::vector<IMatch>& matches, bool addQuery = false,
+            vector<IMatch>& matches, bool addQuery = false,
             const Mat& mask = Mat());
     void compare(const Mat& queryImgDescriptor,
-            const Mat& testImgDescriptors, std::vector<IMatch>& matches,
+            const Mat& testImgDescriptors, vector<IMatch>& matches,
             const Mat& mask = Mat());
     void compare(const Mat& queryImgDescriptor,
-            const std::vector<Mat>& testImgDescriptors,
-            std::vector<IMatch>& matches, const Mat& mask = Mat());
-    void compare(const std::vector<Mat>& queryImgDescriptors, std::vector<
+            const vector<Mat>& testImgDescriptors,
+            vector<IMatch>& matches, const Mat& mask = Mat());
+    void compare(const vector<Mat>& queryImgDescriptors, vector<
             IMatch>& matches, bool addQuery = false, const Mat& mask =
             Mat());
-    void compare(const std::vector<Mat>& queryImgDescriptors,
-            const std::vector<Mat>& testImgDescriptors,
-            std::vector<IMatch>& matches, const Mat& mask = Mat());
+    void compare(const vector<Mat>& queryImgDescriptors,
+            const vector<Mat>& testImgDescriptors,
+            vector<IMatch>& matches, const Mat& mask = Mat());
 
 protected:
 
     void compareImgDescriptor(const Mat& queryImgDescriptor,
-            int queryIndex, const std::vector<Mat>& testImgDescriptors,
-            std::vector<IMatch>& matches);
+            int queryIndex, const vector<Mat>& testImgDescriptors,
+            vector<IMatch>& matches);
 
     void addImgDescriptor(const Mat& queryImgDescriptor);
 
     //the getLikelihoods method is overwritten for each different FabMap
     //method.
     virtual void getLikelihoods(const Mat& queryImgDescriptor,
-            const std::vector<Mat>& testImgDescriptors,
-            std::vector<IMatch>& matches);
+            const vector<Mat>& testImgDescriptors,
+            vector<IMatch>& matches);
     virtual double getNewPlaceLikelihood(const Mat& queryImgDescriptor);
 
     //turn likelihoods into probabilities (also add in motion model if used)
-    void normaliseDistribution(std::vector<IMatch>& matches);
+    void normaliseDistribution(vector<IMatch>& matches);
 
     //Chow-Liu Tree
     int pq(int q);
@@ -170,9 +174,9 @@ protected:
 
     //data
     Mat clTree;
-    std::vector<Mat> trainingImgDescriptors;
-    std::vector<Mat> testImgDescriptors;
-    std::vector<IMatch> priorMatches;
+    vector<Mat> trainingImgDescriptors;
+    vector<Mat> testImgDescriptors;
+    vector<IMatch> priorMatches;
 
     //parameters
     double PzGe;
@@ -199,8 +203,8 @@ public:
 protected:
 
     //FabMap1 implementation of likelihood comparison
-    void getLikelihoods(const Mat& queryImgDescriptor, const std::vector<
-            Mat>& testImgDescriptors, std::vector<IMatch>& matches);
+    void getLikelihoods(const Mat& queryImgDescriptor, const vector<
+            Mat>& testImgDescriptors, vector<IMatch>& matches);
 };
 
 /*
@@ -215,8 +219,8 @@ public:
 protected:
 
     //FabMap look-up-table implementation of the likelihood comparison
-    void getLikelihoods(const Mat& queryImgDescriptor, const std::vector<
-            Mat>& testImgDescriptors, std::vector<IMatch>& matches);
+    void getLikelihoods(const Mat& queryImgDescriptor, const vector<
+            Mat>& testImgDescriptors, vector<IMatch>& matches);
 
     //precomputed data
     int (*table)[8];
@@ -239,8 +243,8 @@ public:
 protected:
 
     //FabMap Fast Bail-out implementation of the likelihood comparison
-    void getLikelihoods(const Mat& queryImgDescriptor, const std::vector<
-            Mat>& testImgDescriptors, std::vector<IMatch>& matches);
+    void getLikelihoods(const Mat& queryImgDescriptor, const vector<
+            Mat>& testImgDescriptors, vector<IMatch>& matches);
 
     //stucture used to determine word comparison order
     struct WordStats {
@@ -264,7 +268,7 @@ protected:
     };
 
     //private fast bail-out necessary functions
-    void setWordStatistics(const Mat& queryImgDescriptor, std::multiset<WordStats>& wordData);
+    void setWordStatistics(const Mat& queryImgDescriptor, multiset<WordStats>& wordData);
     double limitbisection(double v, double m);
     double bennettInequality(double v, double m, double delta);
     static bool compInfo(const WordStats& first, const WordStats& second);
@@ -291,39 +295,39 @@ public:
     void addTraining(const Mat& queryImgDescriptors) {
         FabMap::addTraining(queryImgDescriptors);
     }
-    void addTraining(const std::vector<Mat>& queryImgDescriptors);
+    void addTraining(const vector<Mat>& queryImgDescriptors);
 
     void add(const Mat& queryImgDescriptors) {
         FabMap::add(queryImgDescriptors);
     }
-    void add(const std::vector<Mat>& queryImgDescriptors);
+    void add(const vector<Mat>& queryImgDescriptors);
 
 protected:
 
     //FabMap2 implementation of the likelihood comparison
-    void getLikelihoods(const Mat& queryImgDescriptor, const std::vector<
-            Mat>& testImgDescriptors, std::vector<IMatch>& matches);
+    void getLikelihoods(const Mat& queryImgDescriptor, const vector<
+            Mat>& testImgDescriptors, vector<IMatch>& matches);
     double getNewPlaceLikelihood(const Mat& queryImgDescriptor);
 
     //the likelihood function using the inverted index
-    void getIndexLikelihoods(const Mat& queryImgDescriptor, std::vector<
-                             double>& defaults, std::map<int, std::vector<int> >& invertedMap,
-            std::vector<IMatch>& matches);
+    void getIndexLikelihoods(const Mat& queryImgDescriptor, vector<
+                             double>& defaults, map<int, vector<int> >& invertedMap,
+            vector<IMatch>& matches);
     void addToIndex(const Mat& queryImgDescriptor,
-            std::vector<double>& defaults,
-            std::map<int, std::vector<int> >& invertedMap);
+            vector<double>& defaults,
+            map<int, vector<int> >& invertedMap);
 
     //data
-    std::vector<double> d1, d2, d3, d4;
-    std::vector<std::vector<int> > children;
+    vector<double> d1, d2, d3, d4;
+    vector<vector<int> > children;
 
     // TODO: inverted map a vector?
 
-    std::vector<double> trainingDefaults;
-    std::map<int, std::vector<int> > trainingInvertedMap;
+    vector<double> trainingDefaults;
+    map<int, vector<int> > trainingInvertedMap;
 
-    std::vector<double> testDefaults;
-    std::map<int, std::vector<int> > testInvertedMap;
+    vector<double> testDefaults;
+    map<int, vector<int> > testInvertedMap;
 
 };
 /*
@@ -338,14 +342,14 @@ public:
 
     //add data to the chow-liu tree before calling make
     void add(const Mat& imgDescriptor);
-    void add(const std::vector<Mat>& imgDescriptors);
+    void add(const vector<Mat>& imgDescriptors);
 
-    const std::vector<Mat>& getImgDescriptors() const;
+    const vector<Mat>& getImgDescriptors() const;
 
     Mat make(double infoThreshold = 0.0);
 
 private:
-    std::vector<Mat> imgDescriptors;
+    vector<Mat> imgDescriptors;
     Mat mergedImgDescriptors;
 
     typedef struct info {
@@ -360,18 +364,18 @@ private:
     double CP(int a, bool za, int b, bool zb); // a | b
 
     //calculating mutual information of all edges
-    void createBaseEdges(std::list<info>& edges, double infoThreshold);
+    void createBaseEdges(list<info>& edges, double infoThreshold);
     double calcMutInfo(int word1, int word2);
     static bool sortInfoScores(const info& first, const info& second);
 
     //selecting minimum spanning egdges with maximum information
-    bool reduceEdgesToMinSpan(std::list<info>& edges);
+    bool reduceEdgesToMinSpan(list<info>& edges);
 
     //building the tree sctructure
-    Mat buildTree(int root_word, std::list<info> &edges);
+    Mat buildTree(int root_word, list<info> &edges);
     void recAddToTree(Mat &cltree, int q, int pq,
-        std::list<info> &remaining_edges);
-    std::vector<int> extractChildren(std::list<info> &remaining_edges, int q);
+        list<info> &remaining_edges);
+    vector<int> extractChildren(list<info> &remaining_edges, int q);
 
 };
 

@@ -1,8 +1,5 @@
 #include "ardrone/ardrone.h"
 
-#define KEY_DOWN(key) (GetAsyncKeyState(key) & 0x8000)
-#define KEY_PUSH(key) (GetAsyncKeyState(key) & 0x0001)
-
 // --------------------------------------------------------------------------
 // main(Number of arguments, Argument values)
 // Description  : This is the entry point of the program.
@@ -24,7 +21,11 @@ int main(int argc, char *argv[])
     hog.setSVMDetector(cv::HOGDescriptor::getDefaultPeopleDetector());
 
     // Main loop
-    while (!GetAsyncKeyState(VK_ESCAPE)) {
+    while (1) {
+        // Key input
+        int key = cv::waitKey(1);
+        if (key == 0x1b) break;
+
         // Update
         if (!ardrone.update()) break;
 
@@ -44,7 +45,6 @@ int main(int argc, char *argv[])
 
         // Display the image
         cv::imshow("hog", img); 
-        cv::waitKey(1);
     }
 
     // See you

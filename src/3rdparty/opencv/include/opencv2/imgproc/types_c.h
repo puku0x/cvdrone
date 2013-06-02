@@ -309,7 +309,7 @@ enum
     // alpha premultiplication
     CV_RGBA2mRGBA = 125,
     CV_mRGBA2RGBA = 126,
-
+    
     CV_RGB2YUV_I420 = 127,
     CV_BGR2YUV_I420 = 128,
     CV_RGB2YUV_IYUV = CV_RGB2YUV_I420,
@@ -324,18 +324,7 @@ enum
     CV_RGBA2YUV_YV12 = 133,
     CV_BGRA2YUV_YV12 = 134,
 
-    // Edge-Aware Demosaicing
-    CV_BayerBG2BGR_EA = 135,
-    CV_BayerGB2BGR_EA = 136,
-    CV_BayerRG2BGR_EA = 137,
-    CV_BayerGR2BGR_EA = 138,
-
-    CV_BayerBG2RGB_EA = CV_BayerRG2BGR_EA,
-    CV_BayerGB2RGB_EA = CV_BayerGR2BGR_EA,
-    CV_BayerRG2RGB_EA = CV_BayerBG2BGR_EA,
-    CV_BayerGR2RGB_EA = CV_BayerGB2BGR_EA,
-
-    CV_COLORCVT_MAX  = 139
+    CV_COLORCVT_MAX  = 135
 };
 
 
@@ -449,6 +438,79 @@ CvChainPtReader;
      (deltas)[2] = -(step), (deltas)[3] = -(step) - (nch),  \
      (deltas)[4] = -(nch),  (deltas)[5] =  (step) - (nch),  \
      (deltas)[6] =  (step), (deltas)[7] =  (step) + (nch))
+
+
+/****************************************************************************************\
+*                              Planar subdivisions                                       *
+\****************************************************************************************/
+
+typedef size_t CvSubdiv2DEdge;
+
+#define CV_QUADEDGE2D_FIELDS()     \
+    int flags;                     \
+    struct CvSubdiv2DPoint* pt[4]; \
+    CvSubdiv2DEdge  next[4];
+
+#define CV_SUBDIV2D_POINT_FIELDS()\
+    int            flags;      \
+    CvSubdiv2DEdge first;      \
+    CvPoint2D32f   pt;         \
+    int id;
+
+#define CV_SUBDIV2D_VIRTUAL_POINT_FLAG (1 << 30)
+
+typedef struct CvQuadEdge2D
+{
+    CV_QUADEDGE2D_FIELDS()
+}
+CvQuadEdge2D;
+
+typedef struct CvSubdiv2DPoint
+{
+    CV_SUBDIV2D_POINT_FIELDS()
+}
+CvSubdiv2DPoint;
+
+#define CV_SUBDIV2D_FIELDS()    \
+    CV_GRAPH_FIELDS()           \
+    int  quad_edges;            \
+    int  is_geometry_valid;     \
+    CvSubdiv2DEdge recent_edge; \
+    CvPoint2D32f  topleft;      \
+    CvPoint2D32f  bottomright;
+
+typedef struct CvSubdiv2D
+{
+    CV_SUBDIV2D_FIELDS()
+}
+CvSubdiv2D;
+
+
+typedef enum CvSubdiv2DPointLocation
+{
+    CV_PTLOC_ERROR = -2,
+    CV_PTLOC_OUTSIDE_RECT = -1,
+    CV_PTLOC_INSIDE = 0,
+    CV_PTLOC_VERTEX = 1,
+    CV_PTLOC_ON_EDGE = 2
+}
+CvSubdiv2DPointLocation;
+
+typedef enum CvNextEdgeType
+{
+    CV_NEXT_AROUND_ORG   = 0x00,
+    CV_NEXT_AROUND_DST   = 0x22,
+    CV_PREV_AROUND_ORG   = 0x11,
+    CV_PREV_AROUND_DST   = 0x33,
+    CV_NEXT_AROUND_LEFT  = 0x13,
+    CV_NEXT_AROUND_RIGHT = 0x31,
+    CV_PREV_AROUND_LEFT  = 0x20,
+    CV_PREV_AROUND_RIGHT = 0x02
+}
+CvNextEdgeType;
+
+/* get the next edge with the same origin point (counterwise) */
+#define  CV_SUBDIV2D_NEXT_EDGE( edge )  (((CvQuadEdge2D*)((edge) & ~3))->next[(edge)&3])
 
 
 /* Contour approximation algorithms */

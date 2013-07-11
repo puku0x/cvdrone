@@ -47,8 +47,8 @@ int ARDrone::initNavdata(void)
         // Disable BOOTSTRAP mode
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        sockCommand.sendf("AT*CONFIG=%d,\"general:navdata_demo\",\"TRUE\"\r", seq++);
-        //sockCommand.sendf("AT*CONFIG=%d,\"general:navdata_demo\",\"FALSE\"\r", seq++);
+        //sockCommand.sendf("AT*CONFIG=%d,\"general:navdata_demo\",\"TRUE\"\r", seq++);
+        sockCommand.sendf("AT*CONFIG=%d,\"general:navdata_demo\",\"FALSE\"\r", seq++);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
         msleep(100);
 
@@ -59,8 +59,8 @@ int ARDrone::initNavdata(void)
     else {
         // Disable BOOTSTRAP mode
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
-        sockCommand.sendf("AT*CONFIG=%d,\"general:navdata_demo\",\"TRUE\"\r", seq++);
-        //sockCommand.sendf("AT*CONFIG=%d,\"general:navdata_demo\",\"FALSE\"\r", seq++);
+        //sockCommand.sendf("AT*CONFIG=%d,\"general:navdata_demo\",\"TRUE\"\r", seq++);
+        sockCommand.sendf("AT*CONFIG=%d,\"general:navdata_demo\",\"FALSE\"\r", seq++);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
 
         // Send ACK
@@ -360,7 +360,8 @@ double ARDrone::getVelocity(double *vx, double *vy, double *vz)
     if (mutexNavdata) pthread_mutex_lock(mutexNavdata);
     double velocity_x =  navdata.demo.vx * 0.001;
     double velocity_y = -navdata.demo.vy * 0.001;
-    double velocity_z = -navdata.demo.vz * 0.001;
+    //double velocity_z = -navdata.demo.vz * 0.001;
+	double velocity_z = -navdata.altitude.altitude_vz * 0.001;
     double velocity = sqrt(velocity_x*velocity_x + velocity_y*velocity_y + velocity_z*velocity_z);
     if (mutexNavdata) pthread_mutex_unlock(mutexNavdata);
 

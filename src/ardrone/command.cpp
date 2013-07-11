@@ -137,22 +137,13 @@ int ARDrone::initCommand(void)
 // --------------------------------------------------------------------------
 void ARDrone::loopCommand(void)
 {
-    // Ticks per frequency
-    const double freq = cvGetTickFrequency();
-
-    // Timer
-    int64 timer = cvGetTickCount();
-
     while (1) {
         // Reset Watch-Dog every 100ms
-        if ((cvGetTickCount() - timer) / freq > 100000) {
-            if (mutexCommand) pthread_mutex_lock(mutexCommand);
-            sockCommand.sendf("AT*COMWDG=%d\r", seq++);
-            if (mutexCommand) pthread_mutex_unlock(mutexCommand);
-            timer = cvGetTickCount();
-        }
+        if (mutexCommand) pthread_mutex_lock(mutexCommand);
+        sockCommand.sendf("AT*COMWDG=%d\r", seq++);
+        if (mutexCommand) pthread_mutex_unlock(mutexCommand);
         pthread_testcancel();
-        msleep(30);
+        msleep(100);
     }
 }
 
@@ -163,14 +154,19 @@ void ARDrone::loopCommand(void)
 // --------------------------------------------------------------------------
 void ARDrone::takeoff(void)
 {
-    // Reset emergency
-    resetWatchDog();
-    resetEmergency();
+    // Get the state
+    if (mutexCommand) pthread_mutex_lock(mutexNavdata);
+    int state = navdata.ardrone_state;
+    if (mutexCommand) pthread_mutex_unlock(mutexNavdata);
 
-    // Send take off
-    if (mutexCommand) pthread_mutex_lock(mutexCommand);
-    sockCommand.sendf("AT*REF=%d,290718208\r", seq++);
-    if (mutexCommand) pthread_mutex_unlock(mutexCommand);
+    // If AR.Drone is in emergency, reset it
+    if (state & ARDRONE_EMERGENCY_MASK) emergency();
+    else {
+        // Send take off
+        if (mutexCommand) pthread_mutex_lock(mutexCommand);
+        sockCommand.sendf("AT*REF=%d,290718208\r", seq++);
+        if (mutexCommand) pthread_mutex_unlock(mutexCommand);
+    }
 }
 
 // --------------------------------------------------------------------------
@@ -180,14 +176,19 @@ void ARDrone::takeoff(void)
 // --------------------------------------------------------------------------
 void ARDrone::landing(void)
 {
-    // Reset emergency
-    resetWatchDog();
-    resetEmergency();
+    // Get the state
+    if (mutexCommand) pthread_mutex_lock(mutexNavdata);
+    int state = navdata.ardrone_state;
+    if (mutexCommand) pthread_mutex_unlock(mutexNavdata);
 
-    // Send landing
-    if (mutexCommand) pthread_mutex_lock(mutexCommand);
-    sockCommand.sendf("AT*REF=%d,290717696\r", seq++);
-    if (mutexCommand) pthread_mutex_unlock(mutexCommand);
+    // If AR.Drone is in emergency, reset it
+    if (state & ARDRONE_EMERGENCY_MASK) emergency();
+    else {
+        // Send langding
+        if (mutexCommand) pthread_mutex_lock(mutexCommand);
+        sockCommand.sendf("AT*REF=%d,290717696\r", seq++);
+        if (mutexCommand) pthread_mutex_unlock(mutexCommand);
+    }
 }
 
 // --------------------------------------------------------------------------
@@ -222,8 +223,7 @@ void ARDrone::move3D(double vx, double vy, double vz, double vr)
 {
     // AR.Drone is flying
     if (!onGround()) {
-        const float gain = 0.4f;
-        float v[4] = {-vy*gain, -vx*gain, vz*gain, -vr*gain};
+        float v[4] = {-vy*0.2, -vx*0.2, vz*1.0, -vr*0.5};
         int mode = (fabs(vx) > 0.0 || fabs(vy) > 0.0);
 
         // Send a command
@@ -259,6 +259,36 @@ void ARDrone::setCamera(int channel)
     if (mutexCommand) pthread_mutex_unlock(mutexCommand);
 
     msleep(100);
+}
+
+// --------------------------------------------------------------------------
+// ARDrone::setFlatTrim()
+// Description  : Set a reference of the horizontal plane.
+// Return value : NONE
+// --------------------------------------------------------------------------
+void ARDrone::setFlatTrim(void)
+{
+    if (onGround()) {
+        // Send animation command
+        if (mutexCommand) pthread_mutex_lock(mutexCommand);
+        sockCommand.sendf("AT*FTRIM=%d\r", seq++);
+        if (mutexCommand) pthread_mutex_unlock(mutexCommand);
+    }
+}
+
+// --------------------------------------------------------------------------
+// ARDrone::setCalibration(Device ID)
+// Description  : Calibrate AR.Drone's magnetometer.
+// Return value : NONE
+// --------------------------------------------------------------------------
+void ARDrone::setCalibration(int device)
+{
+    if (!onGround()) {
+        // Send animation command
+        if (mutexCommand) pthread_mutex_lock(mutexCommand);
+        sockCommand.sendf("AT*CALIB=%d,%d\r", seq++, device);
+        if (mutexCommand) pthread_mutex_unlock(mutexCommand);
+    }
 }
 
 // --------------------------------------------------------------------------

@@ -225,6 +225,8 @@ CV_EXPORTS ErrorCallback redirectError( ErrorCallback errCallback,
 #define CV_DbgAssert(expr)
 #endif
 
+CV_EXPORTS void glob(String pattern, std::vector<String>& result, bool recursive = false);
+
 CV_EXPORTS void setNumThreads(int nthreads);
 CV_EXPORTS int getNumThreads();
 CV_EXPORTS int getThreadNum();
@@ -1320,7 +1322,8 @@ public:
         EXPR              = 6 << KIND_SHIFT,
         OPENGL_BUFFER     = 7 << KIND_SHIFT,
         OPENGL_TEXTURE    = 8 << KIND_SHIFT,
-        GPU_MAT           = 9 << KIND_SHIFT
+        GPU_MAT           = 9 << KIND_SHIFT,
+        OCL_MAT           =10 << KIND_SHIFT
     };
     _InputArray();
 
@@ -2042,6 +2045,40 @@ public:
     uint64 state;
 };
 
+/*!
+   Random Number Generator - MT
+
+   The class implements RNG using the Mersenne Twister algorithm
+*/
+class CV_EXPORTS RNG_MT19937
+{
+public:
+    RNG_MT19937();
+    RNG_MT19937(unsigned s);
+    void seed(unsigned s);
+
+    unsigned next();
+
+    operator int();
+    operator unsigned();
+    operator float();
+    operator double();
+
+    unsigned operator ()(unsigned N);
+    unsigned operator ()();
+
+    //! returns uniformly distributed integer random number from [a,b) range
+    int uniform(int a, int b);
+    //! returns uniformly distributed floating-point random number from [a,b) range
+    float uniform(float a, float b);
+    //! returns uniformly distributed double-precision floating-point random number from [a,b) range
+    double uniform(double a, double b);
+
+private:
+    enum PeriodParameters {N = 624, M = 397};
+    unsigned state[N];
+    int mti;
+};
 
 /*!
  Termination criteria in iterative algorithms
@@ -3373,8 +3410,6 @@ public:
     //! converts dense 2d matrix to the sparse form
     /*!
      \param m the input matrix
-     \param try1d if true and m is a single-column matrix (Nx1),
-            then the sparse matrix will be 1-dimensional.
     */
     explicit SparseMat(const Mat& m);
     //! converts old-style sparse matrix to the new-style. All the data is copied
@@ -4777,6 +4812,9 @@ public:
     ~AutoLock() { mutex->unlock(); }
 protected:
     Mutex* mutex;
+private:
+    AutoLock(const AutoLock&);
+    AutoLock& operator = (const AutoLock&);
 };
 
 }

@@ -4,9 +4,9 @@ LDFLAGS       = -L/usr/local/lib -D__STDC_CONSTANT_MACROS
 LIBS          = -lm                     \
                 -lwsock32               \
                 -lwininet               \
-                -lopencv_core245.dll    \
-                -lopencv_imgproc245.dll \
-                -lopencv_highgui245.dll \
+                -lopencv_core246.dll    \
+                -lopencv_imgproc246.dll \
+                -lopencv_highgui246.dll \
                 -lpthread               \
                 -lavcodec.dll           \
                 -lavdevice.dll          \

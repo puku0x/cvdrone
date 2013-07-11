@@ -57,16 +57,15 @@ extern "C" {
 #ifdef _WIN32
 #include <windows.h>
 #include <winsock.h>
-#include <wininet.h>
 #define msleep(ms) Sleep((DWORD)ms)
 #else
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-typedef unsigned int SOCKET;
+typedef int SOCKET;
+#define INVALID_SOCKET (-1)
+#define SOCKET_ERROR   (-1)
 inline void msleep(unsigned long ms) {
     while (ms--) usleep(1000);
 }
@@ -862,6 +861,8 @@ public:
 
     // Others
     virtual int  onGround(void);                            // Check on ground
+    virtual void setFlatTrim(void);                         // Flat trim
+    virtual void setCalibration(int device = 0);            // Magnetometer calibration
     virtual void setAnimation(int id, int duration);        // Flight animation
     virtual void setLED(int id, float freq, int duration);  // LED animation
     virtual void setVideoRecord(bool activate);             // Video recording (only for AR.Drone 2.0)
@@ -931,7 +932,6 @@ protected:
     virtual int initVideo(void);
 
     // Get informations (internal)
-    virtual int getVersionInfo(void);
     virtual int getConfig(void);
     virtual int getNavdata(void);
     virtual int getVideo(void);

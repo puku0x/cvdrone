@@ -294,3 +294,16 @@ int ARDrone::getConfig(void)
 
     return 1;
 }
+
+// --------------------------------------------------------------------------
+// ARDrone::getVersion(Major version, Minor version, Revision number)
+// Description  : Get AR.Drone's version.
+// Return value : Version number of the AR.Drone.
+// --------------------------------------------------------------------------
+int ARDrone::getVersion(int *major, int *minor, int *revision)
+{
+    if (major) *major = version.major;
+    if (minor) *minor = version.minor;
+    if (revision) *revision = version.revision;
+    return version.major;
+}

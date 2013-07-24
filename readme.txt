@@ -51,7 +51,7 @@ LIBRARY DEPENDENCIES
   CV Drone uses following libraries.
   - OpenCV 2.4.6
     http://opencv.org/
-  - FFmpeg 1.2.1
+  - FFmpeg 2.0
     http://www.ffmpeg.org/
   - stdint.h/inttypes.h for Microsoft Visual Studio r26
     https://code.google.com/p/msinttypes/

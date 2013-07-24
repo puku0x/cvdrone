@@ -1,14 +1,14 @@
 This is a FFmpeg Win32 Shared build by puku0x.
 
-ffmpeg version 1.2.1 Copyright (c) 2000-2013 the FFmpeg developers
-  built on Jul  2 2013 00:59:09 with gcc 4.7.2 (GCC)
-  configuration: --enable-shared --disable-gpl
-  libavutil      52. 18.100 / 52. 18.100
-  libavcodec     54. 92.100 / 54. 92.100
-  libavformat    54. 63.104 / 54. 63.104
-  libavdevice    54.  3.103 / 54.  3.103
-  libavfilter     3. 42.103 /  3. 42.103
-  libswscale      2.  2.100 /  2.  2.100
+ffmpeg version 2.0 Copyright (c) 2000-2013 the FFmpeg developers
+  built on Jul 22 2013 01:03:43 with gcc 4.7.2 (GCC)
+  configuration: --enable-shared --disable-gpl --disable-w32threads
+  libavutil      52. 38.100 / 52. 38.100
+  libavcodec     55. 18.102 / 55. 18.102
+  libavformat    55. 12.100 / 55. 12.100
+  libavdevice    55.  3.100 / 55.  3.100
+  libavfilter     3. 79.101 /  3. 79.101
+  libswscale      2.  3.100 /  2.  3.100
   libswresample   0. 17.102 /  0. 17.102
 
 ffmpeg is free software; you can redistribute it and/or

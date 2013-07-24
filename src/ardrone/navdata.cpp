@@ -92,7 +92,7 @@ void ARDrone::loopNavdata(void)
         // Get Navdata
         if (!getNavdata()) break;
         pthread_testcancel();
-        msleep(60);
+        msleep(30);
     }
 }
 
@@ -271,7 +271,8 @@ int ARDrone::getNavdata(void)
                     break;
                 case 27:
                     index -= 4;
-                    memcpy((void*)&(navdata.zimmu_3000), (const void*)(buf + index), tmp_size);
+                    if (version.major == 2 && version.minor == 4) memcpy((void*)&(navdata.gps),        (const void*)(buf + index), tmp_size);
+                    else                                          memcpy((void*)&(navdata.zimmu_3000), (const void*)(buf + index), tmp_size);
                     index += tmp_size;
                     break;
                 default:
@@ -361,7 +362,7 @@ double ARDrone::getVelocity(double *vx, double *vy, double *vz)
     double velocity_x =  navdata.demo.vx * 0.001;
     double velocity_y = -navdata.demo.vy * 0.001;
     //double velocity_z = -navdata.demo.vz * 0.001;
-	double velocity_z = -navdata.altitude.altitude_vz * 0.001;
+    double velocity_z = -navdata.altitude.altitude_vz * 0.001;
     double velocity = sqrt(velocity_x*velocity_x + velocity_y*velocity_y + velocity_z*velocity_z);
     if (mutexNavdata) pthread_mutex_unlock(mutexNavdata);
 

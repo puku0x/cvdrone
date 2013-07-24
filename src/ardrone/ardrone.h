@@ -77,11 +77,15 @@ inline void msleep(unsigned long ms) {
 #define ARDRONE_SESSION_ID          "d2e081a3"      // SessionID
 #define ARDRONE_PROFILE_ID          "be27e2e4"      // Profile ID
 #define ARDRONE_APPLOCATION_ID      "d87f7e0c"      // Application ID
-#define ARDRONE_VERSION_PORT        (5551)          // Port number for FTP
-#define ARDRONE_NAVDATA_PORT        (5554)          // Port number for Navdata
-#define ARDRONE_VIDEO_PORT          (5555)          // Port number for Video
-#define ARDRONE_COMMAND_PORT        (5556)          // Port number for AT command
-#define ARDRONE_CONFIG_PORT         (5559)          // Port number for configuration
+#define ARDRONE_FTP_PORT            (5551)          // Port number for FTP
+#define ARDRONE_AUTH_PORT           (5552)
+#define ARDRONE_VIDEO_RECORDER_PORT (5553)
+#define ARDRONE_NAVDATA_PORT        (5554)          // Port for Navdata
+#define ARDRONE_VIDEO_PORT          (5555)          // Port for Video
+#define ARDRONE_AT_PORT             (5556)          // Port for AT command
+#define ARDRONE_RAW_CAPTURE_PORT    (5557)
+#define ARDRONE_PRINTF_PORT         (5558)
+#define ARDRONE_CONTROL_PORT        (5559)          // Port for configuration
 #define ARDRONE_DEFAULT_ADDR        "192.168.1.1"   // Default IP address of AR.Drone
 #define ARDRONE_NAVDATA_HEADER      (0x55667788)    // Header of Navdata
 
@@ -101,35 +105,35 @@ inline void msleep(unsigned long ms) {
 
 // State masks
 enum ARDRONE_STATE_MASK {
-    ARDRONE_FLY_MASK            = 1 <<  0, // FLY MASK                  : (0) Ardrone is landed, (1) Ardrone is flying
-    ARDRONE_VIDEO_MASK          = 1 <<  1, // VIDEO MASK                : (0) Video disable, (1) Video enable
-    ARDRONE_VISION_MASK         = 1 <<  2, // VISION MASK               : (0) Vision disable, (1) Vision enable
-    ARDRONE_CONTROL_MASK        = 1 <<  3, // CONTROL ALGO              : (0) Euler angles control, (1) Angular speed control
-    ARDRONE_ALTITUDE_MASK       = 1 <<  4, // ALTITUDE CONTROL ALGO     : (0) Altitude control inactive (1) Altitude control active
-    ARDRONE_USER_FEEDBACK_START = 1 <<  5, // USER feedback             :     Start button state 
-    ARDRONE_COMMAND_MASK        = 1 <<  6, // Control command ACK       : (0) None, (1) One received
-  //ARDRONE_FW_FILE_MASK        = 1 <<  7, //                           : (1) Firmware file is good
-  //ARDRONE_FW_VER_MASK         = 1 <<  8, //                           : (1) Firmware update is newer
-  //ARDRONE_FW_UPD_MASK         = 1 <<  9, //                           : (1) Firmware update is ongoing
-    ARDRONE_NAVDATA_DEMO_MASK   = 1 << 10, // Navdata demo              : (0) All navdata, (1) Only navdata demo
-    ARDRONE_NAVDATA_BOOTSTRAP   = 1 << 11, // Navdata bootstrap         : (0) Options sent in all or demo mode, (1) No navdata options sent
-    ARDRONE_MOTORS_MASK         = 1 << 12, // Motors status             : (0) Ok, (1) Motors problem
-    ARDRONE_COM_LOST_MASK       = 1 << 13, // Communication Lost        : (1) Com problem, (0) Com is ok
-    ARDRONE_VBAT_LOW            = 1 << 15, // VBat low                  : (1) Too low, (0) Ok
-    ARDRONE_USER_EL             = 1 << 16, // User Emergency Landing    : (1) User EL is ON, (0) User EL is OFF
-    ARDRONE_TIMER_ELAPSED       = 1 << 17, // Timer elapsed             : (1) Elapsed, (0) Not elapsed
-    ARDRONE_ANGLES_OUT_OF_RANGE = 1 << 19, // Angles                    : (0) Ok, (1) Out of range
-    ARDRONE_ULTRASOUND_MASK     = 1 << 21, // Ultrasonic sensor         : (0) Ok, (1) Deaf
-    ARDRONE_CUTOUT_MASK         = 1 << 22, // Cutout system detection   : (0) Not detected, (1) Detected
-    ARDRONE_PIC_VERSION_MASK    = 1 << 23, // PIC Version number OK     : (0) A bad version number, (1) Version number is OK */
-    ARDRONE_ATCODEC_THREAD_ON   = 1 << 24, // ATCodec thread ON         : (0) Thread OFF (1) thread ON
-    ARDRONE_NAVDATA_THREAD_ON   = 1 << 25, // Navdata thread ON         : (0) Thread OFF (1) thread ON
-    ARDRONE_VIDEO_THREAD_ON     = 1 << 26, // Video thread ON           : (0) Thread OFF (1) thread ON
-    ARDRONE_ACQ_THREAD_ON       = 1 << 27, // Acquisition thread ON     : (0) Thread OFF (1) thread ON
-    ARDRONE_CTRL_WATCHDOG_MASK  = 1 << 28, // CTRL watchdog             : (1) Delay in control execution (> 5ms), (0) Control is well scheduled
-    ARDRONE_ADC_WATCHDOG_MASK   = 1 << 29, // ADC Watchdog              : (1) Delay in uart2 dsr (> 5ms), (0) Uart2 is good
-    ARDRONE_COM_WATCHDOG_MASK   = 1 << 30, // Communication Watchdog    : (1) Com problem, (0) Com is ok
-    ARDRONE_EMERGENCY_MASK      = 1 << 31  // Emergency landing         : (0) No emergency, (1) Emergency
+    ARDRONE_FLY_MASK            = 1U <<  0, // FLY MASK                  : (0) Ardrone is landed, (1) Ardrone is flying
+    ARDRONE_VIDEO_MASK          = 1U <<  1, // VIDEO MASK                : (0) Video disable, (1) Video enable
+    ARDRONE_VISION_MASK         = 1U <<  2, // VISION MASK               : (0) Vision disable, (1) Vision enable
+    ARDRONE_CONTROL_MASK        = 1U <<  3, // CONTROL ALGO              : (0) Euler angles control, (1) Angular speed control
+    ARDRONE_ALTITUDE_MASK       = 1U <<  4, // ALTITUDE CONTROL ALGO     : (0) Altitude control inactive (1) Altitude control active
+    ARDRONE_USER_FEEDBACK_START = 1U <<  5, // USER feedback             :     Start button state 
+    ARDRONE_COMMAND_MASK        = 1U <<  6, // Control command ACK       : (0) None, (1) One received
+    ARDRONE_CAMERA_MASK         = 1U <<  7, // CAMERA MASK               : (0) Camera not ready, (1) Camera ready
+    ARDRONE_TRAVELLING_MASK     = 1U <<  8, // Travelling mask           : (0) Disable, (1) Enable
+    ARDRONE_USB_MASK            = 1U <<  9, // USB key                   : (0) Usb key not ready, (1) Usb key ready
+    ARDRONE_NAVDATA_DEMO_MASK   = 1U << 10, // Navdata demo              : (0) All navdata, (1) Only navdata demo
+    ARDRONE_NAVDATA_BOOTSTRAP   = 1U << 11, // Navdata bootstrap         : (0) Options sent in all or demo mode, (1) No navdata options sent
+    ARDRONE_MOTORS_MASK         = 1U << 12, // Motors status             : (0) Ok, (1) Motors problem
+    ARDRONE_COM_LOST_MASK       = 1U << 13, // Communication Lost        : (1) Com problem, (0) Com is ok
+    ARDRONE_VBAT_LOW            = 1U << 15, // VBat low                  : (1) Too low, (0) Ok
+    ARDRONE_USER_EL             = 1U << 16, // User Emergency Landing    : (1) User EL is ON, (0) User EL is OFF
+    ARDRONE_TIMER_ELAPSED       = 1U << 17, // Timer elapsed             : (1) Elapsed, (0) Not elapsed
+    ARDRONE_ANGLES_OUT_OF_RANGE = 1U << 19, // Angles                    : (0) Ok, (1) Out of range
+    ARDRONE_ULTRASOUND_MASK     = 1U << 21, // Ultrasonic sensor         : (0) Ok, (1) Deaf
+    ARDRONE_CUTOUT_MASK         = 1U << 22, // Cutout system detection   : (0) Not detected, (1) Detected
+    ARDRONE_PIC_VERSION_MASK    = 1U << 23, // PIC Version number OK     : (0) A bad version number, (1) Version number is OK */
+    ARDRONE_ATCODEC_THREAD_ON   = 1U << 24, // ATCodec thread ON         : (0) Thread OFF (1) thread ON
+    ARDRONE_NAVDATA_THREAD_ON   = 1U << 25, // Navdata thread ON         : (0) Thread OFF (1) thread ON
+    ARDRONE_VIDEO_THREAD_ON     = 1U << 26, // Video thread ON           : (0) Thread OFF (1) thread ON
+    ARDRONE_ACQ_THREAD_ON       = 1U << 27, // Acquisition thread ON     : (0) Thread OFF (1) thread ON
+    ARDRONE_CTRL_WATCHDOG_MASK  = 1U << 28, // CTRL watchdog             : (1) Delay in control execution (> 5ms), (0) Control is well scheduled
+    ARDRONE_ADC_WATCHDOG_MASK   = 1U << 29, // ADC Watchdog              : (1) Delay in uart2 dsr (> 5ms), (0) Uart2 is good
+    ARDRONE_COM_WATCHDOG_MASK   = 1U << 30, // Communication Watchdog    : (1) Com problem, (0) Com is ok
+    ARDRONE_EMERGENCY_MASK      = 1U << 31  // Emergency landing         : (0) No emergency, (1) Emergency
 };
 
 // Flight animation IDs
@@ -150,6 +154,10 @@ enum ARDRONE_ANIMATION_ID {
     ARDRONE_ANIM_WAVE,
     ARDRONE_ANIM_PHI_THETA_MIXED,
     ARDRONE_ANIM_DOUBLE_PHI_THETA_MIXED,
+    ARDRONE_ANIM_FLIP_AHEAD,                // for AR.Drone 2.0
+    ARDRONE_ANIM_FLIP_BEHIND,               // for AR.Drone 2.0
+    ARDRONE_ANIM_FLIP_LEFT,                 // for AR.Drone 2.0
+    ARDRONE_ANIM_FLIP_RIGHT,                // for AR.Drone 2.0
     ARDRONE_NB_ANIM_MAYDAY
 };
 
@@ -639,9 +647,9 @@ struct ARDRONE_NAVDATA {
         unsigned int   hdvideo_state;
         unsigned int   storage_fifo_nb_packets;
         unsigned int   storage_fifo_size;
-        unsigned int   usbkey_size;         /*! USB key in kbytes - 0 if no key present */
-        unsigned int   usbkey_freespace;    /*! USB key free space in kbytes - 0 if no key present */
-        unsigned int   frame_number;        /*! 'frame_number' PaVE field of the frame starting to be encoded for the HD stream */
+        unsigned int   usbkey_size;           /*! USB key in kbytes - 0 if no key present */
+        unsigned int   usbkey_freespace;      /*! USB key free space in kbytes - 0 if no key present */
+        unsigned int   frame_number;          /*! 'frame_number' PaVE field of the frame starting to be encoded for the HD stream */
         unsigned int   usbkey_remaining_time; /*! time in seconds */
     } hdvideo_stream;
 
@@ -659,6 +667,53 @@ struct ARDRONE_NAVDATA {
         int            vzimmuLSB;
         float          vzfind;
     } zimmu_3000;
+
+    // GPS (for AR.Drone 2.4.1)
+    struct GPS {
+        unsigned short tag;                  /*!< Navdata block ('option') identifier */
+        unsigned short size;                 /*!< set this to the size of this structure */
+        double         lat;                  /*!< Latitude */
+        double         lon;                  /*!< Longitude */
+        double         elevation;            /*!< Elevation */
+        double         hdop;                 /*!< hdop */
+        int            data_available;       /*!< When there is data available */
+        unsigned char  unk_0[8];
+        double         lat0;                 /*!< Latitude ??? */
+        double         lon0;                 /*!< Longitude ??? */
+        double         lat_fuse;             /*!< Latitude fused */
+        double         lon_fuse;             /*!< Longitude fused */
+        unsigned int   gps_state;            /*!< State of the GPS, still need to figure out */
+        unsigned char  unk_1[40];
+        double         vdop;                 /*!< vdop */
+        double         pdop;                 /*!< pdop */
+        float          speed;                /*!< speed */
+        unsigned int   last_frame_timestamp; /*!< Timestamp from the last frame */
+        float          degree;               /*!< Degree */
+        float          degree_mag;           /*!< Degree of the magnetic */
+        unsigned char  unk_2[16];
+        struct {
+            unsigned char sat;
+            unsigned char cn0;
+        } channels[12];
+        int             gps_plugged;         /*!< When the gps is plugged */
+        unsigned char   unk_3[108];
+        double          gps_time;            /*!< The gps time of week */
+        unsigned short  week;                /*!< The gps week */
+        unsigned char   gps_fix;             /*!< The gps fix */
+        unsigned char   num_sattelites;      /*!< Number of sattelites */
+        unsigned char   unk_4[24];
+        double          ned_vel_c0;          /*!< NED velocity */
+        double          ned_vel_c1;          /*!< NED velocity */
+        double          ned_vel_c2;          /*!< NED velocity */
+        double          pos_accur_c0;        /*!< Position accuracy */
+        double          pos_accur_c1;        /*!< Position accuracy */
+        double          pos_accur_c2;        /*!< Position accuracy */
+        float           speed_acur;          /*!< Speed accuracy */
+        float           time_acur;           /*!< Time accuracy */
+        unsigned char   unk_5[72];
+        float           temprature;
+        float           pressure;
+    } gps;
 
     // Check sum
     struct NAVDATA_CKS {

@@ -85,7 +85,7 @@ int ARDrone::initVideo(void)
         }
 
         // Set codec
-        pCodecCtx = avcodec_alloc_context();
+        pCodecCtx = avcodec_alloc_context3(NULL);
         pCodecCtx->width = 320;
         pCodecCtx->height = 240;
 

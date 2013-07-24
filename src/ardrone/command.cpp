@@ -31,8 +31,8 @@
 int ARDrone::initCommand(void)
 {
     // Open the IP address and port
-    if (!sockCommand.open(ip, ARDRONE_COMMAND_PORT)) {
-        CVDRONE_ERROR("UDPSocket::open(port=%d) failed. (%s, %d)\n", ARDRONE_COMMAND_PORT, __FILE__, __LINE__);
+    if (!sockCommand.open(ip, ARDRONE_AT_PORT)) {
+        CVDRONE_ERROR("UDPSocket::open(port=%d) failed. (%s, %d)\n", ARDRONE_AT_PORT, __FILE__, __LINE__);
         return 0;
     }
 
@@ -40,15 +40,12 @@ int ARDrone::initCommand(void)
     if (version.major == ARDRONE_VERSION_2) {
         // Send undocumented command
         sockCommand.sendf("AT*PMODE=%d,%d\r", seq++, 2);
-        msleep(100);
 
         // Send undocumented command
         sockCommand.sendf("AT*MISC=%d,%d,%d,%d,%d\r", seq++, 2, 20, 2000, 3000);
-        msleep(100);
 
         // Send flat trim
         sockCommand.sendf("AT*FTRIM=%d,\r", seq++);
-        msleep(100);
 
         // Set the configuration IDs
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
@@ -61,15 +58,15 @@ int ARDrone::initCommand(void)
         sockCommand.sendf("AT*CONFIG=%d,\"custom:application_id\",\"%s\"\r", seq++, ARDRONE_APPLOCATION_ID);
         msleep(100);
 
-        //// Enable video
-        //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        //sockCommand.sendf("AT*CONFIG=%d,\"general:video_enable\",\"TRUE\"\r", seq++);
-        //msleep(100);
+        // Set maximum altitude
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"control:altitude_max\",\"%d\"\r", seq++, 3000);
+        msleep(100);
 
-        //// Disable bitrate control mode
-        //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        //sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"0\"\r", seq++);
-        //msleep(100);
+        // Disable bitrate control mode
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"0\"\r", seq++);
+        msleep(100);
 
         // Set video codec
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
@@ -88,27 +85,24 @@ int ARDrone::initCommand(void)
     else {
         // Send undocumented command
         sockCommand.sendf("AT*PMODE=%d,%d\r", seq++, 2);
-        msleep(100);
 
         // Send undocumented command
         sockCommand.sendf("AT*MISC=%d,%d,%d,%d,%d\r", seq++, 2, 20, 2000, 3000);
-        msleep(100);
 
         // Send flat trim
         sockCommand.sendf("AT*FTRIM=%d,\r", seq++);
+
+        // Set maximum altitude
+        sockCommand.sendf("AT*CONFIG=%d,\"control:altitude_max\",\"%d\"\r", seq++, 3000);
         msleep(100);
 
-        //// Enable video
-        //sockCommand.sendf("AT*CONFIG=%d,\"general:video_enable\",\"TRUE\"\r", seq++);
-        //msleep(100);
-
-        //// Disable bitrate control mode
-        //sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"0\"\r", seq++);
-        //msleep(100);
+        // Disable bitrate control mode
+        sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"0\"\r", seq++);
+        msleep(100);
 
         // Set video codec
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x20);   // UVLC_CODEC
-        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x40); // P264_CODEC
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x40); // P264_CODEC (not supported)
         msleep(100);
         
         // Set video channel to default
@@ -223,8 +217,14 @@ void ARDrone::move3D(double vx, double vy, double vz, double vr)
 {
     // AR.Drone is flying
     if (!onGround()) {
+        // Command velocities
         float v[4] = {-vy*0.2, -vx*0.2, vz*1.0, -vr*0.5};
-        int mode = (fabs(vx) > 0.0 || fabs(vy) > 0.0);
+        int mode = (fabs(v[0]) > 0.0 || fabs(v[1]) > 0.0 || fabs(v[2]) > 0.0 || fabs(v[3]) > 0.0);
+
+        // Limitation (-1.0 to +1.0)
+        for (int i = 0; i < 4; i++) {
+            if (fabs(v[i]) > 1.0) v[i] /= fabs(v[i]);
+        }
 
         // Send a command
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
@@ -292,7 +292,7 @@ void ARDrone::setCalibration(int device)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::setAnimation(Flight animation ID, Duration[s])
+// ARDrone::setAnimation(Flight animation ID, Duration[ms])
 // Description  : Run specified flight animation.
 // Return value : NONE
 // --------------------------------------------------------------------------
@@ -301,10 +301,7 @@ void ARDrone::setAnimation(int id, int duration)
     // Send animation command
     if (mutexCommand) pthread_mutex_lock(mutexCommand);
     sockCommand.sendf("AT*ANIM=%d,%d,%d\r", seq++, id, duration);
-    //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-    //sockCommand.sendf("AT*CONFIG=%d,\"leds:flight_anim\",\"%d,%d\"\r", seq++, id, duration);
     if (mutexCommand) pthread_mutex_unlock(mutexCommand);
-    //msleep(100);
 }
 
 // --------------------------------------------------------------------------
@@ -317,10 +314,7 @@ void ARDrone::setLED(int id, float freq, int duration)
     // Send a command
     if (mutexCommand) pthread_mutex_lock(mutexCommand);
     sockCommand.sendf("AT*LED=%d,%d,%d,%d\r", seq++, id, *(int*)(&freq), duration);
-    //sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-    //sockCommand.sendf("AT*CONFIG=%d,\"leds:leds_anim\",\"%d,%d,%d\"\r", seq++, id, *(int*)(&freq), duration);
     if (mutexCommand) pthread_mutex_unlock(mutexCommand);
-    //msleep(100);
 }
 
 // --------------------------------------------------------------------------

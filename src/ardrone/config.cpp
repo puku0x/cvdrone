@@ -150,14 +150,14 @@ int ARDrone::getConfig(void)
 {
     // Open the IP address and port
     TCPSocket sockConfig;
-    if (!sockConfig.open(ip, ARDRONE_CONFIG_PORT)) {
-        CVDRONE_ERROR("TCPSocket::open(port=%d) failed. (%s, %d)\n", ARDRONE_CONFIG_PORT, __FILE__, __LINE__);
+    if (!sockConfig.open(ip, ARDRONE_CONTROL_PORT)) {
+        CVDRONE_ERROR("TCPSocket::open(port=%d) failed. (%s, %d)\n", ARDRONE_CONTROL_PORT, __FILE__, __LINE__);
         return 0;
     }
 
     // Send requests
     UDPSocket tmpCommand;
-    tmpCommand.open(ip, ARDRONE_COMMAND_PORT);
+    tmpCommand.open(ip, ARDRONE_AT_PORT);
     tmpCommand.sendf("AT*CTRL=%d,5,0\r", seq++);
     tmpCommand.sendf("AT*CTRL=%d,4,0\r", seq++);
     msleep(500);

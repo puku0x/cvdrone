@@ -197,7 +197,7 @@ namespace UVLC {
         int zigZagPosition = 0;
         int matrixPosition = 0;
 
-        ZeroMemory(dataBlockBuffer, dataBlockBufferLength*sizeof(int16_t));
+        memset(dataBlockBuffer, 0, dataBlockBufferLength*sizeof(int16_t));
 
         int dcCoefficientTemp = ReadStreamData(stream, stream_size, streamIndex, streamField, streamFieldBitIndex, 10);
 

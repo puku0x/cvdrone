@@ -33,19 +33,19 @@ ARDrone::ARDrone(const char *ardrone_addr)
     strncpy(ip, ARDRONE_DEFAULT_ADDR, 16);
 
     // Sequence number
-    seq = 1;
+    seq = 0;
 
     // Camera image
     img = NULL;
 
     // Version information
-    memset(&version, 0, sizeof(ARDRONE_VERSION));
+    memset(&version, 0, sizeof(version));
 
     // Navdata
-    memset(&navdata, 0, sizeof(ARDRONE_NAVDATA));
+    memset(&navdata, 0, sizeof(navdata));
 
     // Configurations
-    memset(&config, 0, sizeof(ARDRONE_CONFIG));
+    memset(&config, 0, sizeof(config));
 
     // Video
     pFormatCtx  = NULL;

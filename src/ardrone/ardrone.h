@@ -38,6 +38,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 #include <math.h>
 
 // OpenCV
@@ -57,12 +58,16 @@ extern "C" {
 #ifdef _WIN32
 #include <windows.h>
 #include <winsock.h>
+#define socklen_t int
 #define msleep(ms) Sleep((DWORD)ms)
 #else
-#include <unistd.h>
+#include <errno.h>
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
 typedef int SOCKET;
 #define INVALID_SOCKET (-1)
 #define SOCKET_ERROR   (-1)
@@ -89,7 +94,7 @@ inline void msleep(unsigned long ms) {
 #define ARDRONE_DEFAULT_ADDR        "192.168.1.1"   // Default IP address of AR.Drone
 #define ARDRONE_NAVDATA_HEADER      (0x55667788)    // Header of Navdata
 
-// Math constants
+// Math definitions
 #ifndef NULL
 #define NULL (0)
 #endif
@@ -101,6 +106,12 @@ inline void msleep(unsigned long ms) {
 #endif
 #ifndef DEG_TO_RAD
 #define DEG_TO_RAD (M_PI/180)
+#endif
+#ifndef MIN
+#define MIN(a, b)  ((a) > (b) ? (b) : (a))
+#endif
+#ifndef MAX
+#define MAX(a, b)  ((a) < (b) ? (b) : (a))
 #endif
 
 // State masks
@@ -136,29 +147,64 @@ enum ARDRONE_STATE_MASK {
     ARDRONE_EMERGENCY_MASK      = 1U << 31  // Emergency landing         : (0) No emergency, (1) Emergency
 };
 
+// Navdata tags
+enum ARDRONE_NAVDATA_TAG {
+    ARDRONE_NAVDATA_DEMO_TAG            =  0,
+    ARDRONE_NAVDATA_TIME_TAG            =  1,
+    ARDRONE_NAVDATA_RAW_MEASURES_TAG    =  2,
+    ARDRONE_NAVDATA_PHYS_MEASURES_TAG   =  3,
+    ARDRONE_NAVDATA_GYROS_OFFSETS_TAG   =  4,
+    ARDRONE_NAVDATA_EULER_ANGLES_TAG    =  5,
+    ARDRONE_NAVDATA_REFERENCES_TAG      =  6,
+    ARDRONE_NAVDATA_TRIMS_TAG           =  7,
+    ARDRONE_NAVDATA_RC_REFERENCES_TAG   =  8,
+    ARDRONE_NAVDATA_PWM_TAG             =  9,
+    ARDRONE_NAVDATA_ALTITUDE_TAG        = 10,
+    ARDRONE_NAVDATA_VISION_RAW_TAG      = 11,
+    ARDRONE_NAVDATA_VISION_OF_TAG       = 12,
+    ARDRONE_NAVDATA_VISION_TAG          = 13,
+    ARDRONE_NAVDATA_VISION_PERF_TAG     = 14,
+    ARDRONE_NAVDATA_TRACKERS_SEND_TAG   = 15,
+    ARDRONE_NAVDATA_VISION_DETECT_TAG   = 16,
+    ARDRONE_NAVDATA_WATCHDOG_TAG        = 17,
+    ARDRONE_NAVDATA_IPHONE_ANGLES_TAG   = 18,
+    ARDRONE_NAVDATA_ADC_DATA_FRAME_TAG  = 18,
+    ARDRONE_NAVDATA_VIDEO_STREAM_TAG    = 19,
+    ARDRONE_NAVDATA_GAME_TAG            = 20,       // AR.Drone 1.7.4
+    ARDRONE_NAVDATA_PRESSURE_RAW_TAG    = 21,       // AR.Drone 2.0
+    ARDRONE_NAVDATA_MAGNETO_TAG         = 22,       // AR.Drone 2.0
+    ARDRONE_NAVDATA_WIND_TAG            = 23,       // AR.Drone 2.0
+    ARDRONE_NAVDATA_KALMAN_PRESSURE_TAG = 24,       // AR.Drone 2.0
+    ARDRONE_NAVDATA_HDVIDEO_STREAM_TAG  = 25,       // AR.Drone 2.0
+    ARDRONE_NAVDATA_WIFI_TAG            = 26,       // AR.Drone 2.0
+    ARDRONE_NAVDATA_ZIMMU3000_TAG       = 27,       // AR.Drone 2.0
+    ARDRONE_NAVDATA_GPS_TAG             = 27,       // AR.Drone 2.4.1
+    ARDRONE_NAVDATA_CKS_TAG             = 0xFFFF
+};
+
 // Flight animation IDs
 enum ARDRONE_ANIMATION_ID {
-    ARDRONE_ANIM_PHI_M30_DEG = 0,
-    ARDRONE_ANIM_PHI_30_DEG,
-    ARDRONE_ANIM_THETA_M30_DEG,
-    ARDRONE_ANIM_THETA_30_DEG,
-    ARDRONE_ANIM_THETA_20DEG_YAW_200DEG,
-    ARDRONE_ANIM_THETA_20DEG_YAW_M200DEG,
-    ARDRONE_ANIM_TURNAROUND,
-    ARDRONE_ANIM_TURNAROUND_GODOWN,
-    ARDRONE_ANIM_YAW_SHAKE,
-    ARDRONE_ANIM_YAW_DANCE,
-    ARDRONE_ANIM_PHI_DANCE,
-    ARDRONE_ANIM_THETA_DANCE,
-    ARDRONE_ANIM_VZ_DANCE,
-    ARDRONE_ANIM_WAVE,
-    ARDRONE_ANIM_PHI_THETA_MIXED,
-    ARDRONE_ANIM_DOUBLE_PHI_THETA_MIXED,
-    ARDRONE_ANIM_FLIP_AHEAD,                // for AR.Drone 2.0
-    ARDRONE_ANIM_FLIP_BEHIND,               // for AR.Drone 2.0
-    ARDRONE_ANIM_FLIP_LEFT,                 // for AR.Drone 2.0
-    ARDRONE_ANIM_FLIP_RIGHT,                // for AR.Drone 2.0
-    ARDRONE_NB_ANIM_MAYDAY
+    ARDRONE_ANIM_PHI_M30_DEG             =  0,
+    ARDRONE_ANIM_PHI_30_DEG              =  1,
+    ARDRONE_ANIM_THETA_M30_DEG           =  2,
+    ARDRONE_ANIM_THETA_30_DEG            =  3,
+    ARDRONE_ANIM_THETA_20DEG_YAW_200DEG  =  4,
+    ARDRONE_ANIM_THETA_20DEG_YAW_M200DEG =  5,
+    ARDRONE_ANIM_TURNAROUND              =  6,
+    ARDRONE_ANIM_TURNAROUND_GODOWN       =  7,
+    ARDRONE_ANIM_YAW_SHAKE               =  8,
+    ARDRONE_ANIM_YAW_DANCE               =  9,
+    ARDRONE_ANIM_PHI_DANCE               = 10,
+    ARDRONE_ANIM_THETA_DANCE             = 11,
+    ARDRONE_ANIM_VZ_DANCE                = 12,
+    ARDRONE_ANIM_WAVE                    = 13,
+    ARDRONE_ANIM_PHI_THETA_MIXED         = 14,
+    ARDRONE_ANIM_DOUBLE_PHI_THETA_MIXED  = 15,
+    ARDRONE_ANIM_FLIP_AHEAD              = 16,  // AR.Drone 2.0
+    ARDRONE_ANIM_FLIP_BEHIND             = 17,  // AR.Drone 2.0
+    ARDRONE_ANIM_FLIP_LEFT               = 18,  // AR.Drone 2.0
+    ARDRONE_ANIM_FLIP_RIGHT              = 19,  // AR.Drone 2.0
+    ARDRONE_NB_ANIM_MAYDAY               = 20
 };
 
 // LED animation IDs
@@ -324,9 +370,9 @@ struct ARDRONE_NAVDATA {
         unsigned short gyro_temp;
         float          phys_accs[3];
         float          phys_gyros[3];
-        unsigned int   alim3V3;         // 3.3volt alim [LSB]
+        unsigned int   alim3V3;         // 3.3 volt alim       [LSB]
         unsigned int   vrefEpson;       // ref volt Epson gyro [LSB]
-        unsigned int   vrefIDG;         // ref volt IDG gyro [LSB]
+        unsigned int   vrefIDG;         // ref volt IDG gyro   [LSB]
     } phys_measures;
 
     // Gyros offsets
@@ -419,8 +465,8 @@ struct ARDRONE_NAVDATA {
         unsigned short current_motor2;
         unsigned short current_motor3;
         unsigned short current_motor4;
-        float 	       altitude_prop;
-        float 	       altitude_der;
+        float            altitude_prop;
+        float            altitude_der;
     } pwm;
 
     // Altitude
@@ -431,9 +477,9 @@ struct ARDRONE_NAVDATA {
         float          altitude_vz;
         int            altitude_ref;
         int            altitude_raw;
-        float	       obs_accZ;
+        float           obs_accZ;
         float          obs_alt;
-        vector31_t 	   obs_x;
+        vector31_t        obs_x;
         unsigned int   obs_state;
         vector21_t     est_vb;
         unsigned int   est_state;
@@ -669,7 +715,7 @@ struct ARDRONE_NAVDATA {
     } zimmu_3000;
 
     // GPS (for AR.Drone 2.4.1)
-    struct GPS {
+    struct NAVDATA_GPS {
         unsigned short tag;                  /*!< Navdata block ('option') identifier */
         unsigned short size;                 /*!< set this to the size of this structure */
         double         lat;                  /*!< Latitude */
@@ -719,13 +765,14 @@ struct ARDRONE_NAVDATA {
     struct NAVDATA_CKS {
         unsigned short tag;
         unsigned short size;
+        unsigned int   cks;
     } cks;
 };
 #pragma pack(pop)
 
 // Configurations
 struct ARDRONE_CONFIG {
-    struct GENERAL {
+    struct CONFIG_GENERAL {
         int   num_version_config;
         int   num_version_mb;
         char  num_version_soft[32];
@@ -754,7 +801,7 @@ struct ARDRONE_CONFIG {
         int   navdata_options;
     } general;
 
-    struct CONTROL {
+    struct CONFIG_CONTROL {
         float accs_offset[3];
         float accs_gains[9];
         float gyros_offset[3];
@@ -791,7 +838,7 @@ struct ARDRONE_CONFIG {
         int   hovering_range;
     } control;
 
-    struct NETWORK {
+    struct CONFIG_NETWORK {
         char ssid_single_player[32];
         char ssid_multi_player[32];
         int  wifi_mode;
@@ -799,13 +846,13 @@ struct ARDRONE_CONFIG {
         char owner_mac[18];
     } network;
 
-    struct PIC {
+    struct CONFIG_PIC {
         int ultrasound_freq;
         int ultrasound_watchdog;
         int pic_version;
     } pic;
 
-    struct VIDEO {
+    struct CONFIG_VIDEO {
         int  camif_fps;
         int  camif_buffers;
         int  num_trackers;
@@ -823,11 +870,11 @@ struct ARDRONE_CONFIG {
         int  video_channel;
     } video;
 
-    struct LEDS {
+    struct CONFIG_LEDS {
         int leds_anim[3];
     } leds;
 
-    struct DETECT {
+    struct CONFIG_DETECT {
         int enemy_colors;
         int enemy_without_shell;
         int groundstripe_colors;
@@ -837,13 +884,13 @@ struct ARDRONE_CONFIG {
         int detections_select_v;
     } detect;
 
-    struct SYSLOG {
+    struct CONFIG_SYSLOG {
         int output;
         int max_size;
         int nb_files;
     } syslog;
 
-    struct CUSTOM {
+    struct CONFIG_CUSTOM {
         char application_desc[64];
         char profile_desc[64];
         char session_desc[64];
@@ -852,11 +899,11 @@ struct ARDRONE_CONFIG {
         char session_id[9];
     } custom;
 
-    struct USERBOX {
+    struct CONFIG_USERBOX {
         int userbox_cmd;
     } userbox;
 
-    struct GPS {
+    struct CONFIG_GPS {
         float latitude;
         float longitude;
         float altitude;
@@ -1001,6 +1048,7 @@ protected:
     virtual void finalizeVideo(void);
 };
 
+#ifdef _WIN32
 // --------------------------------------------------------------------------
 // CVDRONE_ERROR(Message)
 // Description  : Show an error message.
@@ -1017,11 +1065,10 @@ CV_INLINE void CVDRONE_ERROR(const char *message, ...)
     va_end(arg);
 
     // Show the message
-    #ifdef _WIN32
     MessageBox(NULL, str, "CVDRONE ERROR MESSAGE", MB_OK|MB_ICONERROR|MB_TOPMOST|MB_SETFOREGROUND);
-    #else
-    fprintf(stderr, str);
-    #endif
 }
+#else
+#define CVDRONE_ERROR printf
+#endif
 
 #endif

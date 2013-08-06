@@ -62,19 +62,23 @@ int UDPSocket::open(const char *addr, int port)
     }
 
     // Set the port and address of server
-    memset(&server_addr, 0, sizeof(sockaddr_in));
+    memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons((u_short)port);
     server_addr.sin_addr.s_addr = inet_addr(addr);
 
     // Set the port and address of client
-    memset(&client_addr, 0, sizeof(sockaddr_in));
+    memset(&client_addr, 0, sizeof(client_addr));
     client_addr.sin_family = AF_INET;
     client_addr.sin_port = htons(0);
+    #if _WIN32
     client_addr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
+    #else
+    client_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    #endif
 
-    // Bind the socket.
-    if (bind(sock, (sockaddr*)&client_addr, sizeof(sockaddr_in)) == SOCKET_ERROR) {
+    // Bind the socket
+    if (bind(sock, (sockaddr*)&client_addr, sizeof(client_addr)) == SOCKET_ERROR) {
         printf("ERROR: bind() failed. (%s, %d)\n", __FILE__, __LINE__);  
         return 0;
     }
@@ -107,7 +111,7 @@ int UDPSocket::send2(void *data, int size)
     if (sock == INVALID_SOCKET) return 0;
 
     // Send data
-    int n = sendto(sock, (char*)data, size, 0, (sockaddr*)&server_addr, sizeof(sockaddr_in));
+    int n = sendto(sock, (char*)data, size, 0, (sockaddr*)&server_addr, sizeof(server_addr));
     if (n < 1) return 0;
 
     return n;
@@ -120,17 +124,17 @@ int UDPSocket::send2(void *data, int size)
 // --------------------------------------------------------------------------
 int UDPSocket::sendf(char *str, ...)
 {
-    char *arg;
     char msg[1024];
 
     // The socket is invalid
     if (sock == INVALID_SOCKET) return 0;
 
     // Apply format 
+    va_list arg;
     va_start(arg, str);
     vsnprintf(msg, 1024, str, arg);
     va_end(arg);
-
+      
     // Send data
     return send2(msg, (int)strlen(msg) + 1);
 }
@@ -147,7 +151,7 @@ int UDPSocket::receive(void *data, int size)
 
     // Receive data
     sockaddr_in addr;
-    int len = (int)sizeof(sockaddr_in);
+    socklen_t len = sizeof(addr);
     int n = recvfrom(sock, (char*)data, size, 0, (sockaddr*)&addr, &len);
     if (n < 1) return 0;
 
@@ -169,7 +173,7 @@ void UDPSocket::close(void)
         #if _WIN32
         closesocket(sock);
         #else
-        close(sock);
+        ::close(sock);
         #endif
         sock = INVALID_SOCKET;
     }

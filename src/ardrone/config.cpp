@@ -32,7 +32,8 @@ void parse(const char *str, ARDRONE_CONFIG *config)
 {
     // Split key and value
     char key[256] = {'\0'}, val[256] = {'\0'};
-    sscanf(str, "%s = %[^\0]", key, val);
+    sscanf(str, "%s = %[^\n]", key, val);
+    //printf("key = %s, val = %s\n", key, val);
 
     // Parse the values
     if (!strcmp(key, "general:num_version_config"))             sscanf(val, "%d", &(config->general.num_version_config));
@@ -99,7 +100,7 @@ void parse(const char *str, ARDRONE_CONFIG *config)
     else if (!strcmp(key, "network:ssid_multi_player"))         strncpy(config->network.ssid_multi_player, val, 32);
     else if (!strcmp(key, "network:wifi_mode"))                 sscanf(val, "%d", &(config->network.wifi_mode));
     else if (!strcmp(key, "network:wifi_rate"))                 sscanf(val, "%d", &(config->network.wifi_rate));
-    else if (!strcmp(key, "network:owner_mac"))                 strncpy(config->network.owner_mac, val, 32);
+    else if (!strcmp(key, "network:owner_mac"))                 strncpy(config->network.owner_mac, val, 18);
     else if (!strcmp(key, "pic:ultrasound_freq"))               sscanf(val, "%d", &(config->pic.ultrasound_freq));
     else if (!strcmp(key, "pic:ultrasound_watchdog"))           sscanf(val, "%d", &(config->pic.ultrasound_watchdog));
     else if (!strcmp(key, "pic:pic_version"))                   sscanf(val, "%d", &(config->pic.pic_version));
@@ -158,19 +159,19 @@ int ARDrone::getConfig(void)
     // Send requests
     UDPSocket tmpCommand;
     tmpCommand.open(ip, ARDRONE_AT_PORT);
-    tmpCommand.sendf("AT*CTRL=%d,5,0\r", seq++);
-    tmpCommand.sendf("AT*CTRL=%d,4,0\r", seq++);
+    tmpCommand.sendf("AT*CTRL=%d,5,0\r", ++seq);
+    tmpCommand.sendf("AT*CTRL=%d,4,0\r", ++seq);
     msleep(500);
     tmpCommand.close();
 
     // Receive data
-    char buf[4096] = {'\0'};
+    char buf[10000] = {'\0'};
     int size = sockConfig.receive((void*)&buf, sizeof(buf));
 
     // Received something
     if (size > 0) {
         // Clear config struct
-        memset(&config, 0, sizeof(ARDRONE_CONFIG));
+        memset(&config, 0, sizeof(config));
 
         // Parsing configurations
         char *token = strtok(buf, "\n");
@@ -180,6 +181,15 @@ int ARDrone::getConfig(void)
             if (token != NULL) parse(token, &config);
         }
     }
+
+    #if 0
+    // Saving config.ini
+    FILE *file = fopen("config.ini", "w");
+    if (file) {
+        fprintf(file, buf);
+        fclose(file);
+    }
+    #endif
 
     #if 0
     // For debug

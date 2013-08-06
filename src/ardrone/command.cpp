@@ -39,74 +39,74 @@ int ARDrone::initCommand(void)
     // AR.Drone 2.0
     if (version.major == ARDRONE_VERSION_2) {
         // Send undocumented command
-        sockCommand.sendf("AT*PMODE=%d,%d\r", seq++, 2);
+        sockCommand.sendf("AT*PMODE=%d,%d\r", ++seq, 2);
 
         // Send undocumented command
-        sockCommand.sendf("AT*MISC=%d,%d,%d,%d,%d\r", seq++, 2, 20, 2000, 3000);
+        sockCommand.sendf("AT*MISC=%d,%d,%d,%d,%d\r", ++seq, 2, 20, 2000, 3000);
 
         // Send flat trim
-        sockCommand.sendf("AT*FTRIM=%d,\r", seq++);
+        sockCommand.sendf("AT*FTRIM=%d,\r", ++seq);
 
         // Set the configuration IDs
-        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        sockCommand.sendf("AT*CONFIG=%d,\"custom:session_id\",\"%s\"\r", seq++, ARDRONE_SESSION_ID);
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"custom:session_id\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID);
         msleep(100);
-        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        sockCommand.sendf("AT*CONFIG=%d,\"custom:profile_id\",\"%s\"\r", seq++, ARDRONE_PROFILE_ID);
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"custom:profile_id\",\"%s\"\r", ++seq, ARDRONE_PROFILE_ID);
         msleep(100);
-        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        sockCommand.sendf("AT*CONFIG=%d,\"custom:application_id\",\"%s\"\r", seq++, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"custom:application_id\",\"%s\"\r", ++seq, ARDRONE_APPLOCATION_ID);
         msleep(100);
 
         // Set maximum altitude
-        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        sockCommand.sendf("AT*CONFIG=%d,\"control:altitude_max\",\"%d\"\r", seq++, 3000);
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"control:altitude_max\",\"%d\"\r", ++seq, 3000);
         msleep(100);
 
         // Disable bitrate control mode
-        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"0\"\r", seq++);
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"0\"\r", ++seq);
         msleep(100);
 
         // Set video codec
-        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x81);   // H264_360P_CODEC
-        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x82); // MP4_360P_H264_720P_CODEC
-        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x83); // H264_720P_CODEC
-        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x88); // MP4_360P_H264_360P_CODEC
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", ++seq, 0x81);   // H264_360P_CODEC
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", ++seq, 0x82); // MP4_360P_H264_720P_CODEC
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", ++seq, 0x83); // H264_720P_CODEC
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", ++seq, 0x88); // MP4_360P_H264_360P_CODEC
         msleep(100);
 
         // Set video channel to default
-        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"0\"\r", seq++);
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"0\"\r", ++seq);
         msleep(100);
     }
     // AR.Drone 1.0
     else {
         // Send undocumented command
-        sockCommand.sendf("AT*PMODE=%d,%d\r", seq++, 2);
+        sockCommand.sendf("AT*PMODE=%d,%d\r", ++seq, 2);
 
         // Send undocumented command
-        sockCommand.sendf("AT*MISC=%d,%d,%d,%d,%d\r", seq++, 2, 20, 2000, 3000);
+        sockCommand.sendf("AT*MISC=%d,%d,%d,%d,%d\r", ++seq, 2, 20, 2000, 3000);
 
         // Send flat trim
-        sockCommand.sendf("AT*FTRIM=%d,\r", seq++);
+        sockCommand.sendf("AT*FTRIM=%d,\r", ++seq);
 
         // Set maximum altitude
-        sockCommand.sendf("AT*CONFIG=%d,\"control:altitude_max\",\"%d\"\r", seq++, 3000);
+        sockCommand.sendf("AT*CONFIG=%d,\"control:altitude_max\",\"%d\"\r", ++seq, 3000);
         msleep(100);
 
         // Disable bitrate control mode
-        sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"0\"\r", seq++);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"0\"\r", ++seq);
         msleep(100);
 
         // Set video codec
-        sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x20);   // UVLC_CODEC
-        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x40); // P264_CODEC (not supported)
+        sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", ++seq, 0x20);   // UVLC_CODEC
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", ++seq, 0x40); // P264_CODEC (not supported)
         msleep(100);
         
         // Set video channel to default
-        sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"0\"\r", seq++);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"0\"\r", ++seq);
         msleep(100);
     }
 
@@ -134,7 +134,7 @@ void ARDrone::loopCommand(void)
     while (1) {
         // Reset Watch-Dog every 100ms
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
-        sockCommand.sendf("AT*COMWDG=%d\r", seq++);
+        sockCommand.sendf("AT*COMWDG=%d\r", ++seq);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
         pthread_testcancel();
         msleep(100);
@@ -158,7 +158,7 @@ void ARDrone::takeoff(void)
     else {
         // Send take off
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
-        sockCommand.sendf("AT*REF=%d,290718208\r", seq++);
+        sockCommand.sendf("AT*REF=%d,290718208\r", ++seq);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
     }
 }
@@ -180,7 +180,7 @@ void ARDrone::landing(void)
     else {
         // Send langding
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
-        sockCommand.sendf("AT*REF=%d,290717696\r", seq++);
+        sockCommand.sendf("AT*REF=%d,290717696\r", ++seq);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
     }
 }
@@ -194,7 +194,7 @@ void ARDrone::emergency(void)
 {
     // Send emergency
     if (mutexCommand) pthread_mutex_lock(mutexCommand);
-    sockCommand.sendf("AT*REF=%d,290717952\r", seq++);
+    sockCommand.sendf("AT*REF=%d,290717952\r", ++seq);
     if (mutexCommand) pthread_mutex_unlock(mutexCommand);
 }
 
@@ -228,7 +228,7 @@ void ARDrone::move3D(double vx, double vy, double vz, double vr)
 
         // Send a command
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
-        sockCommand.sendf("AT*PCMD=%d,%d,%d,%d,%d,%d\r", seq++, mode, *(int*)(&v[0]), *(int*)(&v[1]), *(int*)(&v[2]), *(int*)(&v[3]));
+        sockCommand.sendf("AT*PCMD=%d,%d,%d,%d,%d,%d\r", ++seq, mode, *(int*)(&v[0]), *(int*)(&v[1]), *(int*)(&v[2]), *(int*)(&v[3]));
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
     }
 }
@@ -247,12 +247,12 @@ void ARDrone::setCamera(int channel)
 
     // AR.Drone 2.0
     if (version.major == ARDRONE_VERSION_2) {
-        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"%d\"\r", seq++, channel % 2);
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"%d\"\r", ++seq, channel % 2);
     }
     // AR.Drone 1.0
     else {
-        sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"%d\"\r", seq++, channel % 4);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"%d\"\r", ++seq, channel % 4);
     }
 
     // Disable mutex lock
@@ -271,7 +271,7 @@ void ARDrone::setFlatTrim(void)
     if (onGround()) {
         // Send animation command
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
-        sockCommand.sendf("AT*FTRIM=%d\r", seq++);
+        sockCommand.sendf("AT*FTRIM=%d\r", ++seq);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
     }
 }
@@ -286,7 +286,7 @@ void ARDrone::setCalibration(int device)
     if (!onGround()) {
         // Send animation command
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
-        sockCommand.sendf("AT*CALIB=%d,%d\r", seq++, device);
+        sockCommand.sendf("AT*CALIB=%d,%d\r", ++seq, device);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
     }
 }
@@ -300,7 +300,7 @@ void ARDrone::setAnimation(int id, int duration)
 {
     // Send animation command
     if (mutexCommand) pthread_mutex_lock(mutexCommand);
-    sockCommand.sendf("AT*ANIM=%d,%d,%d\r", seq++, id, duration);
+    sockCommand.sendf("AT*ANIM=%d,%d,%d\r", ++seq, id, duration);
     if (mutexCommand) pthread_mutex_unlock(mutexCommand);
 }
 
@@ -313,7 +313,7 @@ void ARDrone::setLED(int id, float freq, int duration)
 {
     // Send a command
     if (mutexCommand) pthread_mutex_lock(mutexCommand);
-    sockCommand.sendf("AT*LED=%d,%d,%d,%d\r", seq++, id, *(int*)(&freq), duration);
+    sockCommand.sendf("AT*LED=%d,%d,%d,%d\r", ++seq, id, *(int*)(&freq), duration);
     if (mutexCommand) pthread_mutex_unlock(mutexCommand);
 }
 
@@ -333,17 +333,17 @@ void ARDrone::setVideoRecord(bool activate)
 
         // Enable/Disable video recording
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
-        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"TRUE\"\r",  seq++);
-        else          sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"FALSE\"\r", seq++);
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"TRUE\"\r",  ++seq);
+        else          sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"FALSE\"\r", ++seq);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
         msleep(100);
 
         // Output video with MP4_360P_H264_720P_CODEC / H264_360P_CODEC
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
-        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x82);
-        else          sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", seq++, 0x81);
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", ++seq, 0x82);
+        else          sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", ++seq, 0x81);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
         msleep(100);
 
@@ -363,17 +363,17 @@ void ARDrone::setOutdoorMode(bool activate)
     if (version.major == ARDRONE_VERSION_2) {
         // Enable/Disable outdoor mode
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
-        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"control:outdoor\",\"TRUE\"\r",  seq++);
-        else          sockCommand.sendf("AT*CONFIG=%d,\"control:outdoor\",\"FALSE\"\r", seq++);
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"control:outdoor\",\"TRUE\"\r",  ++seq);
+        else          sockCommand.sendf("AT*CONFIG=%d,\"control:outdoor\",\"FALSE\"\r", ++seq);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
         msleep(100);
 
         // Without/With shell
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
-        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", seq++, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"control:flight_without_shell\",\"TRUE\"\r",  seq++);
-        else          sockCommand.sendf("AT*CONFIG=%d,\"control:flight_without_shell\",\"FALSE\"\r", seq++);
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"control:flight_without_shell\",\"TRUE\"\r",  ++seq);
+        else          sockCommand.sendf("AT*CONFIG=%d,\"control:flight_without_shell\",\"FALSE\"\r", ++seq);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
         msleep(100);
     }
@@ -381,15 +381,15 @@ void ARDrone::setOutdoorMode(bool activate)
     else {
         // Enable/Disable outdoor mode
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
-        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"control:outdoor\",\"TRUE\"\r",  seq++);
-        else          sockCommand.sendf("AT*CONFIG=%d,\"control:outdoor\",\"FALSE\"\r", seq++);
+        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"control:outdoor\",\"TRUE\"\r",  ++seq);
+        else          sockCommand.sendf("AT*CONFIG=%d,\"control:outdoor\",\"FALSE\"\r", ++seq);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
         msleep(100);
 
         // Without/With shell
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
-        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"control:flight_without_shell\",\"TRUE\"\r",  seq++);
-        else          sockCommand.sendf("AT*CONFIG=%d,\"control:flight_without_shell\",\"FALSE\"\r", seq++);
+        if (activate) sockCommand.sendf("AT*CONFIG=%d,\"control:flight_without_shell\",\"TRUE\"\r",  ++seq);
+        else          sockCommand.sendf("AT*CONFIG=%d,\"control:flight_without_shell\",\"FALSE\"\r", ++seq);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
         msleep(100);
     }
@@ -410,7 +410,7 @@ void ARDrone::resetWatchDog(void)
     // If AR.Drone is in Watch-Dog, reset it
     if (state & ARDRONE_COM_WATCHDOG_MASK) {
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
-        sockCommand.sendf("AT*COMWDG=%d\r", seq++);
+        sockCommand.sendf("AT*COMWDG=%d\r", ++seq);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
     }
 }
@@ -430,7 +430,7 @@ void ARDrone::resetEmergency(void)
     // If AR.Drone is in emergency, reset it
     if (state & ARDRONE_EMERGENCY_MASK) {
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
-        sockCommand.sendf("AT*REF=%d,290717952\r", seq++);
+        sockCommand.sendf("AT*REF=%d,290717952\r", ++seq);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
     }
 }

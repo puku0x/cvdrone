@@ -1,3 +1,26 @@
+// -------------------------------------------------------------------------
+// CV Drone (= OpenCV + AR.Drone)
+// Copyright(C) 2013 puku0x
+// https://github.com/puku0x/cvdrone
+//
+// This source file is part of CV Drone library.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of EITHER:
+// (1) The GNU Lesser General Public License as published by the Free
+//     Software Foundation; either version 2.1 of the License, or (at
+//     your option) any later version. The text of the GNU Lesser
+//     General Public License is included with this library in the
+//     file cvdrone-license-LGPL.txt.
+// (2) The BSD-style license that is included with this library in
+//     the file cvdrone-license-BSD.txt.
+// 
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files
+// cvdrone-license-LGPL.txt and cvdrone-license-BSD.txt for more details.
+// -------------------------------------------------------------------------
+
 #include "ardrone.h"
 
 // --------------------------------------------------------------------------
@@ -39,23 +62,35 @@ int TCPSocket::open(const char *addr, int port)
     }
 
     // Set the port and address of server
-    memset(&server_addr, 0, sizeof(sockaddr_in));
+    memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons((u_short)port);
-    server_addr.sin_addr.S_un.S_addr = inet_addr(addr);
+    server_addr.sin_addr.s_addr = inet_addr(addr);
 
     // Connect the socket
-    if (connect(sock, (sockaddr*)&server_addr, sizeof(sockaddr_in)) == SOCKET_ERROR) {
+    if (connect(sock, (sockaddr*)&server_addr, sizeof(server_addr)) == SOCKET_ERROR) {
         printf("ERROR: connect() failed. (%s, %d)\n", __FILE__, __LINE__);
         return 0;
     }
 
     // Set to the non-blocking mode
+    #if _WIN32
     u_long nonblock = 1;
     if (ioctlsocket(sock, FIONBIO, &nonblock) == SOCKET_ERROR) {
         printf("ERROR: ioctlsocket() failed. (%s, %d)\n", __FILE__, __LINE__);  
         return 0;
     }
+    #else
+    int flag = fcntl(sock, F_GETFL, 0);
+    if (flag < 0) {
+        perror("fcntl(GET) error");
+        return 0;
+    }
+    if (fcntl(sock, F_SETFL, flag|O_NONBLOCK) < 0) {
+        perror("fcntl(NONBLOCK) error");
+        return 0;
+    }
+    #endif
 
     // Enable re-use address option
     int reuse = 1;
@@ -91,13 +126,13 @@ int TCPSocket::send2(void *data, int size)
 // --------------------------------------------------------------------------
 int TCPSocket::sendf(char *str, ...)
 {
-    char *arg;
     char msg[1024];
 
     // The socket is invalid
     if (sock == INVALID_SOCKET) return 0;
 
     // Apply format 
+    va_list arg;
     va_start(arg, str);
     vsnprintf(msg, 1024, str, arg);
     va_end(arg);
@@ -139,7 +174,7 @@ void TCPSocket::close(void)
         #if _WIN32
         closesocket(sock);
         #else
-        close(sock);
+        ::close(sock);
         #endif
         sock = INVALID_SOCKET;
     }

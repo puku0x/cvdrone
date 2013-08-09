@@ -320,6 +320,29 @@ double ARDrone::getVelocity(double *vx, double *vy, double *vz)
 }
 
 // --------------------------------------------------------------------------
+// ARDrone::getPosition(Latitude [deg], Longitude  [deg], Elevation [m])
+// Description  : Get GPS position (need AR.Drone2.0 Flight Recorder).
+// Return value : SUCCESS: 1  FAILURE: 0
+// --------------------------------------------------------------------------
+int ARDrone::getPosition(double *latitude, double *longitude, double *elevation)
+{
+    // Get the data
+    if (mutexNavdata) pthread_mutex_lock(mutexNavdata);
+    double gps_latitude  = navdata.gps.lat;
+    double gps_longitude = navdata.gps.lon;
+    double gps_elevation = navdata.gps.elevation;
+    int    available     = navdata.gps.data_available;
+    if (mutexNavdata) pthread_mutex_unlock(mutexNavdata);
+
+    // Positions
+    if (latitude)  *latitude  = gps_latitude;
+    if (longitude) *longitude = gps_longitude;
+    if (elevation) *elevation = gps_elevation;
+
+    return available;
+}
+
+// --------------------------------------------------------------------------
 // ARDrone::getBatteryPercentage()
 // Description  : Get current battery percentage of AR.Drone.
 // Return value : Battery percentage [%]

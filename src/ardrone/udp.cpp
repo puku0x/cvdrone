@@ -71,11 +71,7 @@ int UDPSocket::open(const char *addr, int port)
     memset(&client_addr, 0, sizeof(client_addr));
     client_addr.sin_family = AF_INET;
     client_addr.sin_port = htons(0);
-    #if _WIN32
-    client_addr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
-    #else
     client_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    #endif
 
     // Bind the socket
     if (bind(sock, (sockaddr*)&client_addr, sizeof(client_addr)) == SOCKET_ERROR) {
@@ -83,12 +79,24 @@ int UDPSocket::open(const char *addr, int port)
         return 0;
     }
 
-    //// Set to the non-blocking mode (unstable)
+    //// Set to non-blocking mode
+    //#if _WIN32
     //u_long nonblock = 1;
     //if (ioctlsocket(sock, FIONBIO, &nonblock) == SOCKET_ERROR) {
     //    printf("ERROR: ioctlsocket() failed. (%s, %d)\n", __FILE__, __LINE__);  
     //    return 0;
     //}
+    //#else
+    //int flag = fcntl(sock, F_GETFL, 0);
+    //if (flag < 0) {
+    //    printf("ERROR: fcntl(F_GETFL) failed. (%s, %d)\n", __FILE__, __LINE__);  
+    //    return 0;
+    //}
+    //if (fcntl(sock, F_SETFL, flag|O_NONBLOCK) < 0) {
+    //    printf("ERROR: fcntl(F_SETFL) failed. (%s, %d)\n", __FILE__, __LINE__);  
+    //    return 0;
+    //}
+    //#endif
 
     // Enable re-use address option
     int reuse = 1;

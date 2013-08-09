@@ -945,6 +945,7 @@ public:
     virtual double getYaw(void);        // Yaw angle   [rad]
     virtual double getAltitude(void);   // Altitude    [m]
     virtual double getVelocity(double *vx = NULL, double *vy = NULL, double *vz = NULL); // Velocity [m/s]
+    virtual int    getPosition(double *latitude = NULL, double *longitude = NULL, double *elevation = NULL); // GPS (only for AR.Drone 2.0)
 
     // Battery charge [%]
     virtual int getBatteryPercentage(void);

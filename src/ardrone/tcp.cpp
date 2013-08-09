@@ -73,7 +73,7 @@ int TCPSocket::open(const char *addr, int port)
         return 0;
     }
 
-    // Set to the non-blocking mode
+    // Set to non-blocking mode
     #if _WIN32
     u_long nonblock = 1;
     if (ioctlsocket(sock, FIONBIO, &nonblock) == SOCKET_ERROR) {
@@ -83,11 +83,11 @@ int TCPSocket::open(const char *addr, int port)
     #else
     int flag = fcntl(sock, F_GETFL, 0);
     if (flag < 0) {
-        perror("fcntl(GET) error");
+        printf("ERROR: fcntl(F_GETFL) failed. (%s, %d)\n", __FILE__, __LINE__);  
         return 0;
     }
     if (fcntl(sock, F_SETFL, flag|O_NONBLOCK) < 0) {
-        perror("fcntl(NONBLOCK) error");
+        printf("ERROR: fcntl(F_SETFL) failed. (%s, %d)\n", __FILE__, __LINE__);  
         return 0;
     }
     #endif

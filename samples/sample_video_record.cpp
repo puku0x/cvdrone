@@ -29,14 +29,14 @@ int main(int argc, char **argv)
         // Update
         if (!ardrone.update()) break;
 
-        // Get an image
-        IplImage *image = ardrone.getImage();
-
         // Video recording start / stop
         if (key == 'r') {
             rec = !rec;
             ardrone.setVideoRecord(rec);
         }
+
+        // Get an image
+        IplImage *image = ardrone.getImage();
 
         // Show recording state
         if (rec) {

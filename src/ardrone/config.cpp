@@ -24,7 +24,7 @@
 #include "ardrone.h"
 
 // --------------------------------------------------------------------------
-// ARDrone::getConfig()
+// parse(Configuration string, Configuration struct)
 // Description  : Parse a configuration string.
 // Return value : NONE
 // --------------------------------------------------------------------------
@@ -170,6 +170,15 @@ int ARDrone::getConfig(void)
 
     // Received something
     if (size > 0) {
+        #if 0
+        // Saving config.ini
+        FILE *file = fopen("config.ini", "w");
+        if (file) {
+            fprintf(file, buf);
+            fclose(file);
+        }
+        #endif
+
         // Clear config struct
         memset(&config, 0, sizeof(config));
 
@@ -181,15 +190,6 @@ int ARDrone::getConfig(void)
             if (token != NULL) parse(token, &config);
         }
     }
-
-    #if 0
-    // Saving config.ini
-    FILE *file = fopen("config.ini", "w");
-    if (file) {
-        fprintf(file, buf);
-        fclose(file);
-    }
-    #endif
 
     #if 0
     // For debug
@@ -303,17 +303,4 @@ int ARDrone::getConfig(void)
     sockConfig.close();
 
     return 1;
-}
-
-// --------------------------------------------------------------------------
-// ARDrone::getVersion(Major version, Minor version, Revision number)
-// Description  : Get AR.Drone's version.
-// Return value : Version number of the AR.Drone.
-// --------------------------------------------------------------------------
-int ARDrone::getVersion(int *major, int *minor, int *revision)
-{
-    if (major) *major = version.major;
-    if (minor) *minor = version.minor;
-    if (revision) *revision = version.revision;
-    return version.major;
 }

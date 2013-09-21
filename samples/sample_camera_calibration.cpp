@@ -96,7 +96,7 @@ int main(int argc, char **argv)
 
             // Detected
             if (found) {
-                // Draw corners.
+                // Draw corners
                 cvDrawChessboardCorners(image, size, corners, corner_count, found);
 
                 // Add to buffer

@@ -20,8 +20,8 @@ OBJS          = ../../src/ardrone/ardrone.o \
                 ../../src/ardrone/udp.o     \
                 ../../src/ardrone/tcp.o     \
                 ../../src/ardrone/navdata.o \
-                ../../src/ardrone/video.o   \
                 ../../src/ardrone/version.o \
+                ../../src/ardrone/video.o   \
                 ../../src/main.o            
 PROGRAM       = test.exe
 

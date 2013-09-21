@@ -966,7 +966,7 @@ public:
     virtual int  onGround(void);                            // Check on ground
     virtual void setFlatTrim(void);                         // Flat trim
     virtual void setCalibration(int device = 0);            // Magnetometer calibration
-    virtual void setAnimation(int id, int duration);        // Flight animation
+    virtual void setAnimation(int id, int duration = 0);    // Flight animation
     virtual void setLED(int id, float freq, int duration);  // LED animation
     virtual void setVideoRecord(bool activate);             // Video recording (only for AR.Drone 2.0)
     virtual void setOutdoorMode(bool activate);             // Outdoor mode (experimental)
@@ -1035,9 +1035,10 @@ protected:
     virtual int initVideo(void);
 
     // Get informations (internal)
-    virtual int getConfig(void);
+    virtual int getVersionInfo(void);
     virtual int getNavdata(void);
     virtual int getVideo(void);
+    virtual int getConfig(void);
 
     // Send commands (internal)
     virtual void resetWatchDog(void);

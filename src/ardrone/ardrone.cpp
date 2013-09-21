@@ -96,9 +96,8 @@ int ARDrone::open(const char *ardrone_addr)
     // Save IP address
     strncpy(ip, ardrone_addr, 16);
 
-    // Get configurations
-    if (!getConfig()) return 0;
-    sscanf(config.general.num_version_soft, "%d.%d.%d\n", &version.major, &version.minor, &version.revision);
+    // Get version information
+    if (!getVersionInfo()) return 0;
     printf("AR.Drone Ver. %d.%d.%d\n", version.major, version.minor, version.revision);
 
     // Initialize AT command
@@ -111,7 +110,10 @@ int ARDrone::open(const char *ardrone_addr)
     if (!initVideo()) return 0;
 
     // Wait for updating state
-    msleep(500);
+    //msleep(500);
+
+    // Get configurations
+    if (!getConfig()) return 0;
 
     // Reset emergency
     resetWatchDog();

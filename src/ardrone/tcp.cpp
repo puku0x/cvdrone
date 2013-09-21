@@ -25,7 +25,7 @@
 
 // --------------------------------------------------------------------------
 // TCPSocket::TCPSocket()
-// Constructor of TCPSocket class. This will be called when you create it.
+// Description : Constructor of TCPSocket class.
 // --------------------------------------------------------------------------
 TCPSocket::TCPSocket()
 {
@@ -34,7 +34,7 @@ TCPSocket::TCPSocket()
 
 // --------------------------------------------------------------------------
 // TCPSocket::~TCPSocket()
-// Destructor of TCPSocket class. This will be called when you destroy it.
+// Description : Destructor of UDPSocket class.
 // --------------------------------------------------------------------------
 TCPSocket::~TCPSocket()
 {
@@ -43,8 +43,8 @@ TCPSocket::~TCPSocket()
 
 // --------------------------------------------------------------------------
 // TCPSocket::open(IP address, Port number)
-// Initialize specified  socket.
-// Return value SUCCESS: 1  FAILED: 0
+// Description  : Initialize specified  socket.
+// Return value : SUCCESS: 1  FAILURE: 0
 // --------------------------------------------------------------------------
 int TCPSocket::open(const char *addr, int port)
 {
@@ -73,24 +73,42 @@ int TCPSocket::open(const char *addr, int port)
         return 0;
     }
 
-    // Set to non-blocking mode
-    #if _WIN32
-    u_long nonblock = 1;
-    if (ioctlsocket(sock, FIONBIO, &nonblock) == SOCKET_ERROR) {
-        printf("ERROR: ioctlsocket() failed. (%s, %d)\n", __FILE__, __LINE__);  
-        return 0;
-    }
+    // Set timeout
+    int timeoutSec = 0, timeoutUsec = 100000;
+    #ifdef _WIN32
+    int timeout = (1000 * timeoutSec) + (timeoutUsec / 1000);
     #else
-    int flag = fcntl(sock, F_GETFL, 0);
-    if (flag < 0) {
-        printf("ERROR: fcntl(F_GETFL) failed. (%s, %d)\n", __FILE__, __LINE__);  
-        return 0;
-    }
-    if (fcntl(sock, F_SETFL, flag|O_NONBLOCK) < 0) {
-        printf("ERROR: fcntl(F_SETFL) failed. (%s, %d)\n", __FILE__, __LINE__);  
-        return 0;
-    }
+    struct timeval timeout;
+    timeout.tv_sec = timeoutSec;
+    timeout.tv_usec = timeoutUsec;
     #endif
+    if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char *)&timeout, sizeof(timeout)) < 0) {
+        printf("ERROR: setsockopt() failed. (%s, %d)\n", __FILE__, __LINE__);
+        return 0;
+    }
+    if (setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, (const char *)&timeout, sizeof(timeout)) < 0) {
+        printf("ERROR: setsockopt() failed. (%s, %d)\n", __FILE__, __LINE__);
+        return 0;
+    }
+
+    //// Set to non-blocking mode
+    //#if _WIN32
+    //u_long nonblock = 1;
+    //if (ioctlsocket(sock, FIONBIO, &nonblock) == SOCKET_ERROR) {
+    //    printf("ERROR: ioctlsocket() failed. (%s, %d)\n", __FILE__, __LINE__);  
+    //    return 0;
+    //}
+    //#else
+    //int flag = fcntl(sock, F_GETFL, 0);
+    //if (flag < 0) {
+    //    printf("ERROR: fcntl(F_GETFL) failed. (%s, %d)\n", __FILE__, __LINE__);  
+    //    return 0;
+    //}
+    //if (fcntl(sock, F_SETFL, flag|O_NONBLOCK) < 0) {
+    //    printf("ERROR: fcntl(F_SETFL) failed. (%s, %d)\n", __FILE__, __LINE__);  
+    //    return 0;
+    //}
+    //#endif
 
     // Enable re-use address option
     int reuse = 1;
@@ -103,9 +121,9 @@ int TCPSocket::open(const char *addr, int port)
 }
 
 // --------------------------------------------------------------------------
-// TCPSocket:::send2(Sending data, Size of data)
-// Sending the specified data.
-// Return value SUCCESS: Number of sent bytes  FAILED: 0
+// TCPSocket::send2(Sending data, Size of data)
+// Description  : Send the specified data.
+// Return value : SUCCESS: Number of sent bytes  FAILURE: 0
 // --------------------------------------------------------------------------
 int TCPSocket::send2(void *data, int size)
 {
@@ -120,9 +138,9 @@ int TCPSocket::send2(void *data, int size)
 }
 
 // --------------------------------------------------------------------------
-// TCPSocket:::sendf(Your messages)
-// Sending the data with printf()-like format.
-// Return value SUCCESS: Number of sent bytes  FAILED: 0
+// TCPSocket::sendf(Messages)
+// Description  : Send the data with format.
+// Return value : SUCCESS: Number of sent bytes  FAILURE: 0
 // --------------------------------------------------------------------------
 int TCPSocket::sendf(char *str, ...)
 {
@@ -143,8 +161,8 @@ int TCPSocket::sendf(char *str, ...)
 
 // --------------------------------------------------------------------------
 // TCPSocket::receive(Receiving data, Size of data)
-// Receive the data.
-// Return value SUCCESS: Number of received bytes  FAILED: 0
+// Description  : Receive the data.
+// Return value : SUCCESS: Number of received bytes  FAILURE: 0
 // --------------------------------------------------------------------------
 int TCPSocket::receive(void *data, int size)
 {
@@ -164,8 +182,8 @@ int TCPSocket::receive(void *data, int size)
 
 // --------------------------------------------------------------------------
 // TCPSocket::close()
-// Finalize the socket.
-// Return value NONE
+// Description  : Finalize the socket.
+// Return value : NONE
 // --------------------------------------------------------------------------
 void TCPSocket::close(void)
 {

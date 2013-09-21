@@ -219,6 +219,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\ardrone\version.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\ardrone\video.cpp"
 					>
 				</File>

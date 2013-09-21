@@ -19,6 +19,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\ardrone\ardrone.cpp">
       <Filter>Source Files\ardrone</Filter>
     </ClCompile>
@@ -34,13 +37,13 @@
     <ClCompile Include="..\..\src\ardrone\video.cpp">
       <Filter>Source Files\ardrone</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\src\ardrone\tcp.cpp">
+      <Filter>Source Files\ardrone</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\ardrone\config.cpp">
       <Filter>Source Files\ardrone</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ardrone\tcp.cpp">
+    <ClCompile Include="..\..\src\ardrone\version.cpp">
       <Filter>Source Files\ardrone</Filter>
     </ClCompile>
   </ItemGroup>

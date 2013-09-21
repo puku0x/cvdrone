@@ -269,7 +269,7 @@ void ARDrone::setCamera(int channel)
 void ARDrone::setFlatTrim(void)
 {
     if (onGround()) {
-        // Send animation command
+        // Send flat trim command
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
         sockCommand.sendf("AT*FTRIM=%d\r", ++seq);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);
@@ -284,7 +284,7 @@ void ARDrone::setFlatTrim(void)
 void ARDrone::setCalibration(int device)
 {
     if (!onGround()) {
-        // Send animation command
+        // Send calibration command
         if (mutexCommand) pthread_mutex_lock(mutexCommand);
         sockCommand.sendf("AT*CALIB=%d,%d\r", ++seq, device);
         if (mutexCommand) pthread_mutex_unlock(mutexCommand);

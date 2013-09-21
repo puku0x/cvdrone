@@ -320,7 +320,7 @@ double ARDrone::getVelocity(double *vx, double *vy, double *vz)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::getPosition(Latitude [deg], Longitude  [deg], Elevation [m])
+// ARDrone::getPosition(Latitude [deg], Longitude [deg], Elevation [m])
 // Description  : Get GPS position (need AR.Drone2.0 Flight Recorder).
 // Return value : SUCCESS: 1  FAILURE: 0
 // --------------------------------------------------------------------------

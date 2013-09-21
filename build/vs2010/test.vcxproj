@@ -102,6 +102,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\ardrone\config.cpp" />
     <ClCompile Include="..\..\src\ardrone\tcp.cpp" />
+    <ClCompile Include="..\..\src\ardrone\version.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\ardrone\ardrone.cpp" />
     <ClCompile Include="..\..\src\ardrone\command.cpp" />

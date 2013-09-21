@@ -41,7 +41,7 @@ FOR AR.DRONE 1.0 USERS
   Please update your AR.Drone's firmware to 1.11.5.
 
 FOR AR.DRONE 2.0 USERS
-  Please update your AR.Drone's firmware to 2.4.1.
+  Please update your AR.Drone's firmware to 2.4.7.
 
 FOR VS2010 USERS
   You can't build CV Drone by VS2010 after you installed VS2012.

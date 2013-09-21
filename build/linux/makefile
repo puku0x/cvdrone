@@ -1,7 +1,6 @@
 #sudo apt-get install ffmpeg
 #sudo apt-get install libopencv-dev
 
-
 CXX           = g++
 CXXFLAGS      = -O2 -Wall -D__STDC_CONSTANT_MACROS 
 LIBS          = -lm                     \
@@ -19,6 +18,7 @@ OBJS          = ../../src/ardrone/ardrone.o \
                 ../../src/ardrone/udp.o     \
                 ../../src/ardrone/tcp.o     \
                 ../../src/ardrone/navdata.o \
+                ../../src/ardrone/version.o \
                 ../../src/ardrone/video.o   \
                 ../../src/main.o
 PROGRAM       = test.a

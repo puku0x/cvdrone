@@ -108,6 +108,7 @@
     <ClCompile Include="..\..\src\ardrone\navdata.cpp" />
     <ClCompile Include="..\..\src\ardrone\tcp.cpp" />
     <ClCompile Include="..\..\src\ardrone\udp.cpp" />
+    <ClCompile Include="..\..\src\ardrone\version.cpp" />
     <ClCompile Include="..\..\src\ardrone\video.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
   </ItemGroup>

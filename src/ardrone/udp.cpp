@@ -54,7 +54,7 @@ int UDPSocket::open(const char *addr, int port)
     WSAStartup(MAKEWORD(1,1), &wsaData);
     #endif
 
-    // Create a socket.
+    // Create a socket
     sock = socket(AF_INET, SOCK_DGRAM, 0);
     if (sock == INVALID_SOCKET) {
         printf("ERROR: socket() failed. (%s, %d)\n", __FILE__, __LINE__);     

@@ -52,27 +52,27 @@ int main(int argc, char **argv)
         IplImage *image = ardrone.getImage();
 
         // LED animations
-        if (key == 'q') ardrone.setLED(BLINK_GREEN_RED,              0.5, 5);
-        if (key == 'a') ardrone.setLED(BLINK_GREEN,                  0.5, 5);
-        if (key == 'z') ardrone.setLED(BLINK_RED,                    0.5, 5);
-        if (key == 'w') ardrone.setLED(BLINK_ORANGE,                 0.5, 5);
-        if (key == 's') ardrone.setLED(SNAKE_GREEN_RED,              0.5, 5);
-        if (key == 'x') ardrone.setLED(FIRE,                         0.5, 5);
-        if (key == 'e') ardrone.setLED(STANDARD,                     0.5, 5);
-        if (key == 'd') ardrone.setLED(RED,                          0.5, 5);
-        if (key == 'c') ardrone.setLED(GREEN,                        0.5, 5);
-        if (key == 'r') ardrone.setLED(RED_SNAKE,                    0.5, 5);
-        if (key == 'f') ardrone.setLED(BLANK,                        0.5, 5);
-        if (key == 'v') ardrone.setLED(RIGHT_MISSILE,                0.5, 5);
-        if (key == 't') ardrone.setLED(LEFT_MISSILE,                 0.5, 5);
-        if (key == 'g') ardrone.setLED(DOUBLE_MISSILE,               0.5, 5);
-        if (key == 'b') ardrone.setLED(FRONT_LEFT_GREEN_OTHERS_RED,  0.5, 5);
-        if (key == 'y') ardrone.setLED(FRONT_RIGHT_GREEN_OTHERS_RED, 0.5, 5);
-        if (key == 'h') ardrone.setLED(REAR_RIGHT_GREEN_OTHERS_RED,  0.5, 5);
-        if (key == 'n') ardrone.setLED(REAR_LEFT_GREEN_OTHERS_RED,   0.5, 5);
-        if (key == 'u') ardrone.setLED(LEFT_GREEN_RIGHT_RED,         0.5, 5);
-        if (key == 'j') ardrone.setLED(LEFT_RED_RIGHT_GREEN,         0.5, 5);
-        if (key == 'm') ardrone.setLED(BLINK_STANDARD,               0.5, 5);
+        if (key == 'q') ardrone.setLED(ARDRONE_LED_ANIM_BLINK_GREEN_RED,              0.5, 5);
+        if (key == 'a') ardrone.setLED(ARDRONE_LED_ANIM_BLINK_GREEN,                  0.5, 5);
+        if (key == 'z') ardrone.setLED(ARDRONE_LED_ANIM_BLINK_RED,                    0.5, 5);
+        if (key == 'w') ardrone.setLED(ARDRONE_LED_ANIM_BLINK_ORANGE,                 0.5, 5);
+        if (key == 's') ardrone.setLED(ARDRONE_LED_ANIM_SNAKE_GREEN_RED,              0.5, 5);
+        if (key == 'x') ardrone.setLED(ARDRONE_LED_ANIM_FIRE,                         0.5, 5);
+        if (key == 'e') ardrone.setLED(ARDRONE_LED_ANIM_STANDARD,                     0.5, 5);
+        if (key == 'd') ardrone.setLED(ARDRONE_LED_ANIM_RED,                          0.5, 5);
+        if (key == 'c') ardrone.setLED(ARDRONE_LED_ANIM_GREEN,                        0.5, 5);
+        if (key == 'r') ardrone.setLED(ARDRONE_LED_ANIM_RED_SNAKE,                    0.5, 5);
+        if (key == 'f') ardrone.setLED(ARDRONE_LED_ANIM_BLANK,                        0.5, 5);
+        if (key == 'v') ardrone.setLED(ARDRONE_LED_ANIM_RIGHT_MISSILE,                0.5, 5);
+        if (key == 't') ardrone.setLED(ARDRONE_LED_ANIM_LEFT_MISSILE,                 0.5, 5);
+        if (key == 'g') ardrone.setLED(ARDRONE_LED_ANIM_DOUBLE_MISSILE,               0.5, 5);
+        if (key == 'b') ardrone.setLED(ARDRONE_LED_ANIM_FRONT_LEFT_GREEN_OTHERS_RED,  0.5, 5);
+        if (key == 'y') ardrone.setLED(ARDRONE_LED_ANIM_FRONT_RIGHT_GREEN_OTHERS_RED, 0.5, 5);
+        if (key == 'h') ardrone.setLED(ARDRONE_LED_ANIM_REAR_RIGHT_GREEN_OTHERS_RED,  0.5, 5);
+        if (key == 'n') ardrone.setLED(ARDRONE_LED_ANIM_REAR_LEFT_GREEN_OTHERS_RED,   0.5, 5);
+        if (key == 'u') ardrone.setLED(ARDRONE_LED_ANIM_LEFT_GREEN_RIGHT_RED,         0.5, 5);
+        if (key == 'j') ardrone.setLED(ARDRONE_LED_ANIM_LEFT_RED_RIGHT_GREEN,         0.5, 5);
+        if (key == 'm') ardrone.setLED(ARDRONE_LED_ANIM_BLINK_STANDARD,               0.5, 5);
 
         // Display the image
         cvShowImage("camera", image);

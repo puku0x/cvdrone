@@ -80,6 +80,11 @@ int ARDrone::initCommand(void)
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"0\"\r", ++seq);
         msleep(100);
+
+        // Disable USB recording
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:video_on_usb\",\"FALSE\"\r", ++seq);
+        msleep(100);
     }
     // AR.Drone 1.0
     else {
@@ -109,6 +114,9 @@ int ARDrone::initCommand(void)
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_channel\",\"0\"\r", ++seq);
         msleep(100);
     }
+
+    // Disable outdoor mode
+    setOutdoorMode(false);
 
     // Create a mutex
     mutexCommand = new pthread_mutex_t;
@@ -221,7 +229,7 @@ void ARDrone::move3D(double vx, double vy, double vz, double vr)
         float v[4] = {-vy*0.2, -vx*0.2, vz*1.0, -vr*0.5};
         int mode = (fabs(v[0]) > 0.0 || fabs(v[1]) > 0.0 || fabs(v[2]) > 0.0 || fabs(v[3]) > 0.0);
 
-        // Limitation (-1.0 to +1.0)
+        // Nomarization (-1.0 to +1.0)
         for (int i = 0; i < 4; i++) {
             if (fabs(v[i]) > 1.0) v[i] /= fabs(v[i]);
         }
@@ -292,15 +300,25 @@ void ARDrone::setCalibration(int device)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::setAnimation(Flight animation ID, Duration[ms])
+// ARDrone::setAnimation(Flight animation ID, Timeout[ms])
 // Description  : Run specified flight animation.
 // Return value : NONE
 // --------------------------------------------------------------------------
-void ARDrone::setAnimation(int id, int duration)
+void ARDrone::setAnimation(int id, int timeout)
 {
-    // Send animation command
+    // ID
+    if (version.major == ARDRONE_VERSION_2) id = abs(id % ARDRONE_NB_ANIM_MAYDAY);
+    else                                    id = abs(id % ARDRONE_ANIM_FLIP_AHEAD);
+
+    // Default timeout
+    if (timeout < 1) {
+        const int default_timeout[ARDRONE_NB_ANIM_MAYDAY] = {1000, 1000, 1000, 1000, 1000, 1000, 5000, 5000, 2000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 15, 15, 15, 15};
+        timeout = default_timeout[id];
+    }
+
+    // Send a command
     if (mutexCommand) pthread_mutex_lock(mutexCommand);
-    sockCommand.sendf("AT*ANIM=%d,%d,%d\r", ++seq, id, duration);
+    sockCommand.sendf("AT*ANIM=%d,%d,%d\r", ++seq, id, timeout);
     if (mutexCommand) pthread_mutex_unlock(mutexCommand);
 }
 
@@ -311,6 +329,21 @@ void ARDrone::setAnimation(int id, int duration)
 // --------------------------------------------------------------------------
 void ARDrone::setLED(int id, float freq, int duration)
 {
+    // ID
+    id = abs(id % ARDRONE_NB_LED_ANIM_MAYDAY);
+
+    // Default frequency
+    if (freq <= 0.0) {
+        float default_freq[ARDRONE_NB_LED_ANIM_MAYDAY] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+        freq = default_freq[id];
+    }
+
+    // Default frequency
+    if (freq <= 0.0) {
+        int default_duration[ARDRONE_NB_LED_ANIM_MAYDAY] = {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
+        duration = default_duration[id];
+    }
+
     // Send a command
     if (mutexCommand) pthread_mutex_lock(mutexCommand);
     sockCommand.sendf("AT*LED=%d,%d,%d,%d\r", ++seq, id, *(int*)(&freq), duration);

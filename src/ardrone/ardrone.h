@@ -209,27 +209,28 @@ enum ARDRONE_ANIMATION_ID {
 
 // LED animation IDs
 enum ARDRONE_LED_ANIMATION_ID {
-    BLINK_GREEN_RED = 0,
-    BLINK_GREEN,
-    BLINK_RED,
-    BLINK_ORANGE,
-    SNAKE_GREEN_RED,
-    FIRE,
-    STANDARD,
-    RED,
-    GREEN,
-    RED_SNAKE,
-    BLANK,
-    RIGHT_MISSILE,
-    LEFT_MISSILE,
-    DOUBLE_MISSILE,
-    FRONT_LEFT_GREEN_OTHERS_RED,
-    FRONT_RIGHT_GREEN_OTHERS_RED,
-    REAR_RIGHT_GREEN_OTHERS_RED,
-    REAR_LEFT_GREEN_OTHERS_RED,
-    LEFT_GREEN_RIGHT_RED,
-    LEFT_RED_RIGHT_GREEN,
-    BLINK_STANDARD
+    ARDRONE_LED_ANIM_BLINK_GREEN_RED              =  0,
+    ARDRONE_LED_ANIM_BLINK_GREEN                  =  1,
+    ARDRONE_LED_ANIM_BLINK_RED                    =  2,
+    ARDRONE_LED_ANIM_BLINK_ORANGE                 =  3,
+    ARDRONE_LED_ANIM_SNAKE_GREEN_RED              =  4,
+    ARDRONE_LED_ANIM_FIRE                         =  5,
+    ARDRONE_LED_ANIM_STANDARD                     =  6,
+    ARDRONE_LED_ANIM_RED                          =  7,
+    ARDRONE_LED_ANIM_GREEN                        =  8,
+    ARDRONE_LED_ANIM_RED_SNAKE                    =  9,
+    ARDRONE_LED_ANIM_BLANK                        = 10,
+    ARDRONE_LED_ANIM_RIGHT_MISSILE                = 11,
+    ARDRONE_LED_ANIM_LEFT_MISSILE                 = 12,
+    ARDRONE_LED_ANIM_DOUBLE_MISSILE               = 13,
+    ARDRONE_LED_ANIM_FRONT_LEFT_GREEN_OTHERS_RED  = 14,
+    ARDRONE_LED_ANIM_FRONT_RIGHT_GREEN_OTHERS_RED = 15,
+    ARDRONE_LED_ANIM_REAR_RIGHT_GREEN_OTHERS_RED  = 16,
+    ARDRONE_LED_ANIM_REAR_LEFT_GREEN_OTHERS_RED   = 17,
+    ARDRONE_LED_ANIM_LEFT_GREEN_RIGHT_RED         = 18,
+    ARDRONE_LED_ANIM_LEFT_RED_RIGHT_GREEN         = 19,
+    ARDRONE_LED_ANIM_BLINK_STANDARD               = 20,
+    ARDRONE_NB_LED_ANIM_MAYDAY                    = 21
 };
 
 // TCP Class
@@ -799,6 +800,11 @@ struct ARDRONE_CONFIG {
         int   vbat_min;
         int   localtime;
         int   navdata_options;
+        float gps_soft;
+        float gps_hard;
+        char  localtime_zone[32];
+        char  timezone[32];
+        int   battery_type;
     } general;
 
     struct CONFIG_CONTROL {
@@ -836,6 +842,8 @@ struct ARDRONE_CONFIG {
         float outdoor_control_yaw;
         int   flying_mode;
         int   hovering_range;
+        int   flying_camera_mode[10];
+        bool  flying_camera_enable;
     } control;
 
     struct CONFIG_NETWORK {
@@ -868,6 +876,9 @@ struct ARDRONE_CONFIG {
         int  video_live_socket;
         int  max_bitrate;
         int  video_channel;
+        int  exposure_mode[4];
+        int  saturation_mode;
+        int  whitebalance_mode[2];
     } video;
 
     struct CONFIG_LEDS {
@@ -907,7 +918,37 @@ struct ARDRONE_CONFIG {
         float latitude;
         float longitude;
         float altitude;
+        float accuracy;
+        //int ephemeris_uploaded;
     } gps;
+
+    struct FLIGHT_PLAN {
+        float default_validation_radius;
+        float default_validation_time;
+        int   max_distance_from_takeoff;
+        int   gcs_ip;
+        int   video_stop_delay;
+        bool  low_battery_go_home;
+        bool  automatic_heading;
+        int   com_lost_action_delay;
+        int   altitude_go_home;
+        char  mavlink_js_roll_left[3];
+        char  mavlink_js_roll_right[3];
+        char  mavlink_js_pitch_front[3];
+        char  mavlink_js_pitch_back[3];
+        char  mavlink_js_yaw_left[3];
+        char  mavlink_js_yaw_right[3];
+        char  mavlink_js_go_up[3];
+        char  mavlink_js_go_down[3];
+        char  mavlink_js_inc_gains[3];
+        char  mavlink_js_dec_gains[3];
+        char  mavlink_js_select[3];
+        char  mavlink_js_start[3];
+    } flightplan;
+
+    struct RESCUE {
+        int rescue;
+    } rescue;
 };
 
 // Version information
@@ -962,14 +1003,18 @@ public:
     // Change camera channel
     virtual void setCamera(int channel);
 
+    // Animation
+    virtual void setAnimation(int id, int duration = 0);             // Flight animation
+    virtual void setLED(int id, float freq = 0.0, int duration = 0); // LED animation
+
+    // Calibration
+    virtual void setFlatTrim(void);                 // Flat trim
+    virtual void setCalibration(int device = 0);    // Magnetometer calibration
+
     // Others
-    virtual int  onGround(void);                            // Check on ground
-    virtual void setFlatTrim(void);                         // Flat trim
-    virtual void setCalibration(int device = 0);            // Magnetometer calibration
-    virtual void setAnimation(int id, int duration = 0);    // Flight animation
-    virtual void setLED(int id, float freq, int duration);  // LED animation
-    virtual void setVideoRecord(bool activate);             // Video recording (only for AR.Drone 2.0)
-    virtual void setOutdoorMode(bool activate);             // Outdoor mode (experimental)
+    virtual int  onGround(void);                    // Check on ground
+    virtual void setVideoRecord(bool activate);     // Video recording (only for AR.Drone 2.0)
+    virtual void setOutdoorMode(bool activate);     // Outdoor mode (experimental)
 
 protected:
     // IP address

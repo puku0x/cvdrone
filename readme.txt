@@ -21,7 +21,7 @@ INTRODUCTION
   cvdrone-license-LGPL.txt and cvdrone-license-BSD.txt for more details.
 
 HOW TO INSTALL
-  Please unzip "cvdrone-master.zip" in any directory.
+  Please unzip "cvdrone-master.zip" into an arbitrary directory.
 
 HOW TO UNINSTALL
   Please delete the cvdrone folder.
@@ -35,7 +35,7 @@ HOW TO USE
   1. Open \build\vs20xx\test.sln
   2. Press F7 to build.
   3. Press F5 (or Ctrl+F5) to run.
-  4. You can play around with OpenCV. See, sample codes in "src\samples".
+  4. You can play around with OpenCV. Sample codes are in "src\samples".
 
 FOR AR.DRONE 1.0 USERS
   Please update your AR.Drone's firmware to 1.11.5.

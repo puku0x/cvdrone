@@ -193,10 +193,10 @@ int ARDrone::getVideo(void)
 // Description  : Get an image from the AR.Drone's camera.
 // Return value : Pointer to an IplImage (OpenCV image)
 // --------------------------------------------------------------------------
-IplImage* ARDrone::getImage(void)
+ARDRONE_IMAGE ARDrone::getImage(void)
 {
     // There is no image
-    if (!img) return NULL;
+    if (!img) return ARDRONE_IMAGE(NULL);
 
     // Enable mutex lock
     if (mutexVideo) pthread_mutex_lock(mutexVideo);
@@ -223,7 +223,7 @@ IplImage* ARDrone::getImage(void)
     // Disable mutex lock
     if (mutexVideo) pthread_mutex_unlock(mutexVideo);
 
-    return img;
+    return ARDRONE_IMAGE(img);
 }
 
 // --------------------------------------------------------------------------

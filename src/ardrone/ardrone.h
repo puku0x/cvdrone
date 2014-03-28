@@ -958,6 +958,23 @@ struct ARDRONE_VERSION {
     int revision;
 };
 
+// IplImage* <-> cv::Mat converter
+class ARDRONE_IMAGE {
+public:
+    ARDRONE_IMAGE(IplImage *img = NULL) {
+        image = img;
+    }
+    operator IplImage*() {
+        return image;
+    }
+    operator cv::Mat() {
+        if (!image) return cv::Mat();
+        return cv::Mat(image, true);
+    }
+private:
+    IplImage *image;
+};
+
 // AR.Drone class
 class ARDrone {
 public:
@@ -974,8 +991,8 @@ public:
     // Finalize (Automatically called)
     virtual void close(void);
 
-    // Get an image for OpenCV
-    virtual IplImage* getImage(void);
+    // Get an image
+    virtual ARDRONE_IMAGE getImage(void);
 
     // Get AR.Drone's firmware version
     virtual int getVersion(int *major = NULL, int *minor = NULL, int *revision = NULL);

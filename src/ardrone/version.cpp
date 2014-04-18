@@ -47,7 +47,7 @@ int ARDrone::getVersionInfo(void)
     socket1.receive(buf, sizeof(buf));
 
     // Set to PASV mode
-    ushort a, b, dataport;
+    int a, b, dataport;
     socket1.sendf("PASV\r\n\0");
     socket1.receive(buf, sizeof(buf));
     sscanf(buf, "227 PASV ok (%d,%d,%d,%d,%d,%d)\n", &a, &a, &a, &a, &a, &b);

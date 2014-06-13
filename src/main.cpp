@@ -5,7 +5,7 @@
 // Description  : This is the entry point of the program.
 // Return value : SUCCESS:0  ERROR:-1
 // --------------------------------------------------------------------------
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
     // AR.Drone class
     ARDrone ardrone;

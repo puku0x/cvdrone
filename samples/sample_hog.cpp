@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 
     // Initialize
     if (!ardrone.open()) {
-        printf("Failed to initialize.\n");
+        std::cout << "Failed to initialize." << std::endl;
         return -1;
     }
 
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
         if (!ardrone.update()) break;
 
         // Get an image
-        cv::Mat img(ardrone.getImage());
+        cv::Mat img = ardrone.getImage();
 
         // Detect
         std::vector<cv::Rect> found;

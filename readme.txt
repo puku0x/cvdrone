@@ -1,6 +1,6 @@
 -----------------------------------------------------------------
  CV Drone (= OpenCV + AR.Drone)
- Copyright (C) 2013 puku0x
+ Copyright (C) 2014 puku0x
  https://github.com/puku0x/cvdrone
 -----------------------------------------------------------------
 
@@ -28,7 +28,7 @@ HOW TO UNINSTALL
 
 BEFORE YOU BUILD
   You should install Visual Studio before you build CV Drone.
-  CV Drone supports VC++2005/2008/2010/2012.
+  CV Drone supports VC++2008/2010/2012/2013.
   To download VS, please see http://www.microsoft.com/visualstudio/eng/downloads .
 
 HOW TO USE
@@ -41,21 +41,24 @@ FOR AR.DRONE 1.0 USERS
   Please update your AR.Drone's firmware to 1.11.5.
 
 FOR AR.DRONE 2.0 USERS
-  Please update your AR.Drone's firmware to 2.4.7.
+  Please update your AR.Drone's firmware to 2.4.8.
 
 FOR VS2010 USERS
-  You can't build CV Drone by VS2010 after you installed VS2012.
-  To build VS2010, you should uninstall ".Net Framework 4.5" and re-install "4.0".
+  You can not build CV Drone by VS2010 after you installed VS2012.
+  To build VS2010, 
+    1) You should install "Visual Studio 2010 SP1".  [Recommended]
+    or,
+    2) You should uninstall ".Net Framework 4.5" and re-install "4.0".
 
 LIBRARY DEPENDENCIES
   CV Drone uses following libraries.
-  - OpenCV 2.4.6
+  - OpenCV 2.4.9
     http://opencv.org/
-  - FFmpeg 2.0
+  - FFmpeg 2.2.3 <LGPL v2.1 license>
     http://www.ffmpeg.org/
   - stdint.h/inttypes.h for Microsoft Visual Studio r26
     https://code.google.com/p/msinttypes/
-  - POSIX Threads for Win32 2.9.1
+  - POSIX Threads for Win32 2.9.1 <LGPL v2.1 license>
     http://www.sourceware.org/pthreads-win32/
 
   License files for each library can be found in the 'licenses' folder.

@@ -1,6 +1,6 @@
 // -------------------------------------------------------------------------
 // CV Drone (= OpenCV + AR.Drone)
-// Copyright(C) 2013 puku0x
+// Copyright(C) 2014 puku0x
 // https://github.com/puku0x/cvdrone
 //
 // This source file is part of CV Drone library.
@@ -19,14 +19,19 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files
 // cvdrone-license-LGPL.txt and cvdrone-license-BSD.txt for more details.
+//
+//! @file   navdata.cpp
+//! @brief  Navigation data
+//
 // -------------------------------------------------------------------------
 
 #include "ardrone.h"
 
 // --------------------------------------------------------------------------
-// ARDrone::initNavdata()
-// Description  : Initialize Navdata.
-// Return value : SUCCESS: 1  FAILURE: 0 
+//! @brief   Initialize Navdata.
+//! @return  Result of initialization
+//! @retval  1 Success
+//! @retval  0 Failure
 // --------------------------------------------------------------------------
 int ARDrone::initNavdata(void)
 {
@@ -82,9 +87,8 @@ int ARDrone::initNavdata(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::loopNavdata()
-// Description  : Thread function for Navdata.
-// Return value : SUCCESS:0
+//! @brief   Thread function for Navdata.
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::loopNavdata(void)
 {
@@ -97,9 +101,10 @@ void ARDrone::loopNavdata(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::getNavdata()
-// Description  : Get current navigation data of AR.Drone.
-// Return value : SUCCESS: 1  FAILURE: 0
+//! @brief   Get current navigation data of AR.Drone.
+//! @return  Result of this function
+//! @retval  1 Success
+//! @retval  0 Failure
 // --------------------------------------------------------------------------
 int ARDrone::getNavdata(void)
 {
@@ -236,9 +241,8 @@ int ARDrone::getNavdata(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::getRoll()
-// Description  : Get current role angle of AR.Drone.
-// Return value : Role angle [rad]
+//! @brief   Get current role angle of AR.Drone.
+//! @return  Role angle [rad]
 // --------------------------------------------------------------------------
 double ARDrone::getRoll(void)
 {
@@ -251,9 +255,8 @@ double ARDrone::getRoll(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::getPitch()
-// Description  : Get current pitch angle of AR.Drone.
-// Return value : Pitch angle [rad]
+//! @brief   Get current pitch angle of AR.Drone.
+//! @return  Pitch angle [rad]
 // --------------------------------------------------------------------------
 double ARDrone::getPitch(void)
 {
@@ -266,9 +269,8 @@ double ARDrone::getPitch(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::getYaw()
-// Description  : Get current yaw angle of AR.Drone.
-// Return value : Yaw angle [rad]
+//! @brief   Get current yaw angle of AR.Drone.
+//! @return  Yaw angle [rad]
 // --------------------------------------------------------------------------
 double ARDrone::getYaw(void)
 {
@@ -281,9 +283,8 @@ double ARDrone::getYaw(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::getAltitude()
-// Description  : Get current altitude of AR.Drone.
-// Return value : Altitude [m]
+//! @brief   Get current altitude of AR.Drone.
+//! @return  Altitude [m]
 // --------------------------------------------------------------------------
 double ARDrone::getAltitude(void)
 {
@@ -296,9 +297,11 @@ double ARDrone::getAltitude(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::getVelocity(X velocity[m/s], Y velocity[m/s], Z velocity[m/s])
-// Description  : Get estimated velocity of AR.Drone.
-// Return value : Velocity [m/s]
+//! @brief   Get estimated velocity of AR.Drone.
+//! @param   vx A pointer to the X velocity variable [m/s]
+//! @param   vy A pointer to the Y velocity variable [m/s]
+//! @param   vz A pointer to the Z velocity variable [m/s]
+//! @return Velocity [m/s]
 // --------------------------------------------------------------------------
 double ARDrone::getVelocity(double *vx, double *vy, double *vz)
 {
@@ -308,7 +311,6 @@ double ARDrone::getVelocity(double *vx, double *vy, double *vz)
     double velocity_y = -navdata.demo.vy * 0.001;
     //double velocity_z = -navdata.demo.vz * 0.001;
     double velocity_z = -navdata.altitude.altitude_vz * 0.001;
-    double velocity = sqrt(velocity_x*velocity_x + velocity_y*velocity_y + velocity_z*velocity_z);
     if (mutexNavdata) pthread_mutex_unlock(mutexNavdata);
 
     // Velocities
@@ -316,13 +318,20 @@ double ARDrone::getVelocity(double *vx, double *vy, double *vz)
     if (vy) *vy = velocity_y;
     if (vz) *vz = velocity_z;
 
+    // Velocity [m/s]
+    double velocity = sqrt(velocity_x*velocity_x + velocity_y*velocity_y + velocity_z*velocity_z);
     return velocity;
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::getPosition(Latitude [deg], Longitude [deg], Elevation [m])
-// Description  : Get GPS position (need AR.Drone2.0 Flight Recorder).
-// Return value : SUCCESS: 1  FAILURE: 0
+//! @brief   Get GPS position.
+//! @note    This function requires AR.Drone2.0 Flight Recorder
+//! @param   latitude A pointer to the latitude variable [deg]
+//! @param   longitude A pointer to the longitude variable [deg]
+//! @param   elevation A pointer to the elevation variable [deg]
+//! @return  Result of this function
+//! @retval  1 Success
+//! @retval  0 Failure
 // --------------------------------------------------------------------------
 int ARDrone::getPosition(double *latitude, double *longitude, double *elevation)
 {
@@ -343,9 +352,8 @@ int ARDrone::getPosition(double *latitude, double *longitude, double *elevation)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::getBatteryPercentage()
-// Description  : Get current battery percentage of AR.Drone.
-// Return value : Battery percentage [%]
+//! @brief   Get current battery percentage of AR.Drone.
+//! @return  Battery percentage [%]
 // --------------------------------------------------------------------------
 int ARDrone::getBatteryPercentage(void)
 {
@@ -358,9 +366,10 @@ int ARDrone::getBatteryPercentage(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::onGround()
-// Description  : Check whether AR.Drone is on ground.
-// Return value : YES:1 NO:0
+//! @brief   Check whether AR.Drone is on ground.
+//! @return  Result of this function
+//! @retval  1 Yes
+//! @retval  0 No
 // --------------------------------------------------------------------------
 int ARDrone::onGround(void)
 {
@@ -373,9 +382,8 @@ int ARDrone::onGround(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::finalizeNavdata()
-// Description  : Finalize Navdata.
-// Return value : NONE
+//! @brief   Finalize Navdata.
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::finalizeNavdata(void)
 {

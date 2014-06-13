@@ -1,6 +1,6 @@
 // -------------------------------------------------------------------------
 // CV Drone (= OpenCV + AR.Drone)
-// Copyright(C) 2013 puku0x
+// Copyright(C) 2014 puku0x
 // https://github.com/puku0x/cvdrone
 //
 // This source file is part of CV Drone library.
@@ -19,15 +19,19 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files
 // cvdrone-license-LGPL.txt and cvdrone-license-BSD.txt for more details.
+//
+//! @file   ardrone.cpp
+//! @brief  A source file of AR.Drone class
+//
 // -------------------------------------------------------------------------
 
 #include "ardrone.h"
 
 // --------------------------------------------------------------------------
-// ARDrone::ARDrone(IP address of your AR.Drone)
-// Description : Constructor of ARDrone class.
+//! @brief   Constructor of AR.Drone class
+//! @return  None
 // --------------------------------------------------------------------------
-ARDrone::ARDrone(const char *ardrone_addr)
+ARDrone::ARDrone()
 {
     // IP Address
     strncpy(ip, ARDRONE_DEFAULT_ADDR, 16);
@@ -66,14 +70,57 @@ ARDrone::ARDrone(const char *ardrone_addr)
     // Thread for Video
     threadVideo = NULL;
     mutexVideo  = NULL;
-
-    // When IP address is specified, open it
-    if (ardrone_addr) open(ardrone_addr);
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::~ARDrone()
-// Description : Destructor of ARDrone class.
+//! @brief   Constructor of AR.Drone class
+//! @param   ardrone_addr IP address of AR.Drone
+//! @return  None
+// --------------------------------------------------------------------------
+ARDrone::ARDrone(const char *ardrone_addr)
+{
+    // Sequence number
+    seq = 0;
+
+    // Camera image
+    img = NULL;
+
+    // Version information
+    memset(&version, 0, sizeof(version));
+
+    // Navdata
+    memset(&navdata, 0, sizeof(navdata));
+
+    // Configurations
+    memset(&config, 0, sizeof(config));
+
+    // Video
+    pFormatCtx  = NULL;
+    pCodecCtx   = NULL;
+    pFrame      = NULL;
+    pFrameBGR   = NULL;
+    bufferBGR   = NULL;
+    pConvertCtx = NULL;
+
+    // Thread for AT command
+    threadCommand = NULL;
+    mutexCommand  = NULL;
+
+    // Thread for Navdata
+    threadNavdata = NULL;
+    mutexNavdata  = NULL;
+
+    // Thread for Video
+    threadVideo = NULL;
+    mutexVideo  = NULL;
+
+    // Open the specified IP address
+    open(ardrone_addr);
+}
+
+// --------------------------------------------------------------------------
+//! @brief   Destructor of ARDrone class
+//! @return  None
 // --------------------------------------------------------------------------
 ARDrone::~ARDrone()
 {
@@ -82,9 +129,11 @@ ARDrone::~ARDrone()
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::open(IP address of AR.Drone)
-// Description  : Initialize the AR.Drone.
-// Return value : SUCCESS: 1  FAILURE: 0
+//! @brief   Initialize the AR.Drone.
+//! @param   ardrone_addr IP address of AR.Drone
+//! @return  Result of initialization
+//! @retval  1 Success
+//! @retval  0 Failure
 // --------------------------------------------------------------------------
 int ARDrone::open(const char *ardrone_addr)
 {
@@ -123,9 +172,10 @@ int ARDrone::open(const char *ardrone_addr)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::update()
-// Description  : No use
-// Return value : SUCCESS: 1  FAILURE: 0
+//! @brief   Update the information of the AR.Drone.
+//! @return  Result of update
+//! @retval  1 Success
+//! @retval  0 Failure
 // --------------------------------------------------------------------------
 int ARDrone::update(void)
 {
@@ -133,9 +183,8 @@ int ARDrone::update(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::close()
-// Description  : Finalize
-// Return value : NONE
+//! @brief   Finalize the AR.Drone class.
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::close(void)
 {

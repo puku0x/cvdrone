@@ -1,6 +1,6 @@
 // -------------------------------------------------------------------------
 // CV Drone (= OpenCV + AR.Drone)
-// Copyright(C) 2013 puku0x
+// Copyright(C) 2014 puku0x
 // https://github.com/puku0x/cvdrone
 //
 // This source file is part of CV Drone library.
@@ -19,14 +19,19 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files
 // cvdrone-license-LGPL.txt and cvdrone-license-BSD.txt for more details.
+//
+//! @file   command.cpp
+//! @brief  Sending AT commands
+//
 // -------------------------------------------------------------------------
 
 #include "ardrone.h"
 
 // --------------------------------------------------------------------------
-// ARDrone::initCommand()
-// Description  : Initialize AT command.
-// Return value : SUCCESS: 1  FAILURE: 0
+//! @brief   Initialize AT command.
+//! @return  Result of initialization
+//! @retval  1 Success
+//! @retval  0 Failure
 // --------------------------------------------------------------------------
 int ARDrone::initCommand(void)
 {
@@ -133,9 +138,8 @@ int ARDrone::initCommand(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::loopCommand()
-// Description  : Thread function for AT Command.
-// Return value : SUCCESS:0
+//! @brief   Thread function for AT command.
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::loopCommand(void)
 {
@@ -150,9 +154,8 @@ void ARDrone::loopCommand(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::takeoff()
-// Description  : Take off the AR.Drone.
-// Return value : NONE
+//! @brief   Take off the AR.Drone.
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::takeoff(void)
 {
@@ -172,9 +175,8 @@ void ARDrone::takeoff(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::landing()
-// Description  : Land the AR.Drone.
-// Return value : NONE
+//! @brief   Land the AR.Drone.
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::landing(void)
 {
@@ -194,9 +196,8 @@ void ARDrone::landing(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::emergency()
-// Description  : Emergency stop.
-// Return value : NONE
+//! @brief   Emergency stop.
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::emergency(void)
 {
@@ -207,9 +208,11 @@ void ARDrone::emergency(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::move(X velocity[m/s], Y velocity[m/s], Rotational speed[rad/s])
-// Description  : Move the AR.Drone in 2D plane.
-// Return value : NONE
+//! @brief   Move the AR.Drone in 2D plane.
+//! @param   vx X velocity [m/s]
+//! @param   vy Y velocity [m/s]
+//! @param   vr Angular velocity [rad/s]
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::move(double vx, double vy, double vr)
 {
@@ -217,9 +220,12 @@ void ARDrone::move(double vx, double vy, double vr)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::move3D(X velocity[m/s], Y velocity[m/s], Z velocity[m/s], Rotational speed[rad/s])
-// Description  : Move the AR.Drone in 3D space.
-// Return value : NONE
+//! @brief   Move the AR.Drone in 3D space.
+//! @param   vx X velocity [m/s]
+//! @param   vy Y velocity [m/s]
+//! @param   vz Z velocity [m/s]
+//! @param   vr Angular velocity [rad/s]
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::move3D(double vx, double vy, double vz, double vr)
 {
@@ -242,11 +248,11 @@ void ARDrone::move3D(double vx, double vy, double vz, double vr)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::setCamera(Camera channel)
-// Description  : Change the camera channel.
-//                AR.Drone1.0 supports 0, 1, 2, 3.
-//                AR.Drone2.0 supports 0, 1.
-// Return value : NONE
+//! @brief   Change the camera channel.
+//! @param   channel Camera channel 
+//! @note    AR.Drone 1.0 supports [0, 1, 2, 3]. 
+//!          AR.Drone 2.0 supports [0, 1].
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::setCamera(int channel)
 {
@@ -270,9 +276,8 @@ void ARDrone::setCamera(int channel)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::setFlatTrim()
-// Description  : Set a reference of the horizontal plane.
-// Return value : NONE
+//! @brief   Set a reference of the horizontal plane.
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::setFlatTrim(void)
 {
@@ -285,9 +290,9 @@ void ARDrone::setFlatTrim(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::setCalibration(Device ID)
-// Description  : Calibrate AR.Drone's magnetometer.
-// Return value : NONE
+//! @brief   Calibrate AR.Drone's magnetometer.
+//! @param   device Device ID
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::setCalibration(int device)
 {
@@ -300,9 +305,10 @@ void ARDrone::setCalibration(int device)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::setAnimation(Flight animation ID, Timeout[ms])
-// Description  : Run specified flight animation.
-// Return value : NONE
+//! @brief   Run specified flight animation.
+//! @param   id Flight animation ID
+//! @param   timeout Timeout [ms]
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::setAnimation(int id, int timeout)
 {
@@ -323,9 +329,11 @@ void ARDrone::setAnimation(int id, int timeout)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::setLED(LED animation ID, Frequency[Hz], Duration[s])
-// Description  : Run specified LED animation.
-// Return value : NONE
+//! @brief   Run specified LED animation.
+//! @param   id LED animation ID
+//! @param   freq Frequency [Hz],
+//! @param   duration Duration [s]
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::setLED(int id, float freq, int duration)
 {
@@ -351,11 +359,11 @@ void ARDrone::setLED(int id, float freq, int duration)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::startVideoRecord(Enable/Disable)
-// Description  : Start or stop recording video.
-//                This function is only for AR.Drone 2.0
-//                You should set a USB key with > 100MB to your drone
-// Return value : NONE
+//! @brief   Start or stop recording video.
+//! @param   activate Enable / Disable flag
+//! @note    This function is only for AR.Drone 2.0. 
+//!          You should set a USB key with > 100MB to your drone
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::setVideoRecord(bool activate)
 {
@@ -386,9 +394,9 @@ void ARDrone::setVideoRecord(bool activate)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::setOutdoorMode(Enable/Disable)
-// Description  : Set outdoor mode.
-// Return value : NONE
+//! @brief   Set outdoor mode.
+//! @param   activate Enable / Disable flag
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::setOutdoorMode(bool activate)
 {
@@ -429,9 +437,8 @@ void ARDrone::setOutdoorMode(bool activate)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::resetWatchDog()
-// Description  : Stop hovering.
-// Return value : NONE
+//! @brief   Stop hovering.
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::resetWatchDog(void)
 {
@@ -449,9 +456,8 @@ void ARDrone::resetWatchDog(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::resetEmergency()
-// Description  : Disable the emergency lock.
-// Return value : NONE
+//! @brief   Disable the emergency lock.
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::resetEmergency(void)
 {
@@ -469,9 +475,8 @@ void ARDrone::resetEmergency(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::finalizeCommand()
-// Description  : Finalize AT command
-// Return value : NONE
+//! @brief  Finalize AT command.
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::finalizeCommand(void)
 {

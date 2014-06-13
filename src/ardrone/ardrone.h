@@ -3,7 +3,7 @@
 
 // -------------------------------------------------------------------------
 // CV Drone (= OpenCV + AR.Drone)
-// Copyright(C) 2013 puku0x
+// Copyright(C) 2014 puku0x
 // https://github.com/puku0x/cvdrone
 //
 // This source file is part of CV Drone library.
@@ -22,6 +22,15 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files
 // cvdrone-license-LGPL.txt and cvdrone-license-BSD.txt for more details.
+//
+//! @file     ardrone.h
+//! @brief    A header file of AR.Drone class
+//
+//! @mainpage Document of CV Drone
+//!           Project home: https://github.com/puku0x/cvdrone      <br>
+//!           Project Wiki: https://github.com/puku0x/cvdrone/wiki <br>
+//!           Copyright(C) 2014 puku0x                             <br>
+//
 // -------------------------------------------------------------------------
 
 // Coordinate system
@@ -244,7 +253,7 @@ public:
     int  receive(void *data, int size);     // Receive data
     void close(void);                       // Finalize
 private:
-    SOCKET sock;                            // Sockets
+    SOCKET sock;                            // Socket
     sockaddr_in server_addr, client_addr;   // Server/Client IP adrress
 };
 
@@ -259,7 +268,7 @@ public:
     int  receive(void *data, int size);     // Receive data
     void close(void);                       // Finalize
 private:
-    SOCKET sock;                            // Sockets
+    SOCKET sock;                            // Socket
     sockaddr_in server_addr, client_addr;   // Server/Client IP adrress
 };
 
@@ -340,7 +349,7 @@ struct ARDRONE_NAVDATA {
         unsigned int   time;
     } time;
 
-    // Raw measures
+    // Raw measurements
     struct NAVDATA_RAW_MEASURES {
         unsigned short tag;
         unsigned short size;
@@ -363,7 +372,7 @@ struct ARDRONE_NAVDATA {
         short          gradient;
     } raw_measures;
 
-    // Physical measures
+    // Physical measurements
     struct NAVDATA_PHYS_MEASURES {
         unsigned short tag;
         unsigned short size;
@@ -466,8 +475,8 @@ struct ARDRONE_NAVDATA {
         unsigned short current_motor2;
         unsigned short current_motor3;
         unsigned short current_motor4;
-        float            altitude_prop;
-        float            altitude_der;
+        float          altitude_prop;
+        float          altitude_der;
     } pwm;
 
     // Altitude
@@ -478,9 +487,9 @@ struct ARDRONE_NAVDATA {
         float          altitude_vz;
         int            altitude_ref;
         int            altitude_raw;
-        float           obs_accZ;
+        float          obs_accZ;
         float          obs_alt;
-        vector31_t        obs_x;
+        vector31_t     obs_x;
         unsigned int   obs_state;
         vector21_t     est_vb;
         unsigned int   est_state;
@@ -694,10 +703,10 @@ struct ARDRONE_NAVDATA {
         unsigned int   hdvideo_state;
         unsigned int   storage_fifo_nb_packets;
         unsigned int   storage_fifo_size;
-        unsigned int   usbkey_size;           /*! USB key in kbytes - 0 if no key present */
-        unsigned int   usbkey_freespace;      /*! USB key free space in kbytes - 0 if no key present */
-        unsigned int   frame_number;          /*! 'frame_number' PaVE field of the frame starting to be encoded for the HD stream */
-        unsigned int   usbkey_remaining_time; /*! time in seconds */
+        unsigned int   usbkey_size;           // USB key in kbytes - 0 if no key present
+        unsigned int   usbkey_freespace;      // USB key free space in kbytes - 0 if no key present
+        unsigned int   frame_number;          // 'frame_number' PaVE field of the frame starting to be encoded for the HD stream
+        unsigned int   usbkey_remaining_time; // time in seconds
     } hdvideo_stream;
 
     // WiFi
@@ -715,7 +724,8 @@ struct ARDRONE_NAVDATA {
         float          vzfind;
     } zimmu_3000;
 
-    // GPS (for AR.Drone 2.4.1)
+    // GPS (for AR.Drone 2.4.1, or later)
+    // From https://github.com/paparazzi/paparazzi/blob/master/sw/airborne/boards/ardrone/at_com.h
     struct NAVDATA_GPS {
         unsigned short tag;                  /*!< Navdata block ('option') identifier */
         unsigned short size;                 /*!< set this to the size of this structure */
@@ -979,7 +989,8 @@ private:
 class ARDrone {
 public:
     // Constructor / Destructor
-    ARDrone(const char *ardrone_addr = NULL);
+    ARDrone();
+    ARDrone(const char *ardrone_addr);
     virtual ~ARDrone();
 
     // Initialize

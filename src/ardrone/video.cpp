@@ -1,6 +1,6 @@
 // -------------------------------------------------------------------------
 // CV Drone (= OpenCV + AR.Drone)
-// Copyright(C) 2013 puku0x
+// Copyright(C) 2014 puku0x
 // https://github.com/puku0x/cvdrone
 //
 // This source file is part of CV Drone library.
@@ -19,6 +19,10 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files
 // cvdrone-license-LGPL.txt and cvdrone-license-BSD.txt for more details.
+//
+//! @file   video.cpp
+//! @brief  Converting video into IplImage or cv::Mat
+//
 // -------------------------------------------------------------------------
 
 #include "ardrone.h"
@@ -31,9 +35,10 @@
 //   http://ardrone-ailab-u-tokyo.blogspot.jp/2012/07/212-ardrone-20-video-decording-ffmpeg.html
 
 // --------------------------------------------------------------------------
-// ARDrone::initVideo()
-// Description  : Initialize video.
-// Return value : SUCCESS: 1  FAILURE: 0
+//! @brief   Initialize video.
+//! @return  Result of initialization
+//! @retval  1 Success
+//! @retval  0 Failure
 // --------------------------------------------------------------------------
 int ARDrone::initVideo(void)
 {
@@ -118,9 +123,8 @@ int ARDrone::initVideo(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::loopVideo()
-// Description  : Thread function.
-// Return value : SUCCESS:0
+//! @brief   Thread function for video.
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::loopVideo(void)
 {
@@ -133,9 +137,10 @@ void ARDrone::loopVideo(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::getVideo()
-// Description  : Get AR.Drone's video stream.
-// Return value : SUCCESS: 1  FAILURE: 0
+//! @brief   Get AR.Drone's video stream.
+//! @return  Result of this function
+//! @retval  1 Success
+//! @retval  0 Failure
 // --------------------------------------------------------------------------
 int ARDrone::getVideo(void)
 {
@@ -189,9 +194,9 @@ int ARDrone::getVideo(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::getImage()
-// Description  : Get an image from the AR.Drone's camera.
-// Return value : Pointer to an IplImage (OpenCV image)
+//! @brief   Get an image from the AR.Drone's camera.
+//! @return  An OpenCV image data (IplImage or cv::Mat)
+//! @retval  NULL Failure
 // --------------------------------------------------------------------------
 ARDRONE_IMAGE ARDrone::getImage(void)
 {
@@ -227,9 +232,8 @@ ARDRONE_IMAGE ARDrone::getImage(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::finalizeVideo()
-// Description  : Finalize video.
-// Return value : NONE
+//! @brief   Finalize video.
+//! @return  None
 // --------------------------------------------------------------------------
 void ARDrone::finalizeVideo(void)
 {

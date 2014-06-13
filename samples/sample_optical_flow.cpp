@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     // Main loop
     while (1) {
         // Key input
-        int key = cvWaitKey(33);
+        int key = cvWaitKey(1);
         if (key == 0x1b) break;
 
         // Update

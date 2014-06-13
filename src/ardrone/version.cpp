@@ -1,6 +1,6 @@
 // -------------------------------------------------------------------------
 // CV Drone (= OpenCV + AR.Drone)
-// Copyright(C) 2013 puku0x
+// Copyright(C) 2014 puku0x
 // https://github.com/puku0x/cvdrone
 //
 // This source file is part of CV Drone library.
@@ -19,14 +19,19 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files
 // cvdrone-license-LGPL.txt and cvdrone-license-BSD.txt for more details.
+//
+//! @file   version.cpp
+//! @brief  Version check using FTP
+//
 // -------------------------------------------------------------------------
 
 #include "ardrone.h"
 
 // --------------------------------------------------------------------------
-// ARDrone::getVersionInfo()
-// Description  : Get the version information via FTP.
-// Return value : SUCCESS: 1  FAILURE: 0
+//! @brief   Get the version information via FTP.
+//! @return  Result of initialization
+//! @retval  1 Success
+//! @retval  0 Failure
 // --------------------------------------------------------------------------
 int ARDrone::getVersionInfo(void)
 {
@@ -77,9 +82,11 @@ int ARDrone::getVersionInfo(void)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::getVersion(Major version, Minor version, Revision number)
-// Description  : Get AR.Drone's version.
-// Return value : Version number of the AR.Drone.
+//! @brief   Get the version and the revision number
+//! @param   major A pointer to the major version variable
+//! @param   minor A pointer to the minor version variable
+//! @param   revision A pointer to the revision number variable
+//! @return  Major version of AR.Drone
 // --------------------------------------------------------------------------
 int ARDrone::getVersion(int *major, int *minor, int *revision)
 {

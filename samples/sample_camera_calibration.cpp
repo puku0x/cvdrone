@@ -27,7 +27,7 @@ inline void cvDrawText(IplImage *image, CvPoint point, const char *fmt, ...)
     va_end(ap);
 
     // Draw the text
-    cvPutText(image, text, point, &font, cvScalarAll(255));
+    cvPutText(image, text, point, &font, CV_RGB(0, 255, 0));
 }
 
 // --------------------------------------------------------------------------
@@ -46,7 +46,14 @@ inline int cvAsk(const char *message, ...)
     va_end(arg);
 
     // Show message box
-    return (MessageBox(NULL, str, "QUESTION", MB_YESNO|MB_ICONQUESTION|MB_TOPMOST|MB_SETFOREGROUND) == IDYES);
+    #ifndef _WIN32
+    //return (MessageBox(NULL, str, "QUESTION", MB_YESNO|MB_ICONQUESTION|MB_TOPMOST|MB_SETFOREGROUND) == IDYES);
+    #else
+    char c = 'n';
+    printf(str);
+    scanf("%c", &c);
+    return (c == 'y' || c == 'Y');
+    #endif
 }
 
 #if CALIB_MODE
@@ -82,33 +89,35 @@ int main(int argc, char **argv)
         // Get an image
         IplImage *image = ardrone.getImage();
 
-        // If you push Space key
-        if (key == ' ') {
-            // Convert the camera image to grayscale
-            IplImage *gray = cvCreateImage(cvGetSize(image), IPL_DEPTH_8U, 1);
-            cvCvtColor(image, gray, CV_BGR2GRAY);
+        // Convert the camera image to grayscale
+        IplImage *gray = cvCreateImage(cvGetSize(image), IPL_DEPTH_8U, 1);
+        cvCvtColor(image, gray, CV_BGR2GRAY);
 
-            // Detect the chessboard
-            int corner_count = 0;
-            CvSize size = cvSize(PAT_COL, PAT_ROW);
-            CvPoint2D32f corners[PAT_SIZE];
-            int found = cvFindChessboardCorners(gray, size, corners, &corner_count);
+        // Detect the chessboard
+        int corner_count = 0;
+        CvSize size = cvSize(PAT_COL, PAT_ROW);
+        CvPoint2D32f corners[PAT_SIZE];
+        int found = cvFindChessboardCorners(gray, size, corners, &corner_count, CV_CALIB_CB_ADAPTIVE_THRESH+CV_CALIB_CB_NORMALIZE_IMAGE|CV_CALIB_CB_FAST_CHECK);
 
-            // Detected
-            if (found) {
-                // Draw corners
-                cvDrawChessboardCorners(image, size, corners, corner_count, found);
+        // Chessboard detected
+        if (found) {
+            // Draw corners
+            cvDrawChessboardCorners(image, size, corners, corner_count, found);
 
+            // If you push Space key
+            if (key == ' ') {
                 // Add to buffer
                 images.push_back(gray);
-                //Beep(3000, 100);
             }
-            // Failed to detect
             else {
                 // Release the image
                 cvReleaseImage(&gray);
-                //Beep(100, 100);
             }
+        }
+        // Failed to detect
+        else {
+            // Release the image
+            cvReleaseImage(&gray);
         }
 
         // Display the image
@@ -134,7 +143,7 @@ int main(int argc, char **argv)
         //}
 
         // Ask save parameters or not
-        if (cvAsk("Do you save the camera parameters ?\n")) {
+        if (cvAsk("Do you save the camera parameters ? (y/n)\n")) {
             // Detect coners
             int *p_count = (int*)malloc(sizeof(int) * num);
             CvPoint2D32f *corners = (CvPoint2D32f*)cvAlloc(sizeof(CvPoint2D32f) * num * PAT_SIZE);

@@ -3,10 +3,9 @@ CFLAGS        = -I/usr/local/include -O2 -Wall
 LDFLAGS       = -L/usr/local/lib -D__STDC_CONSTANT_MACROS
 LIBS          = -lm                     \
                 -lwsock32               \
-                -lwininet               \
-                -lopencv_core246.dll    \
-                -lopencv_imgproc246.dll \
-                -lopencv_highgui246.dll \
+                -lopencv_core249.dll    \
+                -lopencv_imgproc249.dll \
+                -lopencv_highgui249.dll \
                 -lpthread               \
                 -lavcodec.dll           \
                 -lavdevice.dll          \

@@ -26,4 +26,11 @@ del vs2012\*.suo /a:h
 rmdir vs2012\ipch /s /q
 rmdir vs2012\obj /s /q
 
+echo Cleaning vs2013\...
+del vs2013\*.sdf
+del vs2013\*.user
+del vs2013\*.suo /a:h
+rmdir vs2013\ipch /s /q
+rmdir vs2013\obj /s /q
+
 echo Finished. Yeah !

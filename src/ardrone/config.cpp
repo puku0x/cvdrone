@@ -1,6 +1,6 @@
 // -------------------------------------------------------------------------
 // CV Drone (= OpenCV + AR.Drone)
-// Copyright(C) 2013 puku0x
+// Copyright(C) 2014 puku0x
 // https://github.com/puku0x/cvdrone
 //
 // This source file is part of CV Drone library.
@@ -19,14 +19,19 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files
 // cvdrone-license-LGPL.txt and cvdrone-license-BSD.txt for more details.
+//
+//! @file   config.cpp
+//! @brief  A source file of AR.Drone class
+//
 // -------------------------------------------------------------------------
 
 #include "ardrone.h"
 
 // --------------------------------------------------------------------------
-// parse(Configuration string, Configuration struct)
-// Description  : Parse a configuration string.
-// Return value : NONE
+//! @brief   Parse a configuration string.
+//! @param   str Configuration string
+//! @param   config Configuration struct
+//! @return  None
 // --------------------------------------------------------------------------
 void parse(const char *str, ARDRONE_CONFIG *config)
 {
@@ -202,9 +207,10 @@ void parse(const char *str, ARDRONE_CONFIG *config)
 }
 
 // --------------------------------------------------------------------------
-// ARDrone::getConfig()
-// Description  : Get current configurations of AR.Drone.
-// Return value : SUCCESS: 1  FAILURE: 0
+//! @brief   Get current configurations of AR.Drone.
+//! @return  Result of this function
+//! @retval  1 Success
+//! @retval  0 Failure
 // --------------------------------------------------------------------------
 int ARDrone::getConfig(void)
 {

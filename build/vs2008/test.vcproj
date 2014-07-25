@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\3rdparty\opencv\include;..\..\src\3rdparty\ffmpeg\include;..\..\src\3rdparty\pthread\include"
+				AdditionalIncludeDirectories="..\..\src\3rdparty\opencv\include;..\..\src\3rdparty\ffmpeg\include;..\..\src\3rdparty\pthread\include;..\..\src\3rdparty\glut\include"
 				PreprocessorDefinitions="WIN32;NOMINMAX;_DEBUG;_CONSOLE;__STDC_CONSTANT_MACROS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,9 +62,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wsock32.lib opencv_calib3d249.lib opencv_contrib249.lib opencv_core249.lib opencv_features2d249.lib opencv_flann249.lib opencv_highgui249.lib opencv_imgproc249.lib opencv_legacy249.lib opencv_ml249.lib opencv_objdetect249.lib opencv_photo249.lib opencv_stitching249.lib opencv_superres249.lib opencv_video249.lib opencv_videostab249.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib swresample.lib swscale.lib pthreadVC2.lib"
+				AdditionalDependencies="wsock32.lib opencv_calib3d249.lib opencv_contrib249.lib opencv_core249.lib opencv_features2d249.lib opencv_flann249.lib opencv_highgui249.lib opencv_imgproc249.lib opencv_legacy249.lib opencv_ml249.lib opencv_objdetect249.lib opencv_photo249.lib opencv_stitching249.lib opencv_superres249.lib opencv_video249.lib opencv_videostab249.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib swresample.lib swscale.lib pthreadVC2.lib glut32.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\src\3rdparty\opencv\lib\vs2008;..\..\src\3rdparty\ffmpeg\lib;..\..\src\3rdparty\pthread\lib"
+				AdditionalLibraryDirectories="..\..\src\3rdparty\opencv\lib\vs2008;..\..\src\3rdparty\ffmpeg\lib;..\..\src\3rdparty\pthread\lib;..\..\src\3rdparty\glut\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\obj\debug\debug.pdb"
 				SubSystem="1"
@@ -121,7 +121,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\src\3rdparty\opencv\include;..\..\src\3rdparty\ffmpeg\include;..\..\src\3rdparty\pthread\include"
+				AdditionalIncludeDirectories="..\..\src\3rdparty\opencv\include;..\..\src\3rdparty\ffmpeg\include;..\..\src\3rdparty\pthread\include;..\..\src\3rdparty\glut\include"
 				PreprocessorDefinitions="WIN32;NOMINMAX;NDEBUG;_CONSOLE;__STDC_CONSTANT_MACROS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -140,9 +140,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wsock32.lib opencv_calib3d249.lib opencv_contrib249.lib opencv_core249.lib opencv_features2d249.lib opencv_flann249.lib opencv_highgui249.lib opencv_imgproc249.lib opencv_legacy249.lib opencv_ml249.lib opencv_objdetect249.lib opencv_photo249.lib opencv_stitching249.lib opencv_superres249.lib opencv_video249.lib opencv_videostab249.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib swresample.lib swscale.lib pthreadVC2.lib"
+				AdditionalDependencies="wsock32.lib opencv_calib3d249.lib opencv_contrib249.lib opencv_core249.lib opencv_features2d249.lib opencv_flann249.lib opencv_highgui249.lib opencv_imgproc249.lib opencv_legacy249.lib opencv_ml249.lib opencv_objdetect249.lib opencv_photo249.lib opencv_stitching249.lib opencv_superres249.lib opencv_video249.lib opencv_videostab249.lib avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib swresample.lib swscale.lib pthreadVC2.lib glut32.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\src\3rdparty\opencv\lib\vs2008;..\..\src\3rdparty\ffmpeg\lib;..\..\src\3rdparty\pthread\lib"
+				AdditionalLibraryDirectories="..\..\src\3rdparty\opencv\lib\vs2008;..\..\src\3rdparty\ffmpeg\lib;..\..\src\3rdparty\pthread\lib;..\..\src\3rdparty\glut\lib"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\obj\release\release.pdb"

@@ -61,6 +61,12 @@ LIBRARY DEPENDENCIES
   - POSIX Threads for Win32 2.9.1 <LGPL v2.1 license>
     http://www.sourceware.org/pthreads-win32/
 
+  Marker-based AR sample uses following libraries adding to the above.
+  - GLUT for Win32 3.7.6
+    http://user.xmission.com/~nate/glut.html
+  - MarkerDetector.hpp
+    https://github.com/MasteringOpenCV/code/tree/master/Chapter2_iPhoneAR/Example_MarkerBasedAR/Example_MarkerBasedAR
+
   License files for each library can be found in the 'licenses' folder.
 
 Thank you.

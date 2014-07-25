@@ -51,7 +51,7 @@ int main(int argc, char **argv)
         cv::Mat binalized;
         cv::Scalar lower(minH, minS, minV);
         cv::Scalar upper(maxH, maxS, maxV);
-        cv::inRange(image, lower, upper, binalized);
+        cv::inRange(hsv, lower, upper, binalized);
 
         // Show result
         cv::imshow("binalized", binalized);

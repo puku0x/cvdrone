@@ -53,7 +53,7 @@ int main(int argc, char **argv)
         // Binalize
         CvScalar lower = cvScalar(minH, minS, minV);
         CvScalar upper = cvScalar(maxH, maxS, maxV);
-        cvInRangeS(image, lower, upper, binalized);
+        cvInRangeS(hsv, lower, upper, binalized);
 
         // Show result
         cvShowImage("binalized", binalized);

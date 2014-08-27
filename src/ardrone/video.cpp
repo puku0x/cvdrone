@@ -208,12 +208,12 @@ ARDRONE_IMAGE ARDrone::getImage(void)
 
     // AR.Drone 2.0
     if (version.major == ARDRONE_VERSION_2) {
-        // Copy the frame to the IplImage
+        // Copy current frame to an IplImage
         memcpy(img->imageData, pFrameBGR->data[0], pCodecCtx->width * ((pCodecCtx->height == 368) ? 360 : pCodecCtx->height) * sizeof(uint8_t) * 3);
     }
     // AR.Drone 1.0
     else {
-        // If the sizes of buffer and IplImage are differnt
+        // If the sizes of the buffer and the IplImage are differnt
         if (pCodecCtx->width != img->width || pCodecCtx->height != img->height) {
             // Resize the image to 320x240
             IplImage *small_img = cvCreateImageHeader(cvSize(pCodecCtx->width, pCodecCtx->height), IPL_DEPTH_8U, 3);
@@ -229,6 +229,16 @@ ARDRONE_IMAGE ARDrone::getImage(void)
     if (mutexVideo) pthread_mutex_unlock(mutexVideo);
 
     return ARDRONE_IMAGE(img);
+}
+
+// --------------------------------------------------------------------------
+//! @brief   A variation of getImage() like cv::VideoCapture.
+//! @return  An OpenCV image data (cv::Mat)
+// --------------------------------------------------------------------------
+ARDrone& ARDrone::operator >> (cv::Mat& image)
+{
+    image = getImage();
+    return *this;
 }
 
 // --------------------------------------------------------------------------

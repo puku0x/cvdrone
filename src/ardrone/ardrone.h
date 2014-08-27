@@ -1004,6 +1004,7 @@ public:
 
     // Get an image
     virtual ARDRONE_IMAGE getImage(void);
+    virtual ARDrone& operator >> (cv::Mat& image);
 
     // Get AR.Drone's firmware version
     virtual int getVersion(int *major = NULL, int *minor = NULL, int *revision = NULL);

@@ -5,85 +5,62 @@
 // Description  : This is the entry point of the program.
 // Return value : SUCCESS:0  ERROR:-1
 // --------------------------------------------------------------------------
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
     // AR.Drone class
     ARDrone ardrone;
 
     // Initialize
     if (!ardrone.open()) {
-        printf("Failed to initialize.\n");
+        std::cout << "Failed to initialize." << std::endl;
         return -1;
     }
 
-    // Image of AR.Drone's camera
-    IplImage *image = ardrone.getImage();
+    // Get an image
+    cv::Mat prev_image = ardrone.getImage();
 
-    // Variables for optical flow
-    int corner_count = 50;
-    IplImage *gray = cvCreateImage(cvGetSize(image), IPL_DEPTH_8U, 1);
-    IplImage *prev = cvCreateImage(cvGetSize(image), IPL_DEPTH_8U, 1);
-    cvCvtColor(image, prev, CV_BGR2GRAY);
-    IplImage *eig_img = cvCreateImage(cvGetSize(image), IPL_DEPTH_32F, 1);
-    IplImage *tmp_img = cvCreateImage(cvGetSize(image), IPL_DEPTH_32F, 1);
-    IplImage *prev_pyramid = cvCreateImage(cvSize(image->width+8, image->height/3), IPL_DEPTH_8U, 1);
-    IplImage *curr_pyramid = cvCreateImage(cvSize(image->width+8, image->height/3), IPL_DEPTH_8U, 1);
-    CvPoint2D32f *corners1 = (CvPoint2D32f*)malloc(corner_count * sizeof(CvPoint2D32f));
-    CvPoint2D32f *corners2 = (CvPoint2D32f*)malloc(corner_count * sizeof(CvPoint2D32f));
-
-    // Main loop
     while (1) {
         // Key input
-        int key = cvWaitKey(1);
+        int key = cv::waitKey(33);
         if (key == 0x1b) break;
 
-        // Update
-        if (!ardrone.update()) break;
-
         // Get an image
-        image = ardrone.getImage();
+        cv::Mat image = ardrone.getImage();
 
         // Convert the camera image to grayscale
-        cvCvtColor(image, gray, CV_BGR2GRAY);
+        cv::Mat prev_gray, new_gray;
+        cv::cvtColor(image, new_gray, cv::COLOR_BGR2GRAY);
+        cv::cvtColor(prev_image, prev_gray, cv::COLOR_BGR2GRAY);
 
-        // Detect features
-        int corner_count = 50;
-        cvGoodFeaturesToTrack(prev, eig_img, tmp_img, corners1, &corner_count, 0.1, 5.0, NULL);
+        // Detect corners
+        int max_corners = 50;
+        std::vector<cv::Point2f> prev_corners;
+        std::vector<cv::Point2f> new_corners;
+        cv::goodFeaturesToTrack(prev_gray, prev_corners, max_corners, 0.1, 5.0);
+        cv::goodFeaturesToTrack(new_gray, new_corners, max_corners, 0.1, 5.0);
 
-        // Corner detected
-        if (corner_count > 0) {
-            char *status = (char*)malloc(corner_count * sizeof(char));
-
-            // Calicurate optical flows
-            CvTermCriteria criteria = cvTermCriteria(CV_TERMCRIT_ITER|CV_TERMCRIT_EPS, 20, 0.3);
-            cvCalcOpticalFlowPyrLK(prev, gray, prev_pyramid, curr_pyramid, corners1, corners2, corner_count, cvSize(10, 10), 3, status, NULL, criteria, 0);
-
-            // Drow the optical flows
-            for (int i = 0; i < corner_count; i++) {
-                cvCircle(image, cvPointFrom32f(corners1[i]), 1, CV_RGB (255, 0, 0));
-                if (status[i]) cvLine(image, cvPointFrom32f(corners1[i]), cvPointFrom32f(corners2[i]), CV_RGB (0, 0, 255), 1, CV_AA, 0);
-            }
-
-            // Release the memory
-            free(status);
-        }
+        // Calclate optical flow
+        std::vector<unsigned char> status;
+        std::vector<float> errors;
+        cv::calcOpticalFlowPyrLK(prev_gray, new_gray, prev_corners, new_corners, status, errors);
 
         // Save the last frame
-        cvCopy(gray, prev);
+        image.copyTo(prev_image);
+
+        // Draw optical flow
+        for (size_t i = 0; i < status.size(); i++) {
+            cv::Point p0(ceil(prev_corners[i].x), ceil(prev_corners[i].y));
+            cv::Point p1(ceil(new_corners[i].x), ceil(new_corners[i].y));
+            cv::line(image, p0, p1, cv::Scalar(0, 255, 0), 2);
+        }
+
+        // Change camera
+        static int mode = 0;
+        if (key == 'c') ardrone.setCamera(++mode % 4);
 
         // Display the image
-        cvShowImage("camera", image);
+        cv::imshow("camera", image);
     }
-
-    // Release the images
-    cvReleaseImage(&gray);
-    cvReleaseImage(&prev);
-    cvReleaseImage(&eig_img);
-    cvReleaseImage(&tmp_img);
-    cvReleaseImage(&prev_pyramid);
-    cvReleaseImage(&curr_pyramid);
-    free(corners1);
-    free(corners2);
 
     // See you
     ardrone.close();

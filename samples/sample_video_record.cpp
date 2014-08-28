@@ -5,29 +5,26 @@
 // Description  : This is the entry point of the program.
 // Return value : SUCCESS:0  ERROR:-1
 // --------------------------------------------------------------------------
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
     // AR.Drone class
     ARDrone ardrone;
 
     // Initialize
     if (!ardrone.open()) {
-        printf("Failed to initialize.\n");
+        std::cout << "Failed to initialize." << std::endl;
         return -1;
     }
 
     // Recording flag
     bool rec = false;
-    printf("Press 'R' to start/stop recording.");
+    std::cout << "Press 'R' to start/stop recording." << std::endl;
 
     // Main loop
     while (1) {
         // Key input
-        int key = cvWaitKey(1);
+        int key = cv::waitKey(1);
         if (key == 0x1b) break;
-
-        // Update
-        if (!ardrone.update()) break;
 
         // Video recording start / stop
         if (key == 'r') {
@@ -36,16 +33,13 @@ int main(int argc, char **argv)
         }
 
         // Get an image
-        IplImage *image = ardrone.getImage();
+        cv::Mat image = ardrone.getImage();
 
         // Show recording state
-        if (rec) {
-            static CvFont font = cvFont(1.0);
-            cvPutText(image, "REC", cvPoint(10, 20), &font, CV_RGB(255,0,0));
-        }
+        if (rec) cv::putText(image, "REC", cv::Point(10, 20), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 1, cv::LINE_AA);
 
         // Display the image
-        cvShowImage("camera", image);
+        cv::imshow("camera", image);
     }
 
     // See you

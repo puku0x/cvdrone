@@ -26,25 +26,22 @@ int main(int argc, char *argv[])
         int key = cv::waitKey(1);
         if (key == 0x1b) break;
 
-        // Update
-        if (!ardrone.update()) break;
-
         // Get an image
-        cv::Mat img = ardrone.getImage();
+        cv::Mat image = ardrone.getImage();
 
         // Detect
         std::vector<cv::Rect> found;
-        hog.detectMultiScale(img, found, 0, cv::Size(4,4), cv::Size(0, 0), 1.5, 2.0);
+        hog.detectMultiScale(image, found, 0, cv::Size(4, 4), cv::Size(0, 0), 1.5, 2.0);
 
         // Show bounding rect
         std::vector<cv::Rect>::const_iterator it;
         for (it = found.begin(); it != found.end(); ++it) {
             cv::Rect r = *it;
-            cv::rectangle(img, r.tl(), r.br(), cv::Scalar(255,0,0), 2);
+            cv::rectangle(image, r.tl(), r.br(), cv::Scalar(255, 0, 0), 2);
         }
 
         // Display the image
-        cv::imshow("hog", img); 
+        cv::imshow("hog", image); 
     }
 
     // See you

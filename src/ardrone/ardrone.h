@@ -50,7 +50,11 @@
 #include <stdarg.h>
 #include <math.h>
 
-// OpenCV
+// OpenCV 1.0
+#include <opencv/cv.h>
+#include <opencv/highgui.h>
+
+// OpenCV 2.0
 #include <opencv2/opencv.hpp>
 
 // FFmpeg
@@ -979,8 +983,9 @@ public:
     }
     operator cv::Mat() {
         if (!image) return cv::Mat();
-        return cv::Mat(image, true);
+        return cv::cvarrToMat(image, true);
     }
+
 private:
     IplImage *image;
 };
@@ -1004,7 +1009,7 @@ public:
 
     // Get an image
     virtual ARDRONE_IMAGE getImage(void);
-    virtual ARDrone& operator >> (cv::Mat& image);
+    virtual ARDrone& operator >> (cv::Mat &image);
 
     // Get AR.Drone's firmware version
     virtual int getVersion(int *major = NULL, int *minor = NULL, int *revision = NULL);

@@ -5,51 +5,48 @@
 // Description  : This is the entry point of the program.
 // Return value : SUCCESS:0  ERROR:-1
 // --------------------------------------------------------------------------
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
     // AR.Drone class
     ARDrone ardrone;
 
     // Initialize
     if (!ardrone.open()) {
-        printf("Failed to initialize.\n");
+        std::cout << "Failed to initialize." << std::endl;
         return -1;
     }
 
     // Battery
-    printf("Battery = %d%%\n", ardrone.getBatteryPercentage());
+    std::cout << "Battery = " << ardrone.getBatteryPercentage() << "[%]" << std::endl;
 
     // Instructions
-    printf("***************************************\n");
-    printf("*       CV Drone sample program       *\n");
-    printf("*           - How to Play -           *\n");
-    printf("***************************************\n");
-    printf("*                                     *\n");
-    printf("* - Controls -                        *\n");
-    printf("*    'Space' -- Takeoff/Landing       *\n");
-    printf("*    'Up'    -- Move forward          *\n");
-    printf("*    'Down'  -- Move backward         *\n");
-    printf("*    'Left'  -- Turn left             *\n");
-    printf("*    'Right' -- Turn right            *\n");
-    printf("*    'Q'     -- Move upward           *\n");
-    printf("*    'A'     -- Move downward         *\n");
-    printf("*                                     *\n");
-    printf("* - Others -                          *\n");
-    printf("*    'C'     -- Change camera         *\n");
-    printf("*    'Esc'   -- Exit                  *\n");
-    printf("*                                     *\n");
-    printf("***************************************\n\n");
+    std::cout << "***************************************" << std::endl;
+    std::cout << "*       CV Drone sample program       *" << std::endl;
+    std::cout << "*           - How to play -           *" << std::endl;
+    std::cout << "***************************************" << std::endl;
+    std::cout << "*                                     *" << std::endl;
+    std::cout << "* - Controls -                        *" << std::endl;
+    std::cout << "*    'Space' -- Takeoff/Landing       *" << std::endl;
+    std::cout << "*    'Up'    -- Move forward          *" << std::endl;
+    std::cout << "*    'Down'  -- Move backward         *" << std::endl;
+    std::cout << "*    'Left'  -- Turn left             *" << std::endl;
+    std::cout << "*    'Right' -- Turn right            *" << std::endl;
+    std::cout << "*    'Q'     -- Move upward           *" << std::endl;
+    std::cout << "*    'A'     -- Move downward         *" << std::endl;
+    std::cout << "*                                     *" << std::endl;
+    std::cout << "* - Others -                          *" << std::endl;
+    std::cout << "*    'C'     -- Change camera         *" << std::endl;
+    std::cout << "*    'Esc'   -- Exit                  *" << std::endl;
+    std::cout << "*                                     *" << std::endl;
+    std::cout << "***************************************\n" << std::endl;
 
     while (1) {
         // Key input
-        int key = cvWaitKey(33);
+        int key = cv::waitKey(33);
         if (key == 0x1b) break;
 
-        // Update
-        if (!ardrone.update()) break;
-
         // Get an image
-        IplImage *image = ardrone.getImage();
+        cv::Mat image = ardrone.getImage();
 
         // Take off / Landing 
         if (key == ' ') {
@@ -69,10 +66,10 @@ int main(int argc, char **argv)
 
         // Change camera
         static int mode = 0;
-        if (key == 'c') ardrone.setCamera(++mode%4);
+        if (key == 'c') ardrone.setCamera(++mode % 4);
 
         // Display the image
-        cvShowImage("camera", image);
+        cv::imshow("camera", image);
     }
 
     // See you

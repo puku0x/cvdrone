@@ -5,128 +5,163 @@
 // Description  : This is the entry point of the program.
 // Return value : SUCCESS:0  ERROR:-1
 // --------------------------------------------------------------------------
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
     // AR.Drone class
     ARDrone ardrone;
 
     // Initialize
     if (!ardrone.open()) {
-        printf("Failed to initialize.\n");
+        std::cout << "Failed to initialize." << std::endl;
         return -1;
     }
-
-    // Kalman filter
-    CvKalman *kalman = cvCreateKalman(4, 2);
-
-    // Setup
-    cvSetIdentity(kalman->measurement_matrix, cvRealScalar(1.0));
-    cvSetIdentity(kalman->process_noise_cov, cvRealScalar(1e-5));
-    cvSetIdentity(kalman->measurement_noise_cov, cvRealScalar(0.1));
-    cvSetIdentity(kalman->error_cov_post, cvRealScalar(1.0));
-
-    // Linear system
-    kalman->DynamMatr[0]  = 1.0; kalman->DynamMatr[1]  = 0.0; kalman->DynamMatr[2]  = 1.0; kalman->DynamMatr[3]  = 0.0; 
-    kalman->DynamMatr[4]  = 0.0; kalman->DynamMatr[5]  = 1.0; kalman->DynamMatr[6]  = 0.0; kalman->DynamMatr[7]  = 1.0; 
-    kalman->DynamMatr[8]  = 0.0; kalman->DynamMatr[9]  = 0.0; kalman->DynamMatr[10] = 1.0; kalman->DynamMatr[11] = 0.0; 
-    kalman->DynamMatr[12] = 0.0; kalman->DynamMatr[13] = 0.0; kalman->DynamMatr[14] = 0.0; kalman->DynamMatr[15] = 1.0; 
 
     // Thresholds
     int minH = 0, maxH = 255;
     int minS = 0, maxS = 255;
     int minV = 0, maxV = 255;
 
+    // XML save data
+    std::string filename("thresholds.xml");
+    cv::FileStorage fs(filename, cv::FileStorage::READ);
+
+    // If there is a save file then read it
+    if (fs.isOpened()) {
+        maxH = fs["H_MAX"];
+        minH = fs["H_MIN"];
+        maxS = fs["S_MAX"];
+        minS = fs["S_MIN"];
+        maxV = fs["V_MAX"];
+        minV = fs["V_MIN"];
+        fs.release();
+    }
+
     // Create a window
-    cvNamedWindow("binalized");
-    cvCreateTrackbar("H max", "binalized", &maxH, 255);
-    cvCreateTrackbar("H min", "binalized", &minH, 255);
-    cvCreateTrackbar("S max", "binalized", &maxS, 255);
-    cvCreateTrackbar("S min", "binalized", &minS, 255);
-    cvCreateTrackbar("V max", "binalized", &maxV, 255);
-    cvCreateTrackbar("V min", "binalized", &minV, 255);
-    cvResizeWindow("binalized", 0, 0);
+    cv::namedWindow("binalized");
+    cv::createTrackbar("H max", "binalized", &maxH, 255);
+    cv::createTrackbar("H min", "binalized", &minH, 255);
+    cv::createTrackbar("S max", "binalized", &maxS, 255);
+    cv::createTrackbar("S min", "binalized", &minS, 255);
+    cv::createTrackbar("V max", "binalized", &maxV, 255);
+    cv::createTrackbar("V min", "binalized", &minV, 255);
+    cv::resizeWindow("binalized", 0, 0);
+
+    // Kalman filter
+    cv::KalmanFilter kalman(4, 2, 0);
+
+    // Sampling time [s]
+    const double dt = 1.0;
+
+    // Transition matrix (x, y, vx, vy)
+    cv::Mat1f A(4, 4);
+    A << 1.0, 0.0,  dt, 0.0,
+         0.0, 1.0, 0.0,  dt,
+         0.0, 0.0, 1.0, 0.0,
+         0.0, 0.0, 0.0, 1.0;
+    kalman.transitionMatrix = A;
+
+    // Measurement matrix (x, y)
+    cv::Mat1f H(2, 4);
+    H << 1, 0, 0, 0,
+         0, 1, 0, 0;
+    kalman.measurementMatrix = H;
+
+    // Process noise covairance (x, y, vx, vy)
+    cv::Mat1f Q(4, 4);
+    Q << 1e-5,  0.0,  0.0,  0.0,
+          0.0, 1e-5,  0.0,  0.0,
+          0.0,  0.0, 1e-5,  0.0,
+          0.0,  0.0,  0.0, 1e-5;
+    kalman.processNoiseCov = Q;
+
+    // Measurement noise covariance (x, y)
+    cv::Mat1f R(2, 2);
+    R << 1e-1,  0.0,
+          0.0, 1e-1;
+    kalman.measurementNoiseCov = R;
 
     // Main loop
     while (1) {
         // Key input
-        int key = cvWaitKey(1);
+        int key = cv::waitKey(33);
         if (key == 0x1b) break;
 
-        // Update
-        if (!ardrone.update()) break;
-
         // Get an image
-        IplImage *image = ardrone.getImage();
+        cv::Mat image = ardrone.getImage();
 
         // HSV image
-        IplImage *hsv = cvCloneImage(image);
-        cvCvtColor(image, hsv, CV_RGB2HSV_FULL);
-
-        // Binalized image
-        IplImage *binalized = cvCreateImage(cvGetSize(image), IPL_DEPTH_8U, 1);
+        cv::Mat hsv;
+        cv::cvtColor(image, hsv, cv::COLOR_BGR2HSV_FULL);
 
         // Binalize
-        CvScalar lower = cvScalar(minH, minS, minV);
-        CvScalar upper = cvScalar(maxH, maxS, maxV);
-        cvInRangeS(hsv, lower, upper, binalized);
+        cv::Mat binalized;
+        cv::Scalar lower(minH, minS, minV);
+        cv::Scalar upper(maxH, maxS, maxV);
+        cv::inRange(hsv, lower, upper, binalized);
 
         // Show result
-        cvShowImage("binalized", binalized);
+        cv::imshow("binalized", binalized);
 
         // De-noising
-        cvMorphologyEx(binalized, binalized, NULL, NULL, CV_MOP_CLOSE);
- 
+        cv::Mat kernel = getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
+        cv::morphologyEx(binalized, binalized, cv::MORPH_CLOSE, kernel);
+        //cv::imshow("morphologyEx", binalized);
+
         // Detect contours
-        CvSeq *contour = NULL, *maxContour = NULL;
-        CvMemStorage *contourStorage = cvCreateMemStorage();
-        cvFindContours(binalized, contourStorage, &contour, sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+        std::vector<std::vector<cv::Point>> contours;
+        cv::findContours(binalized.clone(), contours, cv::RETR_CCOMP, cv::CHAIN_APPROX_SIMPLE);
 
         // Find largest contour
+        int contour_index = -1;
         double max_area = 0.0;
-        while (contour) {
-            double area = fabs(cvContourArea(contour));
-            if ( area > max_area) {
-                maxContour = contour;
+        for (size_t i = 0; i < contours.size(); i++) {
+            double area = fabs(cv::contourArea(contours[i]));
+            if (area > max_area) {
+                contour_index = i;
                 max_area = area;
             }
-            contour = contour->h_next;
         }
 
         // Object detected
-        if (maxContour) {
-            // Draw a contour
-            cvZero(binalized);
-            cvDrawContours(binalized, maxContour, cvScalarAll(255), cvScalarAll(255), 0, CV_FILLED);
-
-            // Calculate the moments
-            CvMoments moments;
-            cvMoments(binalized, &moments, 1);
-            int my = (int)(moments.m01/moments.m00);
-            int mx = (int)(moments.m10/moments.m00);
+        if (contour_index >= 0) {
+            // Moments
+            cv::Moments moments = cv::moments(contours[contour_index], true);
+            double marker_y = (int)(moments.m01 / moments.m00);
+            double marker_x = (int)(moments.m10 / moments.m00);
 
             // Measurements
-            float m[] = {mx, my};
-            CvMat measurement = cvMat(2, 1, CV_32FC1, m);
+            cv::Mat measurement = (cv::Mat1f(2, 1) << marker_x, marker_y);
 
-            // Correct phase
-            const CvMat *correction = cvKalmanCorrect(kalman, &measurement);
+            // Correction
+            cv::Mat estimated = kalman.correct(measurement);
+
+            // Show result
+            cv::Rect rect = cv::boundingRect(contours[contour_index]);
+            cv::rectangle(image, rect, cv::Scalar(0, 255, 0));
         }
 
-        // Prediction phase
-        const CvMat *prediction = cvKalmanPredict(kalman);
+        // Prediction
+        cv::Mat1f prediction = kalman.predict();
+        int radius = 1e+3 * kalman.errorCovPre.at<float>(0, 0);
+
+        // Show predicted position
+        cv::circle(image, cv::Point(prediction(0, 0), prediction(0, 1)), radius, cv::Scalar(0, 255, 0), 2);
 
         // Display the image
-        cvCircle(image, cvPointFrom32f(cvPoint2D32f(prediction->data.fl[0], prediction->data.fl[1])), 10, CV_RGB(0,255,0));
-        cvShowImage("camera", image);
-
-        // Release the memories
-        cvReleaseImage(&hsv);
-        cvReleaseImage(&binalized);
-        cvReleaseMemStorage(&contourStorage);
+        cv::imshow("camera", image);
     }
 
-    // Release the kalman filter
-    cvReleaseKalman(&kalman);
+    // Save thresholds
+    fs.open(filename, cv::FileStorage::WRITE);
+    if (fs.isOpened()) {
+        cv::write(fs, "H_MAX", maxH);
+        cv::write(fs, "H_MIN", minH);
+        cv::write(fs, "S_MAX", maxS);
+        cv::write(fs, "S_MIN", minS);
+        cv::write(fs, "V_MAX", maxV);
+        cv::write(fs, "V_MIN", minV);
+        fs.release();
+    }
 
     // See you
     ardrone.close();

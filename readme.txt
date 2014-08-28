@@ -52,7 +52,7 @@ FOR VS2010 USERS
 
 LIBRARY DEPENDENCIES
   CV Drone uses following libraries.
-  - OpenCV 2.4.9
+  - OpenCV 3.0.0 Alpha <BSD license>
     http://opencv.org/
   - FFmpeg 2.2.3 <LGPL v2.1 license>
     http://www.ffmpeg.org/
@@ -64,7 +64,7 @@ LIBRARY DEPENDENCIES
   Marker-based AR sample uses following libraries adding to the above.
   - GLUT for Win32 3.7.6
     http://user.xmission.com/~nate/glut.html
-  - MarkerDetector.hpp
+  - MarkerDetector
     https://github.com/MasteringOpenCV/code/tree/master/Chapter2_iPhoneAR/Example_MarkerBasedAR/Example_MarkerBasedAR
 
   License files for each library can be found in the 'licenses' folder.

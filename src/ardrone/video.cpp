@@ -235,7 +235,7 @@ ARDRONE_IMAGE ARDrone::getImage(void)
 //! @brief   A variation of getImage() like cv::VideoCapture.
 //! @return  An OpenCV image data (cv::Mat)
 // --------------------------------------------------------------------------
-ARDrone& ARDrone::operator >> (cv::Mat& image)
+ARDrone& ARDrone::operator >> (cv::Mat &image)
 {
     image = getImage();
     return *this;

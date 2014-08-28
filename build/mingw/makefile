@@ -10,21 +10,22 @@ LIBS          = -lm                          \
                 -lavformat.dll               \
                 -lavutil.dll                 \ 
                 -lswscale.dll                \
-                -lopencv_calib3d249.dll      \
-                -lopencv_contrib249.dll      \
-                -lopencv_core249.dll         \
-                -lopencv_features2d249.dll   \
-                -lopencv_flann249.dll        \
-                -lopencv_highgui249.dll      \
-                -lopencv_imgproc249.dll      \
-                -lopencv_legacy249.dll       \
-                -lopencv_ml249.dll           \
-                -lopencv_objdetect249.dll    \
-                -lopencv_photo249.dll        \
-                -lopencv_stitching249.dll    \
-                -lopencv_superres249.dll     \
-                -lopencv_video249.dll        \
-                -lopencv_videostab249.dll
+                -lopencv_calib3d300.dll      \
+                -lopencv_core300.dll         \
+                -lopencv_features2d300.dll   \
+                -lopencv_flann300.dll        \
+                -lopencv_highgui300.dll      \
+                -lopencv_imgcodec300.dll     \
+                -lopencv_imgproc300.dll      \
+                -lopencv_ml300.dll           \
+                -lopencv_objdetect300.dll    \
+                -lopencv_photo300.dll        \
+                -lopencv_shape300.dll        \
+                -lopencv_stitching300.dll    \
+                -lopencv_superres300.dll     \
+                -lopencv_video300.dll        \
+                -lopencv_videoio300.dll      \
+                -lopencv_videostab300.dll
 OBJS          = ../../src/ardrone/ardrone.o \
                 ../../src/ardrone/command.o \
                 ../../src/ardrone/config.o  \

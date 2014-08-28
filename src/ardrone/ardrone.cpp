@@ -152,6 +152,9 @@ int ARDrone::open(const char *ardrone_addr)
     // Initialize AT command
     if (!initCommand()) return 0;
 
+    // Blink LEDs
+    setLED(ARDRONE_LED_ANIM_BLINK_GREEN);
+
     // Initialize Navdata
     if (!initNavdata()) return 0;
 
@@ -163,6 +166,9 @@ int ARDrone::open(const char *ardrone_addr)
 
     // Get configurations
     if (!getConfig()) return 0;
+
+    // Stop LED animation
+    setLED(ARDRONE_LED_ANIM_STANDARD);
 
     // Reset emergency
     resetWatchDog();
@@ -190,6 +196,9 @@ void ARDrone::close(void)
 {
     // Stop AR.Drone
     if (!onGround()) landing();
+
+    // Stop LED animation
+    setLED(ARDRONE_LED_ANIM_STANDARD);
 
     // Finalize video
     finalizeVideo();

@@ -220,22 +220,6 @@ void key(unsigned char key, int x, int y) {
 }
 
 // --------------------------------------------------------------------------
-// resize(Width of window, Height of window)
-// Description  : Resizing function.
-// Return value : NONE
-// --------------------------------------------------------------------------
-void resize(int w, int h)
-{
-	// Set viewport
-	glViewport(0, 0, w, h);
-
-	// Set projection matrix
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(30.0, (double)w / (double)h, 0.01, 100.0);
-}
-
-// --------------------------------------------------------------------------
 // main(Number of arguments, Argument values)
 // Description  : This is the entry point of the program.
 // Return value : SUCCESS:0  ERROR:-1
@@ -252,7 +236,7 @@ int main(int argc, char *argv[])
 	cv::Mat frame = ardrone.getImage();
 
 	// Open XML file
-    std::string filename("camera_ardrone.xml");
+    std::string filename("camera.xml");
     std::fstream file(filename.c_str(), std::ios::in);
 
     // Not found
@@ -295,7 +279,7 @@ int main(int argc, char *argv[])
 			// Show the image
 			std::ostringstream stream;
 			stream << "Captured " << images.size() << " image(s).";
-			cv::putText(frame, stream.str(), cv::Point(10, 20), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 1, CV_AA);
+			cv::putText(frame, stream.str(), cv::Point(10, 20), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 1, cv::LINE_AA);
 			cv::imshow("Camera Calibration", frame);
 		}
 
@@ -331,7 +315,7 @@ int main(int argc, char *argv[])
 			// Estimate camera parameters
 			cv::Mat cameraMatrix, distCoeffs;
 			std::vector<cv::Mat> rvec, tvec;
-			cv::calibrateCamera(corners3D, corners2D, images[0].size(), cameraMatrix, distCoeffs, rvec, tvec, CV_CALIB_FIX_PRINCIPAL_POINT);
+			cv::calibrateCamera(corners3D, corners2D, images[0].size(), cameraMatrix, distCoeffs, rvec, tvec);
 			std::cout << cameraMatrix << std::endl;
 			std::cout << distCoeffs << std::endl;
 
@@ -365,7 +349,8 @@ int main(int argc, char *argv[])
 	float fy = cameraMatrix.at<double>(1, 1);
 	float cx = cameraMatrix.at<double>(0, 2);
 	float cy = cameraMatrix.at<double>(1, 2);
-	calibration = CameraCalibration(fx, fy, cx, cy);
+	//calibration = CameraCalibration(fx, fy, cx, cy);
+    calibration = CameraCalibration(fx, fy, frame.cols / 2, frame.rows / 2);
 
 	// Initialize GLUT
 	glutInit(&argc, argv);

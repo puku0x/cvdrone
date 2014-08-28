@@ -5,14 +5,14 @@
 // Description  : This is the entry point of the program.
 // Return value : SUCCESS:0  ERROR:-1
 // --------------------------------------------------------------------------
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
     // AR.Drone class
     ARDrone ardrone;
 
     // Initialize
     if (!ardrone.open()) {
-        printf("Failed to initialize.\n");
+        std::cout << "Failed to initialize." << std::endl;
         return -1;
     }
 
@@ -21,83 +21,95 @@ int main(int argc, char **argv)
     int minS = 0, maxS = 255;
     int minV = 0, maxV = 255;
 
+    // XML save data
+    std::string filename("thresholds.xml");
+    cv::FileStorage fs(filename, cv::FileStorage::READ);
+
+    // If there is a save file then read it
+    if (fs.isOpened()) {
+        maxH = fs["H_MAX"];
+        minH = fs["H_MIN"];
+        maxS = fs["S_MAX"];
+        minS = fs["S_MIN"];
+        maxV = fs["V_MAX"];
+        minV = fs["V_MIN"];
+        fs.release();
+    }
+
     // Create a window
-    cvNamedWindow("binalized");
-    cvCreateTrackbar("H max", "binalized", &maxH, 255);
-    cvCreateTrackbar("H min", "binalized", &minH, 255);
-    cvCreateTrackbar("S max", "binalized", &maxS, 255);
-    cvCreateTrackbar("S min", "binalized", &minS, 255);
-    cvCreateTrackbar("V max", "binalized", &maxV, 255);
-    cvCreateTrackbar("V min", "binalized", &minV, 255);
-    cvResizeWindow("binalized", 0, 0);
+    cv::namedWindow("binalized");
+    cv::createTrackbar("H max", "binalized", &maxH, 255);
+    cv::createTrackbar("H min", "binalized", &minH, 255);
+    cv::createTrackbar("S max", "binalized", &maxS, 255);
+    cv::createTrackbar("S min", "binalized", &minS, 255);
+    cv::createTrackbar("V max", "binalized", &maxV, 255);
+    cv::createTrackbar("V min", "binalized", &minV, 255);
+    cv::resizeWindow("binalized", 0, 0);
 
     // Main loop
     while (1) {
         // Key input
-        int key = cvWaitKey(33);
+        int key = cv::waitKey(33);
         if (key == 0x1b) break;
 
-        // Update
-        if (!ardrone.update()) break;
-
         // Get an image
-        IplImage *image = ardrone.getImage();
+        cv::Mat image = ardrone.getImage();
 
         // HSV image
-        IplImage *hsv = cvCloneImage(image);
-        cvCvtColor(image, hsv, CV_RGB2HSV_FULL);
-
-        // Binalized image
-        IplImage *binalized = cvCreateImage(cvGetSize(image), IPL_DEPTH_8U, 1);
+        cv::Mat hsv;
+        cv::cvtColor(image, hsv, cv::COLOR_BGR2HSV_FULL);
 
         // Binalize
-        CvScalar lower = cvScalar(minH, minS, minV);
-        CvScalar upper = cvScalar(maxH, maxS, maxV);
-        cvInRangeS(hsv, lower, upper, binalized);
+        cv::Mat binalized;
+        cv::Scalar lower(minH, minS, minV);
+        cv::Scalar upper(maxH, maxS, maxV);
+        cv::inRange(hsv, lower, upper, binalized);
 
         // Show result
-        cvShowImage("binalized", binalized);
+        cv::imshow("binalized", binalized);
 
         // De-noising
-        cvMorphologyEx(binalized, binalized, NULL, NULL, CV_MOP_CLOSE);
- 
+        cv::Mat kernel = getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
+        cv::morphologyEx(binalized, binalized, cv::MORPH_CLOSE, kernel);
+        //cv::imshow("morphologyEx", binalized);
+
         // Detect contours
-        CvSeq *contour = NULL, *maxContour = NULL;
-        CvMemStorage *contourStorage = cvCreateMemStorage();
-        cvFindContours(binalized, contourStorage, &contour, sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+        std::vector<std::vector<cv::Point>> contours;
+        cv::findContours(binalized.clone(), contours, cv::RETR_CCOMP, cv::CHAIN_APPROX_SIMPLE);
 
         // Find largest contour
+        int contour_index = -1;
         double max_area = 0.0;
-        while (contour) {
-            double area = fabs(cvContourArea(contour));
+        for (size_t i = 0; i < contours.size(); i++) {
+            double area = fabs(cv::contourArea(contours[i]));
             if (area > max_area) {
-                maxContour = contour;
+                contour_index = i;
                 max_area = area;
             }
-            contour = contour->h_next;
         }
 
         // Object detected
-        if (maxContour) {
+        if (contour_index >= 0) {
             // Show result
-            CvRect rect = cvBoundingRect(maxContour);
-            CvPoint minPoint, maxPoint;
-            minPoint.x = rect.x;
-            minPoint.y = rect.y;
-            maxPoint.x = rect.x + rect.width;
-            maxPoint.y = rect.y + rect.height;
-            cvRectangle(image, minPoint, maxPoint, CV_RGB(0,255,0));
+            cv::Rect rect = cv::boundingRect(contours[contour_index]);
+            cv::rectangle(image, rect, cv::Scalar(0,255,0));
+            //cv::drawContours(image, contours, contour_index, cv::Scalar(0,255,0));
         }
 
-        // Release memory
-        cvReleaseMemStorage(&contourStorage);
-
         // Display the image
-        cvShowImage("camera", image);
+        cv::imshow("camera", image);
+    }
 
-        // Release images
-        cvReleaseImage(&hsv);
-        cvReleaseImage(&binalized);
+    // Save thresholds
+    fs.open(filename, cv::FileStorage::WRITE);
+    if (fs.isOpened()) {
+        cv::write(fs, "H_MAX", maxH);
+        cv::write(fs, "H_MIN", minH);
+        cv::write(fs, "S_MAX", maxS);
+        cv::write(fs, "S_MIN", minS);
+        cv::write(fs, "V_MAX", maxV);
+        cv::write(fs, "V_MIN", minV);
+        fs.release();
     }
 
     // See you

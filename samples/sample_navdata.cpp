@@ -5,51 +5,48 @@
 // Description  : This is the entry point of the program.
 // Return value : SUCCESS:0  ERROR:-1
 // --------------------------------------------------------------------------
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
     // AR.Drone class
     ARDrone ardrone;
 
     // Initialize
     if (!ardrone.open()) {
-        printf("Failed to initialize.\n");
+        std::cout << "Failed to initialize." << std::endl;
         return -1;
     }
 
     // Main loop
     while (1) {
         // Key input
-        int key = cvWaitKey(33);
+        int key = cv::waitKey(33);
         if (key == 0x1b) break;
 
-        // Update
-        if (!ardrone.update()) break;
-
         // Get an image
-        IplImage *image = ardrone.getImage();
+        cv::Mat image= ardrone.getImage();
 
         // Orientation
         double roll  = ardrone.getRoll();
         double pitch = ardrone.getPitch();
         double yaw   = ardrone.getYaw();
-        printf("ardrone.roll  = %3.2f [deg]\n", roll  * RAD_TO_DEG);
-        printf("ardrone.pitch = %3.2f [deg]\n", pitch * RAD_TO_DEG);
-        printf("ardrone.yaw   = %3.2f [deg]\n", yaw   * RAD_TO_DEG);
+        std::cout << "ardrone.roll  = " << roll  * RAD_TO_DEG << " [deg]" << std::endl;
+        std::cout << "ardrone.pitch = " << pitch * RAD_TO_DEG << " [deg]" << std::endl;
+        std::cout << "ardrone.yaw   = " << yaw   * RAD_TO_DEG << " [deg]" << std::endl;
 
         // Altitude
         double altitude = ardrone.getAltitude();
-        printf("ardrone.altitude = %3.2f [m]\n", altitude);
+        std::cout << "ardrone.altitude = " << altitude << " [m]" << std::endl;
 
         // Velocity
         double vx, vy, vz;
         double velocity = ardrone.getVelocity(&vx, &vy, &vz);
-        printf("ardrone.vx = %3.2f [m/s]\n", vx);
-        printf("ardrone.vy = %3.2f [m/s]\n", vy);
-        printf("ardrone.vz = %3.2f [m/s]\n", vz);
+        std::cout << "ardrone.vx = " << vx << " [m/s]" << std::endl;
+        std::cout << "ardrone.vy = " << vy << " [m/s]" << std::endl;
+        std::cout << "ardrone.vz = " << vz << " [m/s]" << std::endl;
 
         // Battery
         int battery = ardrone.getBatteryPercentage();
-        printf("ardrone.battery = %d [%%]\n", battery);
+        std::cout << "ardrone.battery = " << battery << " [%%]" << std::endl;
 
         // Take off / Landing 
         if (key == ' ') {
@@ -70,7 +67,7 @@ int main(int argc, char **argv)
         if (key == 'c') ardrone.setCamera(++mode%4);
 
         // Display the image
-        cvShowImage("camera", image);
+        cv::imshow("camera", image);
     }
 
     // See you

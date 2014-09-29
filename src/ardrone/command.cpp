@@ -55,22 +55,49 @@ int ARDrone::initCommand(void)
         // Set the configuration IDs
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"custom:session_id\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID);
-        msleep(100);
+        msleep(500);
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"custom:profile_id\",\"%s\"\r", ++seq, ARDRONE_PROFILE_ID);
-        msleep(100);
+        msleep(500);
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"custom:application_id\",\"%s\"\r", ++seq, ARDRONE_APPLOCATION_ID);
+        msleep(500);
+
+        // Set maximum velocity in Z-axis [mm/s]
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"control:control_vz_max\",\"%d\"\r", ++seq, 700);
         msleep(100);
 
-        // Set maximum altitude
+        // Set maximum yaw [rad/s]
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"control:control_yaw\",\"%f\"\r", ++seq, 99.0 * DEG_TO_RAD);
+        msleep(100);
+
+        // Set maximum euler angle [rad]
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"control:euler_angle_max\",\"%f\"\r", ++seq, 12.0 * DEG_TO_RAD);
+        msleep(100);
+
+        // Set maximum altitude [mm]
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
         sockCommand.sendf("AT*CONFIG=%d,\"control:altitude_max\",\"%d\"\r", ++seq, 3000);
         msleep(100);
 
-        // Disable bitrate control mode
+        // Bitrate control mode
         sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
-        sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"0\"\r", ++seq);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"%d\"\r", ++seq, 0);     // VBC_MODE_DISABLED
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"%d\"\r", ++seq, 1);   // VBC_MODE_DYNAMIC
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"%d\"\r", ++seq, 2);   // VBC_MANUAL
+        msleep(100);
+
+        // Bitrate
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate\",\"%d\"\r", ++seq, 1000);
+        msleep(100);
+
+        // Max bitrate
+        sockCommand.sendf("AT*CONFIG_IDS=%d,\"%s\",\"%s\",\"%s\"\r", ++seq, ARDRONE_SESSION_ID, ARDRONE_PROFILE_ID, ARDRONE_APPLOCATION_ID);
+        sockCommand.sendf("AT*CONFIG=%d,\"video:max_bitrate\",\"%d\"\r", ++seq, 4000);
         msleep(100);
 
         // Set video codec
@@ -102,12 +129,34 @@ int ARDrone::initCommand(void)
         // Send flat trim
         sockCommand.sendf("AT*FTRIM=%d,\r", ++seq);
 
-        // Set maximum altitude
+        // Set maximum velocity in Z-axis [mm/s]
+        sockCommand.sendf("AT*CONFIG=%d,\"control:control_vz_max\",\"%d\"\r", ++seq, 700);
+        msleep(100);
+
+        // Set maximum yaw [rad/s]
+        sockCommand.sendf("AT*CONFIG=%d,\"control:control_yaw\",\"%f\"\r", ++seq, 99.0 * DEG_TO_RAD);
+        msleep(100);
+
+        // Set maximum euler angle [rad]
+        sockCommand.sendf("AT*CONFIG=%d,\"control:euler_angle_max\",\"%f\"\r", ++seq, 12.0 * DEG_TO_RAD);
+        msleep(100);
+
+        // Set maximum altitude [mm]
         sockCommand.sendf("AT*CONFIG=%d,\"control:altitude_max\",\"%d\"\r", ++seq, 3000);
         msleep(100);
 
-        // Disable bitrate control mode
-        sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"0\"\r", ++seq);
+        // Bitrate control mode
+        sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"%d\"\r", ++seq, 0);     // VBC_MODE_DISABLED
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"%d\"\r", ++seq, 1);   // VBC_MODE_DYNAMIC
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate_ctrl_mode\",\"%d\"\r", ++seq, 2);   // VBC_MANUAL
+        msleep(100);
+
+        // Bitrate
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate\",\"%d\"\r", ++seq, 1000);
+        msleep(100);
+
+        // Max bitrate
+        //sockCommand.sendf("AT*CONFIG=%d,\"video:max_bitrate\",\"%d\"\r", ++seq, 4000);
         msleep(100);
 
         // Set video codec

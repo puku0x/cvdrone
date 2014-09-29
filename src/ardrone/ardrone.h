@@ -127,6 +127,50 @@ inline void msleep(unsigned long ms) {
 #define MAX(a, b)  ((a) < (b) ? (b) : (a))
 #endif
 
+// Virtual keys
+#ifdef _WIN32
+    #ifndef CV_VK_UP
+    #define CV_VK_UP (VK_UP<<16)
+    #endif
+    #ifndef CV_VK_DOWN
+    #define CV_VK_DOWN (VK_DOWN<<16)
+    #endif
+    #ifndef CV_VK_LEFT
+    #define CV_VK_LEFT (VK_LEFT<<16)
+    #endif
+    #ifndef CV_VK_RIGHT
+    #define CV_VK_RIGHT (VK_RIGHT<<16)
+    #endif
+#else
+    #if defined(__APPLE__)
+        #ifndef CV_VK_UP
+        #define CV_VK_UP (0xf700)
+        #endif
+        #ifndef CV_VK_DOWN
+        #define CV_VK_DOWN (0xf701)
+        #endif
+        #ifndef CV_VK_LEFT
+        #define CV_VK_LEFT (0xf702)
+        #endif
+        #ifndef CV_VK_RIGHT
+        #define CV_VK_RIGHT (0xf703)
+        #endif
+    #else
+        #ifndef CV_VK_UP
+        #define CV_VK_UP (0xff52)
+        #endif
+        #ifndef CV_VK_DOWN
+        #define CV_VK_DOWN (0xff54)
+        #endif
+        #ifndef CV_VK_LEFT
+        #define CV_VK_LEFT (0xff51)
+        #endif
+        #ifndef CV_VK_RIGHT
+        #define CV_VK_RIGHT (0xff53)
+        #endif
+    #endif
+#endif
+
 // State masks
 enum ARDRONE_STATE_MASK {
     ARDRONE_FLY_MASK            = 1U <<  0, // FLY MASK                  : (0) Ardrone is landed, (1) Ardrone is flying

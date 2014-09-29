@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     std::cout << "*    'C'     -- Change camera         *" << std::endl;
     std::cout << "*    'Esc'   -- Exit                  *" << std::endl;
     std::cout << "*                                     *" << std::endl;
-    std::cout << "***************************************\n" << std::endl;
+    std::cout << "***************************************" << std::endl;
 
     // Thresholds
     int minH = 0, maxH = 255;
@@ -85,12 +85,14 @@ int main(int argc, char *argv[])
 
         // Move
         double vx = 0.0, vy = 0.0, vz = 0.0, vr = 0.0;
-        if (key == 0x260000) vx =  1.0;
-        if (key == 0x280000) vx = -1.0;
-        if (key == 0x250000) vr =  1.0;
-        if (key == 0x270000) vr = -1.0;
-        if (key == 'q')      vz =  1.0;
-        if (key == 'a')      vz = -1.0;
+        if (key == 'i' || key == CV_VK_UP)    vx =  1.0;
+        if (key == 'k' || key == CV_VK_DOWN)  vx = -1.0;
+        if (key == 'u' || key == CV_VK_LEFT)  vr =  1.0;
+        if (key == 'o' || key == CV_VK_RIGHT) vr = -1.0;
+        if (key == 'j') vy =  1.0;
+        if (key == 'l') vy = -1.0;
+        if (key == 'q') vz =  1.0;
+        if (key == 'a') vz = -1.0;
 
         // Change camera
         static int mode = 0;

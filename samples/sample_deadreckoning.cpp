@@ -78,12 +78,14 @@ int main(int argc, char *argv[])
 
         // Move
         double x = 0.0, y = 0.0, z = 0.0, r = 0.0;
-        if (key == 0x260000) x = 1.0;
-        if (key == 0x280000) x = -1.0;
-        if (key == 0x250000) r = 1.0;
-        if (key == 0x270000) r = -1.0;
-        if (key == 'q')      z = 1.0;
-        if (key == 'a')      z = -1.0;
+        if (key == 'i' || key == CV_VK_UP)    vx =  1.0;
+        if (key == 'k' || key == CV_VK_DOWN)  vx = -1.0;
+        if (key == 'u' || key == CV_VK_LEFT)  vr =  1.0;
+        if (key == 'o' || key == CV_VK_RIGHT) vr = -1.0;
+        if (key == 'j') vy =  1.0;
+        if (key == 'l') vy = -1.0;
+        if (key == 'q') vz =  1.0;
+        if (key == 'a') vz = -1.0;
         ardrone.move3D(x, y, z, r);
 
         // Change camera

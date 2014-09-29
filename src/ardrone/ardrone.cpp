@@ -161,7 +161,7 @@ int ARDrone::open(const char *ardrone_addr)
     // Initialize Video
     if (!initVideo()) return 0;
 
-    // Wait for updating state
+    // Wait for updating the status
     //msleep(500);
 
     // Get configurations

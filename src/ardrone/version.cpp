@@ -44,19 +44,20 @@ int ARDrone::getVersionInfo(void)
     }
 
     // Welcome message
-    char buf[1024] = {'\0'};
-    socket1.receive(buf, sizeof(buf));
+    const size_t len = 1024;
+    char buf[len] = {'\0'};
+    socket1.receive(buf, len);
 
     // Log in as anonymous
     socket1.sendf("USER %s\r\n\0", "anonymous");
-    socket1.receive(buf, sizeof(buf));
+    socket1.receive(buf, len);
 
     // Set to PASV mode
-    int a, b, dataport;
+    int a, b, c, dataport;
     socket1.sendf("PASV\r\n\0");
-    socket1.receive(buf, sizeof(buf));
-    sscanf(buf, "227 PASV ok (%d,%d,%d,%d,%d,%d)\n", &a, &a, &a, &a, &a, &b);
-    dataport = a * 256 + b;
+    socket1.receive(buf, len);
+    sscanf(buf, "227 PASV ok (%d,%d,%d,%d,%d,%d)\n", &c, &c, &c, &c, &a, &b);
+    dataport = (a << 8) + b;
 
     // Open the IP address and port
     if (!socket2.open(ip, dataport)) {
@@ -68,7 +69,7 @@ int ARDrone::getVersionInfo(void)
     socket1.sendf("RETR %s\r\n\0", "version.txt");
 
     // Receive data
-    socket2.receive(buf, sizeof(buf));
+    socket2.receive(buf, len);
 
     // Get version information
     sscanf(buf, "%d.%d.%d", &version.major, &version.minor, &version.revision);

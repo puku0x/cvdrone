@@ -153,11 +153,11 @@ int ARDrone::initCommand(void)
 
         // Bitrate
         //sockCommand.sendf("AT*CONFIG=%d,\"video:bitrate\",\"%d\"\r", ++seq, 1000);
-        msleep(100);
+        //msleep(100);
 
         // Max bitrate
         //sockCommand.sendf("AT*CONFIG=%d,\"video:max_bitrate\",\"%d\"\r", ++seq, 4000);
-        msleep(100);
+        //msleep(100);
 
         // Set video codec
         sockCommand.sendf("AT*CONFIG=%d,\"video:video_codec\",\"%d\"\r", ++seq, 0x20);   // UVLC_CODEC
@@ -281,8 +281,8 @@ void ARDrone::move3D(double vx, double vy, double vz, double vr)
     // AR.Drone is flying
     if (!onGround()) {
         // Command velocities
-        float v[4] = {-vy*0.2, -vx*0.2, vz*1.0, -vr*0.5};
-        int mode = (fabs(v[0]) > 0.0 || fabs(v[1]) > 0.0 || fabs(v[2]) > 0.0 || fabs(v[3]) > 0.0);
+        float v[4] = {-0.2f * (float)vy, -0.2f * (float)vx, 1.0f * (float)vz, -0.5f * (float)vr};
+        int mode = (fabs(v[0]) > 0.0 || fabs(v[1]) > 0.0);
 
         // Nomarization (-1.0 to +1.0)
         for (int i = 0; i < 4; i++) {

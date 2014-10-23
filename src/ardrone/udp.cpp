@@ -117,13 +117,13 @@ int UDPSocket::open(const char *addr, int port)
 // Description  : Send the specified data.
 // Return value : SUCCESS: Number of sent bytes  FAILURE: 0
 // --------------------------------------------------------------------------
-int UDPSocket::send2(void *data, int size)
+int UDPSocket::send2(void *data, size_t size)
 {
     // The socket is invalid
     if (sock == INVALID_SOCKET) return 0;
 
     // Send data
-    int n = sendto(sock, (char*)data, size, 0, (sockaddr*)&server_addr, sizeof(server_addr));
+    int n = (int)sendto(sock, (char*)data, size, 0, (sockaddr*)&server_addr, sizeof(server_addr));
     if (n < 1) return 0;
 
     return n;
@@ -134,7 +134,7 @@ int UDPSocket::send2(void *data, int size)
 // Description  : Send the data with format.
 // Return value : SUCCESS: Number of sent bytes  FAILURE: 0
 // --------------------------------------------------------------------------
-int UDPSocket::sendf(char *str, ...)
+int UDPSocket::sendf(const char *str, ...)
 {
     char msg[1024];
 
@@ -156,7 +156,7 @@ int UDPSocket::sendf(char *str, ...)
 // Description  : Receive the data.
 // Return value : SUCCESS: Number of received bytes  FAILURE: 0
 // --------------------------------------------------------------------------
-int UDPSocket::receive(void *data, int size)
+int UDPSocket::receive(void *data, size_t size)
 {
     // The socket is invalid.
     if (sock == INVALID_SOCKET) return 0;
@@ -164,7 +164,7 @@ int UDPSocket::receive(void *data, int size)
     // Receive data
     sockaddr_in addr;
     socklen_t len = sizeof(addr);
-    int n = recvfrom(sock, (char*)data, size, 0, (sockaddr*)&addr, &len);
+    int n = (int)recvfrom(sock, (char*)data, size, 0, (sockaddr*)&addr, &len);
     if (n < 1) return 0;
 
     // Server has the same IP address of client

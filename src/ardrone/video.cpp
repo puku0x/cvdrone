@@ -71,8 +71,13 @@ int ARDrone::initVideo(void)
         }
 
         // Allocate video frames and a buffer
+        #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
+        pFrame = av_frame_alloc();
+        pFrameBGR = av_frame_alloc();
+        #else
         pFrame = avcodec_alloc_frame();
         pFrameBGR = avcodec_alloc_frame();
+        #endif
         bufferBGR = (uint8_t*)av_mallocz(avpicture_get_size(PIX_FMT_BGR24, pCodecCtx->width, pCodecCtx->height) * sizeof(uint8_t));
 
         // Assign appropriate parts of buffer to image planes in pFrameBGR
@@ -272,13 +277,21 @@ void ARDrone::finalizeVideo(void)
     if (version.major == ARDRONE_VERSION_2) {
         // Deallocate the frame
         if (pFrame) {
-            av_free(pFrame);
+            #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
+            av_frame_free(&pFrame);
+            #else
+            avcodec_free_frame(&pFrame);
+            #endif
             pFrame = NULL;
         }
 
         // Deallocate the frame
         if (pFrameBGR) {
-            av_free(pFrameBGR);
+            #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(55,28,1)
+            av_frame_free(&pFrameBGR);
+            #else
+            avcodec_free_frame(&pFrameBGR);
+            #endif
             pFrameBGR = NULL;
         }
 

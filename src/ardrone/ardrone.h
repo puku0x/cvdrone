@@ -129,46 +129,46 @@ inline void msleep(unsigned long ms) {
 
 // Virtual keys
 #ifdef _WIN32
-    #ifndef CV_VK_UP
-    #define CV_VK_UP (VK_UP<<16)
-    #endif
-    #ifndef CV_VK_DOWN
-    #define CV_VK_DOWN (VK_DOWN<<16)
-    #endif
-    #ifndef CV_VK_LEFT
-    #define CV_VK_LEFT (VK_LEFT<<16)
-    #endif
-    #ifndef CV_VK_RIGHT
-    #define CV_VK_RIGHT (VK_RIGHT<<16)
-    #endif
+#ifndef CV_VK_UP
+#define CV_VK_UP (VK_UP<<16)
+#endif
+#ifndef CV_VK_DOWN
+#define CV_VK_DOWN (VK_DOWN<<16)
+#endif
+#ifndef CV_VK_LEFT
+#define CV_VK_LEFT (VK_LEFT<<16)
+#endif
+#ifndef CV_VK_RIGHT
+#define CV_VK_RIGHT (VK_RIGHT<<16)
+#endif
 #else
-    #if defined(__APPLE__)
-        #ifndef CV_VK_UP
-        #define CV_VK_UP (0xf700)
-        #endif
-        #ifndef CV_VK_DOWN
-        #define CV_VK_DOWN (0xf701)
-        #endif
-        #ifndef CV_VK_LEFT
-        #define CV_VK_LEFT (0xf702)
-        #endif
-        #ifndef CV_VK_RIGHT
-        #define CV_VK_RIGHT (0xf703)
-        #endif
-    #else
-        #ifndef CV_VK_UP
-        #define CV_VK_UP (0xff52)
-        #endif
-        #ifndef CV_VK_DOWN
-        #define CV_VK_DOWN (0xff54)
-        #endif
-        #ifndef CV_VK_LEFT
-        #define CV_VK_LEFT (0xff51)
-        #endif
-        #ifndef CV_VK_RIGHT
-        #define CV_VK_RIGHT (0xff53)
-        #endif
-    #endif
+#if defined(__APPLE__)
+#ifndef CV_VK_UP
+#define CV_VK_UP (0xf700)
+#endif
+#ifndef CV_VK_DOWN
+#define CV_VK_DOWN (0xf701)
+#endif
+#ifndef CV_VK_LEFT
+#define CV_VK_LEFT (0xf702)
+#endif
+#ifndef CV_VK_RIGHT
+#define CV_VK_RIGHT (0xf703)
+#endif
+#else
+#ifndef CV_VK_UP
+#define CV_VK_UP (0xff52)
+#endif
+#ifndef CV_VK_DOWN
+#define CV_VK_DOWN (0xff54)
+#endif
+#ifndef CV_VK_LEFT
+#define CV_VK_LEFT (0xff51)
+#endif
+#ifndef CV_VK_RIGHT
+#define CV_VK_RIGHT (0xff53)
+#endif
+#endif
 #endif
 
 // State masks
@@ -296,9 +296,9 @@ public:
     TCPSocket();                            // Constructor
     virtual ~TCPSocket();                   // Destructor
     int  open(const char *addr, int port);  // Initialize
-    int  send2(void *data, int size);       // Send data
-    int  sendf(char *str, ...);             // Send with format
-    int  receive(void *data, int size);     // Receive data
+    int  send2(void *data, size_t size);    // Send data
+    int  sendf(const char *str, ...);       // Send with format
+    int  receive(void *data, size_t size);  // Receive data
     void close(void);                       // Finalize
 private:
     SOCKET sock;                            // Socket
@@ -311,9 +311,9 @@ public:
     UDPSocket();                            // Constructor
     virtual ~UDPSocket();                   // Destructor
     int  open(const char *addr, int port);  // Initialize
-    int  send2(void *data, int size);       // Send data
-    int  sendf(char *str, ...);             // Send with format
-    int  receive(void *data, int size);     // Receive data
+    int  send2(void *data, size_t size);    // Send data
+    int  sendf(const char *str, ...);       // Send with format
+    int  receive(void *data, size_t size);  // Receive data
     void close(void);                       // Finalize
 private:
     SOCKET sock;                            // Socket
@@ -1186,7 +1186,7 @@ CV_INLINE void CVDRONE_ERROR(const char *message, ...)
 
     // Apply format
     va_start(arg, message);
-    vsprintf(str, message, arg);
+    vsnprintf(str, 256, message, arg);
     va_end(arg);
 
     // Show the message

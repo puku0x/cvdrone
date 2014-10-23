@@ -38,7 +38,7 @@ TCPSocket::TCPSocket()
 
 // --------------------------------------------------------------------------
 // TCPSocket::~TCPSocket()
-// Description : Destructor of UDPSocket class.
+// Description : Destructor of TCPSocket class.
 // --------------------------------------------------------------------------
 TCPSocket::~TCPSocket()
 {
@@ -129,13 +129,13 @@ int TCPSocket::open(const char *addr, int port)
 // Description  : Send the specified data.
 // Return value : SUCCESS: Number of sent bytes  FAILURE: 0
 // --------------------------------------------------------------------------
-int TCPSocket::send2(void *data, int size)
+int TCPSocket::send2(void *data, size_t size)
 {
     // The socket is invalid
     if (sock == INVALID_SOCKET) return 0;
 
     // Send the data
-    int n = send(sock, (char*)data, size, 0);
+    int n = (int)send(sock, (char*)data, size, 0);
     if (n < 1) return 0;
 
     return n;
@@ -146,7 +146,7 @@ int TCPSocket::send2(void *data, int size)
 // Description  : Send the data with format.
 // Return value : SUCCESS: Number of sent bytes  FAILURE: 0
 // --------------------------------------------------------------------------
-int TCPSocket::sendf(char *str, ...)
+int TCPSocket::sendf(const char *str, ...)
 {
     char msg[1024];
 
@@ -168,15 +168,15 @@ int TCPSocket::sendf(char *str, ...)
 // Description  : Receive the data.
 // Return value : SUCCESS: Number of received bytes  FAILURE: 0
 // --------------------------------------------------------------------------
-int TCPSocket::receive(void *data, int size)
+int TCPSocket::receive(void *data, size_t size)
 {
     // The socket is invalid
     if (sock == INVALID_SOCKET) return 0;
 
     // Receive data
     int received = 0;
-    while (received < size) {
-        int n = recv(sock, (char*)data + received, size - received, 0);
+    while (received < (int)size) {
+        int n = (int)recv(sock, (char*)data + received, size - received, 0);
         if (n < 1) break;
         received += n;
     }

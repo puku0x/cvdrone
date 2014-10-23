@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
          0, 1, 0, 0;
     kalman.measurementMatrix = H;
 
-    // Process noise covairance (x, y, vx, vy)
+    // Process noise covariance (x, y, vx, vy)
     cv::Mat1f Q(4, 4);
     Q << 1e-5,  0.0,  0.0,  0.0,
           0.0, 1e-5,  0.0,  0.0,
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
         std::vector<std::vector<cv::Point>> contours;
         cv::findContours(binalized.clone(), contours, cv::RETR_CCOMP, cv::CHAIN_APPROX_SIMPLE);
 
-        // Find largest contour
+        // Find the largest contour
         int contour_index = -1;
         double max_area = 0.0;
         for (size_t i = 0; i < contours.size(); i++) {

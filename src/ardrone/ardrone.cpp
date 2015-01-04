@@ -58,6 +58,7 @@ ARDrone::ARDrone()
     pFrameBGR   = NULL;
     bufferBGR   = NULL;
     pConvertCtx = NULL;
+    newImage    = true;
 
     // Thread for AT command
     threadCommand = NULL;

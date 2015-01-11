@@ -164,6 +164,7 @@ int ARDrone::getVideo(void)
                 // Convert to BGR
                 if (mutexVideo) pthread_mutex_lock(mutexVideo);
                 sws_scale(pConvertCtx, (const uint8_t* const*)pFrame->data, pFrame->linesize, 0, pCodecCtx->height, pFrameBGR->data, pFrameBGR->linesize);
+                newImage = true;
                 if (mutexVideo) pthread_mutex_unlock(mutexVideo);
 
                 // Free the packet and break immidiately
@@ -229,6 +230,9 @@ ARDRONE_IMAGE ARDrone::getImage(void)
         // For 320x240 image, just copy it
         else memcpy(img->imageData, bufferBGR, pCodecCtx->width * pCodecCtx->height * sizeof(uint8_t) * 3);
     }
+    
+    // The latest image has been read, so change newImage accordingly
+    newImage = false;
 
     // Disable mutex lock
     if (mutexVideo) pthread_mutex_unlock(mutexVideo);
@@ -244,6 +248,22 @@ ARDrone& ARDrone::operator >> (cv::Mat &image)
 {
     image = getImage();
     return *this;
+}
+
+// --------------------------------------------------------------------------
+//! @brief   Check whether we have received a new image since the last getImage().
+//! @return  A bool that is true if we have received a new image and false if we have not
+// --------------------------------------------------------------------------
+bool ARDrone::willGetNewImage(void) {
+    // Enable mutex lock
+    if (mutexVideo) pthread_mutex_lock(mutexVideo);
+    
+    bool answer = newImage;
+    
+    // Disable mutex lock
+    if (mutexVideo) pthread_mutex_unlock(mutexVideo);
+    
+    return answer;
 }
 
 // --------------------------------------------------------------------------

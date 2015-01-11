@@ -1054,6 +1054,7 @@ public:
     // Get an image
     virtual ARDRONE_IMAGE getImage(void);
     virtual ARDrone& operator >> (cv::Mat &image);
+    virtual bool willGetNewImage(void);
 
     // Get AR.Drone's firmware version
     virtual int getVersion(int *major = NULL, int *minor = NULL, int *revision = NULL);
@@ -1124,6 +1125,7 @@ protected:
     AVFrame         *pFrame, *pFrameBGR;
     uint8_t         *bufferBGR;
     SwsContext      *pConvertCtx;
+    bool            newImage;
 
     // Thread for AT command
     pthread_t *threadCommand;

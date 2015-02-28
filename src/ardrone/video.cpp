@@ -254,7 +254,8 @@ ARDrone& ARDrone::operator >> (cv::Mat &image)
 //! @brief   Check whether we have received a new image since the last getImage().
 //! @return  A bool that is true if we have received a new image and false if we have not
 // --------------------------------------------------------------------------
-bool ARDrone::willGetNewImage(void) {
+bool ARDrone::willGetNewImage(void)
+{
     // Enable mutex lock
     if (mutexVideo) pthread_mutex_lock(mutexVideo);
     

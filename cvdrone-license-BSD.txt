@@ -1,5 +1,5 @@
 CV Drone (= OpenCV + AR.Drone)
-Copyright (C) 2013 puku0x
+Copyright (C) 2013-2015 puku0x
 
 Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:

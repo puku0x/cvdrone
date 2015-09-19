@@ -28,7 +28,7 @@ HOW TO UNINSTALL
 
 BEFORE YOU BUILD
   You should install Visual Studio before you build CV Drone.
-  CV Drone supports VC++2008/2010/2012/2013.
+  CV Drone supports VC++2010/2012/2013/2015.
   To download VS, please see http://www.microsoft.com/visualstudio/eng/downloads .
 
 HOW TO USE
@@ -52,11 +52,11 @@ FOR VS2010 USERS
 
 LIBRARY DEPENDENCIES
   CV Drone uses following libraries.
-  - OpenCV 3.0.0 Beta <BSD license>
+  - OpenCV 3.0.0 <BSD license>
     http://opencv.org/
   - FFmpeg 2.2.3 <LGPL v2.1 license>
     http://www.ffmpeg.org/
-  - stdint.h/inttypes.h for Microsoft Visual Studio r26
+  - stdint.h/inttypes.h for Microsoft Visual Studio r26 <BSD license>
     https://code.google.com/p/msinttypes/
   - POSIX Threads for Win32 2.9.1 <LGPL v2.1 license>
     http://www.sourceware.org/pthreads-win32/

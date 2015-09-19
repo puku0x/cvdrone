@@ -6,7 +6,7 @@
 
 #include "cvconfig.h"
 
-#ifdef HAVE_WINRT
+#ifdef WINRT
     #pragma warning(disable:4447) // Disable warning 'main' signature found without threading model
 #endif
 
@@ -382,7 +382,7 @@ public:
         FAIL_HANG=-13,
 
         // unexpected response on passing bad arguments to the tested function
-        // (the function crashed, proceed succesfully (while it should not), or returned
+        // (the function crashed, proceed successfully (while it should not), or returned
         // error code that is different from what is expected)
         FAIL_BAD_ARG_CHECK=-14,
 
@@ -392,7 +392,7 @@ public:
         // the test has been skipped because it is not in the selected subset of the tests to run,
         // because it has been run already within the same run with the same parameters, or because
         // of some other reason and this is not considered as an error.
-        // Normally TS::run() (or overrided method in the derived class) takes care of what
+        // Normally TS::run() (or overridden method in the derived class) takes care of what
         // needs to be run, so this code should not occur.
         SKIPPED=1
     };
@@ -569,10 +569,10 @@ void parseCustomOptions(int argc, char **argv);
 #define CV_TEST_MAIN(resourcesubdir, ...) \
 int main(int argc, char **argv) \
 { \
+    __CV_TEST_EXEC_ARGS(__VA_ARGS__) \
     cvtest::TS::ptr()->init(resourcesubdir); \
     ::testing::InitGoogleTest(&argc, argv); \
     cvtest::printVersionInfo(); \
-    __CV_TEST_EXEC_ARGS(__VA_ARGS__) \
     TEST_DUMP_OCL_INFO \
     parseCustomOptions(argc, argv); \
     return RUN_ALL_TESTS(); \

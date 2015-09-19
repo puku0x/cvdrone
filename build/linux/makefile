@@ -1,4 +1,6 @@
+#sudo apt-get install build-essential
 #sudo apt-get install ffmpeg
+#sudo apt-get install libav-tools
 #sudo apt-get install libopencv-dev
 
 CXX           = g++

@@ -12,19 +12,20 @@ LIBS          = -lm                     \
                 -lavcodec               \
                 -lswscale               \
                 -lopencv_calib3d        \
-                -lopencv_contrib        \
                 -lopencv_core           \
                 -lopencv_features2d     \
                 -lopencv_flann          \
+                -lopencv_hal            \
                 -lopencv_highgui        \
+                -lopencv_imgcodecs      \
                 -lopencv_imgproc        \
-                -lopencv_legacy         \
                 -lopencv_ml             \
                 -lopencv_objdetect      \
                 -lopencv_photo          \
                 -lopencv_stitching      \
                 -lopencv_superres       \
                 -lopencv_video          \
+                -lopencv_videoio        \
                 -lopencv_videostab
 OBJS          = ../../src/ardrone/ardrone.o \
                 ../../src/ardrone/command.o \
@@ -34,7 +35,7 @@ OBJS          = ../../src/ardrone/ardrone.o \
                 ../../src/ardrone/navdata.o \
                 ../../src/ardrone/version.o \
                 ../../src/ardrone/video.o   \
-                ../../src/main.o
+                ../../src/sample_navdata.o
 PROGRAM       = test.a
 
 $(PROGRAM):     $(OBJS)

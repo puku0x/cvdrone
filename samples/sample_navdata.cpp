@@ -38,24 +38,24 @@ int main(int argc, char *argv[])
         std::cout << "ardrone.altitude = " << altitude << " [m]" << std::endl;
 
         // Velocity
-        double vx, vy, vz;
-        double velocity = ardrone.getVelocity(&vx, &vy, &vz);
-        std::cout << "ardrone.vx = " << vx << " [m/s]" << std::endl;
-        std::cout << "ardrone.vy = " << vy << " [m/s]" << std::endl;
-        std::cout << "ardrone.vz = " << vz << " [m/s]" << std::endl;
+        double v_x, v_y, v_z;
+        double velocity = ardrone.getVelocity(&v_x, &v_y, &v_z);
+        std::cout << "ardrone.vx = " << v_x << " [m/s]" << std::endl;
+        std::cout << "ardrone.vy = " << v_y << " [m/s]" << std::endl;
+        std::cout << "ardrone.vz = " << v_z << " [m/s]" << std::endl;
 
         // Battery
         int battery = ardrone.getBatteryPercentage();
-        std::cout << "ardrone.battery = " << battery << " [%%]" << std::endl;
+        std::cout << "ardrone.battery = " << battery << " [%]" << std::endl;
 
-        // Take off / Landing 
+        // Take off / Landing
         if (key == ' ') {
             if (ardrone.onGround()) ardrone.takeoff();
             else                    ardrone.landing();
         }
 
         // Move
-        double x = 0.0, y = 0.0, z = 0.0, r = 0.0;
+        double vx = 0.0, vy = 0.0, vz = 0.0, vr = 0.0;
         if (key == 'i' || key == CV_VK_UP)    vx =  1.0;
         if (key == 'k' || key == CV_VK_DOWN)  vx = -1.0;
         if (key == 'u' || key == CV_VK_LEFT)  vr =  1.0;
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
         if (key == 'l') vy = -1.0;
         if (key == 'q') vz =  1.0;
         if (key == 'a') vz = -1.0;
-        ardrone.move3D(x, y, z, r);
+        ardrone.move3D(vx, vy, vz, vr);
 
         // Change camera
         static int mode = 0;

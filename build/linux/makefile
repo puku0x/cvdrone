@@ -35,7 +35,7 @@ OBJS          = ../../src/ardrone/ardrone.o \
                 ../../src/ardrone/navdata.o \
                 ../../src/ardrone/version.o \
                 ../../src/ardrone/video.o   \
-                ../../src/sample_navdata.o
+                ../../src/main.o
 PROGRAM       = test.a
 
 $(PROGRAM):     $(OBJS)

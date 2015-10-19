@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
         //cv::imshow("morphologyEx", binalized);
 
         // Detect contours
-        std::vector<std::vector<cv::Point>> contours;
+        std::vector< std::vector<cv::Point> > contours;
         cv::findContours(binalized.clone(), contours, cv::RETR_CCOMP, cv::CHAIN_APPROX_SIMPLE);
 
         // Find the largest contour

@@ -302,8 +302,8 @@ int main(int argc, char *argv[])
 		// We have enough samples
 		if (images.size() > 4) {
 			cv::Size size(PAT_COLS, PAT_ROWS);
-			std::vector<std::vector<cv::Point2f>> corners2D;
-			std::vector<std::vector<cv::Point3f>> corners3D;
+			std::vector< std::vector<cv::Point2f> > corners2D;
+			std::vector< std::vector<cv::Point3f> > corners3D;
 
 			for (size_t i = 0; i < images.size(); i++) {
 				// Detect a chessboard

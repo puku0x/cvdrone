@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
         //cv::imshow("morphologyEx", binalized);
 
         // Detect contours
-        std::vector<std::vector<cv::Point>> contours;
+        std::vector< std::vector<cv::Point> > contours;
         cv::findContours(binalized.clone(), contours, cv::RETR_CCOMP, cv::CHAIN_APPROX_SIMPLE);
 
         // Find largest contour
@@ -162,6 +162,7 @@ int main(int argc, char *argv[])
         // Display the image
         cv::putText(image, (track) ? "track on" : "track off", cv::Point(10, 20), cv::FONT_HERSHEY_SIMPLEX, 0.5, (track) ? cv::Scalar(0, 0, 255) : cv::Scalar(0, 255, 0), 1, cv::LINE_AA);
         cv::imshow("camera", image);
+        ardrone.move3D(vx, vy, vz, vr);
     }
 
     // Save thresholds

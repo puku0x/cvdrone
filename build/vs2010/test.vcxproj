@@ -58,7 +58,7 @@
       <DisableSpecificWarnings>4244;4819;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>wsock32.lib;opencv_calib3d300.lib;opencv_core300.lib;opencv_features2d300.lib;opencv_flann300.lib;opencv_hal300.lib;opencv_highgui300.lib;opencv_imgcodecs300.lib;opencv_imgproc300.lib;opencv_ml300.lib;opencv_objdetect300.lib;opencv_photo300.lib;opencv_shape300.lib;opencv_stitching300.lib;opencv_superres300.lib;opencv_video300.lib;opencv_videoio300.lib;opencv_videostab300.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;pthreadVC2.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wsock32.lib;opencv_aruco310.lib;opencv_bgsegm310.lib;opencv_bioinspired310.lib;opencv_calib3d310.lib;opencv_ccalib310.lib;opencv_core310.lib;opencv_datasets310.lib;opencv_dnn310.lib;opencv_dpm310.lib;opencv_face310.lib;opencv_features2d310.lib;opencv_flann310.lib;opencv_fuzzy310.lib;opencv_highgui310.lib;opencv_imgcodecs310.lib;opencv_imgproc310.lib;opencv_line_descriptor310.lib;opencv_ml310.lib;opencv_objdetect310.lib;opencv_optflow310.lib;opencv_photo310.lib;opencv_plot310.lib;opencv_reg310.lib;opencv_rgbd310.lib;opencv_saliency310.lib;opencv_shape310.lib;opencv_stereo310.lib;opencv_stitching310.lib;opencv_structured_light310.lib;opencv_superres310.lib;opencv_surface_matching310.lib;opencv_text310.lib;opencv_tracking310.lib;opencv_video310.lib;opencv_videoio310.lib;opencv_videostab310.lib;opencv_xfeatures2d310.lib;opencv_ximgproc310.lib;opencv_xobjdetect310.lib;opencv_xphoto310.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;pthreadVC2.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\src\3rdparty\opencv\lib\vs2010;..\..\src\3rdparty\ffmpeg\lib;..\..\src\3rdparty\pthread\lib;..\..\src\3rdparty\glut\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -88,7 +88,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>wsock32.lib;opencv_calib3d300.lib;opencv_core300.lib;opencv_features2d300.lib;opencv_flann300.lib;opencv_hal300.lib;opencv_highgui300.lib;opencv_imgcodecs300.lib;opencv_imgproc300.lib;opencv_ml300.lib;opencv_objdetect300.lib;opencv_photo300.lib;opencv_shape300.lib;opencv_stitching300.lib;opencv_superres300.lib;opencv_video300.lib;opencv_videoio300.lib;opencv_videostab300.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;pthreadVC2.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wsock32.lib;opencv_aruco310.lib;opencv_bgsegm310.lib;opencv_bioinspired310.lib;opencv_calib3d310.lib;opencv_ccalib310.lib;opencv_core310.lib;opencv_datasets310.lib;opencv_dnn310.lib;opencv_dpm310.lib;opencv_face310.lib;opencv_features2d310.lib;opencv_flann310.lib;opencv_fuzzy310.lib;opencv_highgui310.lib;opencv_imgcodecs310.lib;opencv_imgproc310.lib;opencv_line_descriptor310.lib;opencv_ml310.lib;opencv_objdetect310.lib;opencv_optflow310.lib;opencv_photo310.lib;opencv_plot310.lib;opencv_reg310.lib;opencv_rgbd310.lib;opencv_saliency310.lib;opencv_shape310.lib;opencv_stereo310.lib;opencv_stitching310.lib;opencv_structured_light310.lib;opencv_superres310.lib;opencv_surface_matching310.lib;opencv_text310.lib;opencv_tracking310.lib;opencv_video310.lib;opencv_videoio310.lib;opencv_videostab310.lib;opencv_xfeatures2d310.lib;opencv_ximgproc310.lib;opencv_xobjdetect310.lib;opencv_xphoto310.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;pthreadVC2.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\src\3rdparty\opencv\lib\vs2010;..\..\src\3rdparty\ffmpeg\lib;..\..\src\3rdparty\pthread\lib;..\..\src\3rdparty\glut\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\obj\debug\debug.pdb</ProgramDatabaseFile>
@@ -115,9 +115,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\src\resource\resource.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\readme.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

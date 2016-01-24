@@ -1,6 +1,6 @@
 -----------------------------------------------------------------
  CV Drone (= OpenCV + AR.Drone)
- Copyright (C) 2015 puku0x
+ Copyright (C) 2016 puku0x
  https://github.com/puku0x/cvdrone
 -----------------------------------------------------------------
 
@@ -52,7 +52,7 @@ FOR VS2010 USERS
 
 LIBRARY DEPENDENCIES
   CV Drone uses following libraries.
-  - OpenCV 3.0.0 <BSD license>
+  - OpenCV 3.1.0 <3-clause BSD license>
     http://opencv.org/
   - FFmpeg 2.2.3 <LGPL v2.1 license>
     http://www.ffmpeg.org/

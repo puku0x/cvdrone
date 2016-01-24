@@ -1,6 +1,6 @@
 // -------------------------------------------------------------------------
 // CV Drone (= OpenCV + AR.Drone)
-// Copyright(C) 2014 puku0x
+// Copyright(C) 2016 puku0x
 // https://github.com/puku0x/cvdrone
 //
 // This source file is part of CV Drone library.
@@ -29,9 +29,10 @@
 
 // --------------------------------------------------------------------------
 //! @brief   Constructor of AR.Drone class
+//! @param   ardrone_addr IP address of AR.Drone
 //! @return  None
 // --------------------------------------------------------------------------
-ARDrone::ARDrone()
+ARDrone::ARDrone(const char *ardrone_addr)
 {
     // IP Address
     strncpy(ip, ARDRONE_DEFAULT_ADDR, 16);
@@ -58,50 +59,6 @@ ARDrone::ARDrone()
     pFrameBGR   = NULL;
     bufferBGR   = NULL;
     pConvertCtx = NULL;
-    newImage    = false;
-
-    // Thread for AT command
-    threadCommand = NULL;
-    mutexCommand  = NULL;
-
-    // Thread for Navdata
-    threadNavdata = NULL;
-    mutexNavdata  = NULL;
-
-    // Thread for Video
-    threadVideo = NULL;
-    mutexVideo  = NULL;
-}
-
-// --------------------------------------------------------------------------
-//! @brief   Constructor of AR.Drone class
-//! @param   ardrone_addr IP address of AR.Drone
-//! @return  None
-// --------------------------------------------------------------------------
-ARDrone::ARDrone(const char *ardrone_addr)
-{
-    // Sequence number
-    seq = 0;
-
-    // Camera image
-    img = NULL;
-
-    // Version information
-    memset(&version, 0, sizeof(version));
-
-    // Navdata
-    memset(&navdata, 0, sizeof(navdata));
-
-    // Configurations
-    memset(&config, 0, sizeof(config));
-
-    // Video
-    pFormatCtx  = NULL;
-    pCodecCtx   = NULL;
-    pFrame      = NULL;
-    pFrameBGR   = NULL;
-    bufferBGR   = NULL;
-    pConvertCtx = NULL;
 
     // Thread for AT command
     threadCommand = NULL;
@@ -115,8 +72,10 @@ ARDrone::ARDrone(const char *ardrone_addr)
     threadVideo = NULL;
     mutexVideo  = NULL;
 
-    // Open the specified IP address
-    open(ardrone_addr);
+    // Open if the IP address was specified
+    if (ardrone_addr != NULL) {
+        open(ardrone_addr);
+    }
 }
 
 // --------------------------------------------------------------------------
@@ -148,7 +107,7 @@ int ARDrone::open(const char *ardrone_addr)
 
     // Get version information
     if (!getVersionInfo()) return 0;
-    printf("AR.Drone Ver. %d.%d.%d\n", version.major, version.minor, version.revision);
+    std::cout << "AR.Drone Ver. " << version.major << "." << version.minor << "." << version.revision << "." << std::endl;
 
     // Initialize AT command
     if (!initCommand()) return 0;

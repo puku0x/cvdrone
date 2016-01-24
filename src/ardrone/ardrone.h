@@ -3,7 +3,7 @@
 
 // -------------------------------------------------------------------------
 // CV Drone (= OpenCV + AR.Drone)
-// Copyright(C) 2014 puku0x
+// Copyright(C) 2016 puku0x
 // https://github.com/puku0x/cvdrone
 //
 // This source file is part of CV Drone library.
@@ -51,8 +51,8 @@
 #include <math.h>
 
 // OpenCV 1.0
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+//#include <opencv/cv.h>
+//#include <opencv/highgui.h>
 
 // OpenCV 2.0
 #include <opencv2/opencv.hpp>
@@ -1038,8 +1038,7 @@ private:
 class ARDrone {
 public:
     // Constructor / Destructor
-    ARDrone();
-    ARDrone(const char *ardrone_addr);
+    ARDrone(const char *ardrone_addr = NULL);
     virtual ~ARDrone();
 
     // Initialize

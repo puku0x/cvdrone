@@ -14,3 +14,6 @@
 
 obj
 
+*.iobj
+*.ipdb
+*.exe

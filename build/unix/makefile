@@ -15,7 +15,6 @@ LIBS          = -lm                     \
                 -lopencv_core           \
                 -lopencv_features2d     \
                 -lopencv_flann          \
-                -lopencv_hal            \
                 -lopencv_highgui        \
                 -lopencv_imgcodecs      \
                 -lopencv_imgproc        \

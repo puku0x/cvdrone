@@ -78,13 +78,13 @@ int ARDrone::initVideo(void)
         pFrame = avcodec_alloc_frame();
         pFrameBGR = avcodec_alloc_frame();
         #endif
-        bufferBGR = (uint8_t*)av_mallocz(avpicture_get_size(PIX_FMT_BGR24, pCodecCtx->width, pCodecCtx->height) * sizeof(uint8_t));
+        bufferBGR = (uint8_t*)av_mallocz(avpicture_get_size(AV_PIX_FMT_BGR24, pCodecCtx->width, pCodecCtx->height) * sizeof(uint8_t));
 
         // Assign appropriate parts of buffer to image planes in pFrameBGR
-        avpicture_fill((AVPicture*)pFrameBGR, bufferBGR, PIX_FMT_BGR24, pCodecCtx->width, pCodecCtx->height);
+        avpicture_fill((AVPicture*)pFrameBGR, bufferBGR, AV_PIX_FMT_BGR24, pCodecCtx->width, pCodecCtx->height);
 
         // Convert it to BGR
-        pConvertCtx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, PIX_FMT_BGR24, SWS_SPLINE, NULL, NULL, NULL);
+        pConvertCtx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_BGR24, SWS_SPLINE, NULL, NULL, NULL);
     }
     // AR.Drone 1.0
     else {
@@ -100,7 +100,7 @@ int ARDrone::initVideo(void)
         pCodecCtx->height = 240;
 
         // Allocate a buffer
-        bufferBGR = (uint8_t*)av_mallocz(avpicture_get_size(PIX_FMT_BGR24, pCodecCtx->width, pCodecCtx->height));
+        bufferBGR = (uint8_t*)av_mallocz(avpicture_get_size(AV_PIX_FMT_BGR24, pCodecCtx->width, pCodecCtx->height));
     }
 
     // Allocate an IplImage

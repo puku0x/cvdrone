@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
 		if (key == 'c') ardrone.setCamera(++mode % 4);
 
 		// Display the image
-	    cv::imshow("camera", ardrone.detectCircle(image));
+		cv::imshow("camera", ardrone.detectCircle(image));
 		//cv::imshow("camera", temp_match(image));
 		if (ardrone.getBatteryPercentage() < 15) {
 			std::cout << "Battery low !" << std::endl;

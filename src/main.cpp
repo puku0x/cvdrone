@@ -7,32 +7,7 @@
 // --------------------------------------------------------------------------
 
 
-cv::Mat tmpl;   //MatŒ^‚Ìtmpl‚ğ—pˆÓ‚µ
-
-cv::Mat temp_match(cv::Mat image) {
-	cv::Mat result_mat;
-	cv::Mat gray_img;
-
-
-	cv::cvtColor(image, gray_img, cv::COLOR_BGR2GRAY, 0);  //ƒJƒƒ‰‰æ‘œ‚ğƒOƒŒ[ƒXƒP[ƒ‹‚É•ÏŠ·
-
-	cv::matchTemplate(gray_img, tmpl, result_mat, CV_TM_CCORR_NORMED);
-	cv::normalize(result_mat, result_mat, 0, 1, cv::NORM_MINMAX, -1, cv::Mat());
-
-	double minVal; double maxVal;
-	cv::Point minLoc, maxLoc, matchLoc;
-	cv::minMaxLoc(result_mat, &minVal, &maxVal, &minLoc, &maxLoc, cv::Mat());
-	matchLoc = maxLoc;
-
-	cv::rectangle(
-		image,
-		matchLoc,
-		cv::Point(matchLoc.x + 0.7 * tmpl.cols, matchLoc.y + 0.7 * tmpl.rows),
-		CV_RGB(255, 0, 0),
-		3);
-
-	return image;
-}
+cv::Mat tmpl;   //Matï¿½^ï¿½ï¿½tmplï¿½ï¿½pï¿½Ó‚ï¿½
 
 int main(int argc, char *argv[])
 {
@@ -72,12 +47,12 @@ int main(int argc, char *argv[])
 
 
 	////////////////////////////2020/02/06
-	tmpl = cv::imread("template_circle.png", 0); //ƒeƒ“ƒvƒŒ[ƒg‚ğƒOƒŒ[ƒXƒP[ƒ‹‚Å“Ç‚İ‚Ş
+	tmpl = cv::imread("template_circle.png", 0); //ï¿½eï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½gï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½[ï¿½Xï¿½Pï¿½[ï¿½ï¿½ï¿½Å“Ç‚İï¿½ï¿½ï¿½
 	////////////////////////////
 
 	while (1) {
 		// Key input
-		int key = cv::waitKey(33);
+		int key = cv::waitKey(32);
 		if (key == 0x1b) break;
 
 		// Get an image
@@ -109,20 +84,15 @@ int main(int argc, char *argv[])
 				ardrone.getVelocity(&vx_now, &vy_now, 0);
 				ardrone.move3D(-vx_now, -vy_now, 1.0, 0.0);
 				std::cout << "\r" << "altitude = " << ardrone.getAltitude();
-				cv::imshow("camera", temp_match(image));
 			}
 			while (ardrone.getAltitude() > init_alt) {
 				ardrone.getVelocity(&vx_now, &vy_now, 0);
 				ardrone.move3D(-vx_now, -vy_now, -1.0, 0.0);
 				std::cout << "\r" << "altitude = " << ardrone.getAltitude();
-				cv::imshow("camera", temp_match(image));
 			}
 			ardrone.move3D(0.0, 0.0, 1.0, 0.0);
 			std::cout << "\r" << "command b end.            ";
 			break;
-
-		default:
-
 		}
 		ardrone.move3D(vx, vy, vz, vr);
 
@@ -131,7 +101,8 @@ int main(int argc, char *argv[])
 		if (key == 'c') ardrone.setCamera(++mode % 4);
 
 		// Display the image
-		cv::imshow("camera", temp_match(image));
+	    cv::imshow("camera", ardrone.detectCircle(image));
+		//cv::imshow("camera", temp_match(image));
 		if (ardrone.getBatteryPercentage() < 15) {
 			std::cout << "Battery low !" << std::endl;
 			ardrone.landing();

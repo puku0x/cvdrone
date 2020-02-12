@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
 
 	////////////////////////////2020/02/06
 	tmpl = cv::imread("template_circle.png", 0); //�e���v���[�g���O���[�X�P�[���œǂݍ���
+	std::pair<cv::Mat, std::vector<cv::Vec3f> > dcResult;
 	////////////////////////////
 
 	while (1) {
@@ -101,8 +102,24 @@ int main(int argc, char *argv[])
 		if (key == 'c') ardrone.setCamera(++mode % 4);
 
 		// Display the image
-		cv::imshow("camera", ardrone.detectCircle(image));
-		//cv::imshow("camera", temp_match(image));
+		dcResult = ardrone.detectCircle(image);
+		cv::imshow("camera", dcResult.first);
+
+		//標準出力で中心座標、半径を確認
+		std::vector<cv::Vec3f> circles = dcResult.second;
+
+		if(circles.size()){
+			std::cout << std::endl;
+			for(size_t i = 0;i < circles.size();i++){
+				std::cout << "x = " << cvRound(circles[i][0]) << " y = " << cvRound(circles[i][1]) << std::endl;
+				std::cout << "r = " << cvRound(circles[i][2]) << std::endl;
+			}
+			std::cout << std::endl;
+		}
+
+
+
+		
 		if (ardrone.getBatteryPercentage() < 15) {
 			std::cout << "Battery low !" << std::endl;
 			ardrone.landing();

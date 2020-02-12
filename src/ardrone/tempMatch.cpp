@@ -1,30 +1,3 @@
-// -------------------------------------------------------------------------
-// CV Drone (= OpenCV + AR.Drone)
-// Copyright(C) 2016 puku0x
-// https://github.com/puku0x/cvdrone
-//
-// This source file is part of CV Drone library.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of EITHER:
-// (1) The GNU Lesser General Public License as published by the Free
-//     Software Foundation; either version 2.1 of the License, or (at
-//     your option) any later version. The text of the GNU Lesser
-//     General Public License is included with this library in the
-//     file cvdrone-license-LGPL.txt.
-// (2) The BSD-style license that is included with this library in
-//     the file cvdrone-license-BSD.txt.
-// 
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files
-// cvdrone-license-LGPL.txt and cvdrone-license-BSD.txt for more details.
-//
-//! @file   video.cpp
-//! @brief  Converting video into IplImage or cv::Mat
-//
-// -------------------------------------------------------------------------
-
 #include "ardrone.h"
 
 // The code decoding H.264 video is based on the following sites.
@@ -43,7 +16,7 @@ using namespace cv;
 using namespace std;
 
 
-Mat ARDrone::detectCircle(Mat image){
+pair<Mat, vector<Vec3f>> ARDrone::detectCircle(Mat image){
     //ref = http://opencv.jp/opencv-2svn/cpp/feature_detection.html
 
     Mat gray;
@@ -62,5 +35,5 @@ Mat ARDrone::detectCircle(Mat image){
         circle(image, center, radious, Scalar(0, 0, 255), 3, 8, 0);
 
     }
-    return image;
+    return std::make_pair(image,circles);
 }

@@ -27,6 +27,7 @@ pair<Mat, vector<Vec3f>> ARDrone::detectCircle(Mat image){
     HoughCircles(gray, circles, CV_HOUGH_GRADIENT, 2, gray.rows / 4, 200, 100);
 
     for(size_t i = 0;i < circles.size();i++){
+		
         Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
         int radious = cvRound(circles[i][2]);
 

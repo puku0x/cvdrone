@@ -4,7 +4,8 @@
 #sudo apt-get install libopencv-dev
 
 CXX           = g++
-CXXFLAGS      = -O2 -Wall -D__STDC_CONSTANT_MACROS `pkg-config --libs --cflags opencv` -I/usr/local/include/ -L/usr/local/lib
+CXXFLAGS      = -O2 -Wall -D__STDC_CONSTANT_MACROS `pkg-config --libs --cflags opencv` -I/usr/local/include/ -I/usr/local/opt/opencv@3/include
+LDFLAGS       = -L/usr/local/opt/opencv@3/lib -L/usr/local/lib
 LIBS          = -lm                     \
                 -lpthread               \
                 -lavutil                \
@@ -19,7 +20,8 @@ OBJS          = ../../src/ardrone/ardrone.o \
                 ../../src/ardrone/navdata.o \
                 ../../src/ardrone/version.o \
                 ../../src/ardrone/video.o   \
-                ../../src/ardrone/tempMatch.o   \
+                ../../src/ardrone/tempMatch.o\
+				../../src/ardrone/dnnDetect.o\
                 ../../src/main.o
 PROGRAM       = test.a
 

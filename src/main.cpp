@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
 	// AR.Drone class
 	ARDrone ardrone;
 
+	std::cout << "success!" << std::endl;
 	// Initialize
 	if (!ardrone.open()) {
 		std::cout << "Failed to initialize." << std::endl;

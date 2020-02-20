@@ -13,7 +13,6 @@ int main(int argc, char *argv[])
 	// AR.Drone class
 	ARDrone ardrone;
 
-	std::cout << "success!" << std::endl;
 	// Initialize
 	if (!ardrone.open()) {
 		std::cout << "Failed to initialize." << std::endl;
@@ -59,10 +58,10 @@ int main(int argc, char *argv[])
 		cv::Mat image = ardrone.getImage();
 
 		// Take off / Landing 
-		if (key == ' ') {
+		/*if (key == ' ') {
 			if (ardrone.onGround()) ardrone.takeoff();
 			else                    ardrone.landing();
-		}
+		}*/
 
 		// Move
 		double vx = 0.0, vy = 0.0, vz = 0.0, vr = 0.0;
